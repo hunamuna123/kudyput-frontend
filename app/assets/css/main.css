@@ -1,1 +1,88 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "onder";
+  src: url("./fonts/onder/ONDER-REGULAR.TTF") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "kiyosuna";
+  src: url("./fonts/KiyosunaSans/KiyosunaSans-L.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "kiyosuna";
+  src: url("./fonts/KiyosunaSans/KiyosunaSans-B.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-primary: #285A71;
+  --color-primary-light: #3a7a96;
+  --color-primary-dark: #1d4356;
+  --color-accent: #A4BE4F;
+  --color-accent-light: #b8cf72;
+  --color-accent-dark: #8aa33d;
+  --color-cream: #FCE4C0;
+  --color-cream-light: #fdf0de;
+  --color-cream-dark: #f5d4a4;
+
+  --font-heading: "onder", sans-serif;
+  --font-body: "kiyosuna", sans-serif;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-weight: 300;
+    color: var(--color-primary);
+    background-color: var(--color-cream-light);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    line-height: 1.35;
+  }
+
+  .container {
+    max-width: 1140px;
+    margin-inline: auto;
+    padding-inline: 32px;
+  }
+
+  @media (max-width: 768px) {
+    h1, h2, h3, h4, h5, h6 {
+      letter-spacing: 0.01em;
+      -webkit-text-stroke-width: 0;
+    }
+
+    .container {
+      padding-inline: 20px;
+    }
+  }
+}
