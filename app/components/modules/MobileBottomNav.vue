@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Home, Map, Sparkles, User } from "lucide-vue-next";
+import { Home, Map, Sparkles, Navigation, User } from "lucide-vue-next";
 import { useAuthStore } from "~~/store/auth";
 
 const route = useRoute();
@@ -19,6 +19,7 @@ const tabs: NavTab[] = [
   { label: "Главная", icon: Home, to: "/" },
   { label: "Начать", icon: Sparkles, to: "/start" },
   { label: "Карта", icon: Map, to: "/map" },
+  { label: "Маршрут", icon: Navigation, to: "/route" },
   { label: "Профиль", icon: User, to: "/profile" },
 ];
 

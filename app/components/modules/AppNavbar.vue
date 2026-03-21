@@ -7,6 +7,7 @@ const authStore = useAuthStore();
 const navItems = [
   { label: 'Начать', to: '/start' },
   { label: 'Карта', to: '/map' },
+  { label: 'Маршрут', to: '/route' },
   { label: 'Локации', to: '/map' },
   { label: 'Для Бизнесменов', to: '/host' },
 ] as const;

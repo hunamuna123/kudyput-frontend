@@ -82,6 +82,10 @@ async function toggleExpand(tripId: string) {
   await tripsStore.fetchTripMembers(tripId);
 }
 
+onMounted(() => {
+  tripsStore.fetchTrips();
+});
+
 async function handleCreate() {
   if (!dateFrom.value || !dateTo.value) return;
   const result = await tripsStore.createTrip({

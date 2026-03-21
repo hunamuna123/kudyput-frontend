@@ -13,6 +13,7 @@ const navItems: NavItem[] = [
   { label: "Обзор", icon: Home, to: "/admin" },
   { label: "Локации", icon: MapPin, to: "/admin/locations" },
   { label: "Карта", icon: Globe, to: "/map" },
+  { label: "Маршрут", icon: Navigation, to: "/route" },
   { label: "Поездки", icon: Car, to: "/profile/trips" },
   { label: "Профиль", icon: User, to: "/profile" },
 ];

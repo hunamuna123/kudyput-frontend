@@ -64,6 +64,23 @@ export const useTripsStore = defineStore("trips", {
   }),
 
   actions: {
+    async fetchTrips() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const { request } = useApiClient();
+        const response = await request<{ success: boolean; data: Trip[] }>("/api/v1/trips");
+        this.trips = response.data || [];
+        return this.trips;
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string };
+        this.error = apiErr.message || "Ошибка загрузки поездок";
+        return [];
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async createTrip(data: CreateTripRequest) {
       this.loading = true;
       this.error = null;

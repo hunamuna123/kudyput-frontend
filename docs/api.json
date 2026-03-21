@@ -399,6 +399,13 @@
             "description": "Краткое описание (для карточек).",
             "type": "string"
           },
+          "gallery_urls": {
+            "description": "Массив URL дополнительных фотографий для галереи.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "id": {
             "description": "UUID локации.",
             "format": "uuid",
@@ -426,8 +433,12 @@
             "type": "string"
           },
           "owner_id": {
-            "description": "UUID владельца (Бизнесмена).",
+            "description": "UUID владельца (хоста).",
             "format": "uuid",
+            "type": "string"
+          },
+          "preview_image_url": {
+            "description": "URL hero-изображения локации.",
             "type": "string"
           },
           "price_per_night": {
@@ -610,10 +621,18 @@
             ],
             "type": "string"
           },
+          "description_short": {
+            "description": "Краткое описание для tooltip.",
+            "type": "string"
+          },
           "id": {
             "description": "UUID локации.",
             "format": "uuid",
             "type": "string"
+          },
+          "is_recommended": {
+            "description": "Рекомендована ли точка для текущего профиля.",
+            "type": "boolean"
           },
           "latitude": {
             "description": "Широта.",
@@ -630,6 +649,11 @@
           "preview_image_url": {
             "description": "URL превью.",
             "type": "string"
+          },
+          "recommendation_score": {
+            "description": "Скор рекомендации (0.0-1.0). Заполняется только для рекомендованных.",
+            "format": "float",
+            "type": "number"
           }
         },
         "type": "object"
@@ -668,7 +692,7 @@
           },
           "role": {
             "default": "tourist",
-            "description": "Роль пользователя. tourist — турист (по умолчанию), host — Бизнесмен (владелец локаций).",
+            "description": "Роль пользователя. tourist — турист (по умолчанию), host — хост (владелец локаций).",
             "enum": [
               "tourist",
               "host"
@@ -797,6 +821,30 @@
           "status",
           "latency_ms"
         ],
+        "type": "object"
+      },
+      "SplatResponse": {
+        "description": "Ответ с данными 3D-сцены (Gaussian Splatting) для локации.",
+        "properties": {
+          "has_splat": {
+            "description": "Есть ли 3D-сцена.",
+            "type": "boolean"
+          },
+          "location_id": {
+            "description": "UUID локации.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "location_name": {
+            "description": "Название локации.",
+            "type": "string"
+          },
+          "splat_url": {
+            "description": "URL на .splat файл. Присутствует только если has_splat=true.",
+            "nullable": true,
+            "type": "string"
+          }
+        },
         "type": "object"
       },
       "SwipeRequest": {
@@ -1479,6 +1527,70 @@
         ]
       }
     },
+    "/api/v1/health/live": {
+      "get": {
+        "description": "Мгновенный ответ без пинга внешних сервисов. Проверяет только что процесс API жив.\n\nИспользуется как Kubernetes liveness probe. Не создаёт нагрузку на внешние сервисы.",
+        "operationId": "healthLive",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "example": "alive",
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Процесс жив и обрабатывает запросы."
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "Мониторинг"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "description": "Выполняет асинхронный пинг всех 6 баз данных. Аналогичен GET /api/v1/health.\n\nИспользуется как Kubernetes readiness probe.",
+        "operationId": "healthReady",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Все сервисы доступны."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Один или несколько сервисов недоступны."
+          }
+        },
+        "summary": "Readiness probe -- полная проверка всех БД",
+        "tags": [
+          "Мониторинг"
+        ]
+      }
+    },
     "/api/v1/locations": {
       "get": {
         "description": "Выполняет пространственный поиск локаций с поддержкой PostGIS. Поддерживает поиск по радиусу (ST_DWithin), по bounding box (ST_Within + ST_MakeEnvelope), фильтрацию по категории, child_friendly, density_level. Результаты пагинируются.",
@@ -1739,7 +1851,7 @@
         ]
       },
       "get": {
-        "description": "Возвращает полные данные локации по UUID. Публичный эндпоинт, не требует авторизации.",
+        "description": "Возвращает полные данные локации по UUID. Публичный эндпоинт, не требует авторизации.\n\nОтвет содержит все поля для экрана детали локации: title, category, описания, теги, цена, координаты, hero image, галерея, 3D preview ссылка.",
         "operationId": "getLocationByID",
         "parameters": [
           {
@@ -1847,9 +1959,54 @@
         ]
       }
     },
+    "/api/v1/locations/{id}/splat": {
+      "get": {
+        "description": "Возвращает URL 3D-сцены (.splat) для конкретной локации. Отдельный эндпоинт позволяет фронтенду загружать тяжёлый 3D-контент лениво, не включая его в основной payload location detail.",
+        "operationId": "getLocationSplat",
+        "parameters": [
+          {
+            "description": "UUID локации.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SplatResponse"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Данные 3D-сцены."
+          },
+          "404": {
+            "description": "Локация не найдена."
+          }
+        },
+        "summary": "3D-сцена локации (Gaussian Splatting)",
+        "tags": [
+          "Локации"
+        ]
+      }
+    },
     "/api/v1/map/locations": {
       "get": {
-        "description": "Возвращает локации для отображения на интерактивной карте. Поддерживает фильтрацию по bounding box (min_lat, max_lat, min_lon, max_lon) через PostGIS ST_Within.\n\nВсе координаты в формате WGS84 (EPSG:4326). По умолчанию возвращает до 100 локаций.",
+        "description": "Возвращает локации для отображения на интерактивной карте. Поддерживает три режима:\n\n1. **bbox**: пространственный поиск по bounding box через PostGIS.\n2. **demo**: curated набор с предустановленными рекомендациями для 4 профилей.\n3. **hybrid**: обогащение точек скорами рекомендаций из Qdrant (при наличии JWT).\n\nВсе координаты в формате WGS84 (EPSG:4326). По умолчанию возвращает до 50 локаций.",
         "operationId": "getMapLocations",
         "parameters": [
           {
@@ -1898,12 +2055,55 @@
             }
           },
           {
-            "description": "Максимальное количество точек.",
+            "description": "Фильтр по плотности.",
+            "in": "query",
+            "name": "density_level",
+            "schema": {
+              "enum": [
+                "red",
+                "yellow",
+                "green"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Только рекомендованные точки.",
+            "in": "query",
+            "name": "is_recommended",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Максимальное количество точек (макс. 200).",
             "in": "query",
             "name": "limit",
             "schema": {
-              "default": 100,
+              "default": 50,
               "type": "integer"
+            }
+          },
+          {
+            "description": "Включить demo-режим с curated рекомендациями.",
+            "in": "query",
+            "name": "demo",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Demo-профиль. По умолчанию calm_wine_mountains.",
+            "in": "query",
+            "name": "profile",
+            "schema": {
+              "enum": [
+                "calm_wine_mountains",
+                "active_adventure",
+                "family_kids",
+                "gastro_cultural"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -1921,6 +2121,10 @@
                           },
                           "type": "array"
                         },
+                        "profile": {
+                          "description": "Название demo-профиля (только в demo-режиме).",
+                          "type": "string"
+                        },
                         "total": {
                           "type": "integer"
                         }
@@ -1937,15 +2141,10 @@
             },
             "description": "Массив точек для карты."
           },
-          "401": {
-            "description": "Отсутствует или невалидный токен."
+          "400": {
+            "description": "Некорректные параметры (невалидный bbox или профиль)."
           }
         },
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
         "summary": "Локации для карты",
         "tags": [
           "Карта"

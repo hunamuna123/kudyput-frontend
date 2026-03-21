@@ -17,6 +17,8 @@ interface MapFilters {
   max_lon?: number;
   category?: string;
   limit?: number;
+  demo?: boolean;
+  profile?: string;
 }
 
 interface MapState {

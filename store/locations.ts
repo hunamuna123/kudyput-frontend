@@ -19,6 +19,9 @@ export interface Location {
   is_published: boolean;
   owner_id: string;
   splat_url: string | null;
+  has_splat?: boolean;
+  preview_image_url?: string | null;
+  gallery_urls?: string[];
   vibe_vector_id: string | null;
   created_at: string;
   updated_at: string;
@@ -53,6 +56,16 @@ interface LocationSingleResponse {
   success: boolean;
   data: Location;
   message?: string;
+}
+
+interface LocationSplatResponse {
+  success: boolean;
+  data: {
+    location_id: string;
+    location_name: string;
+    has_splat: boolean;
+    splat_url: string | null;
+  };
 }
 
 interface LocationsState {
@@ -106,6 +119,22 @@ export const useLocationsStore = defineStore("locations", {
       } catch (err: unknown) {
         const apiErr = err as { message?: string };
         this.error = apiErr.message || "Ошибка загрузки локаций";
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchLocationSplat(id: string) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const { request } = useApiClient();
+        const response = await request<LocationSplatResponse>(`/api/v1/locations/${id}/splat`);
+        return response.data;
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string };
+        this.error = apiErr.message || "Ошибка загрузки 3D-сцены";
+        return null;
       } finally {
         this.loading = false;
       }

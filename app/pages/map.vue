@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { MapPin, Filter, Loader2, AlertCircle, ExternalLink, Sparkles } from "lucide-vue-next";
+import { MapPin, Filter, Loader2, AlertCircle, ExternalLink, Sparkles, Navigation, X, Clock, Ruler } from "lucide-vue-next";
 import { useMapStore } from "~~/store/map";
 import { useVibeStore } from "~~/store/vibe";
 import { useAuthStore } from "~~/store/auth";
+import { useRoutesStore } from "~~/store/routes";
+import Map3D from "~~/app/components/map/Map3D.vue";
 
 useHead({
   title: "Карта — КудыТуды",
@@ -14,9 +16,61 @@ useHead({
 const mapStore = useMapStore();
 const vibeStore = useVibeStore();
 const authStore = useAuthStore();
+const routesStore = useRoutesStore();
 const categoryFilter = ref("");
 const showFilters = ref(false);
+const showRouteBuilder = ref(false);
 const mapMode = ref<"ai" | "all">("all");
+const demoMode = ref(false);
+const demoProfile = ref("calm_wine_mountains");
+const routeTransport = ref("car");
+const routeLocationIds = ref<string[]>([]);
+
+const routeTransportOptions = [
+  { label: "🚗", value: "car" },
+  { label: "🚌", value: "public" },
+  { label: "🚶", value: "walk" },
+  { label: "🚴", value: "bike" },
+];
+
+function addToRoute(id: string) {
+  if (!routeLocationIds.value.includes(id)) {
+    routeLocationIds.value.push(id);
+    if (!showRouteBuilder.value) showRouteBuilder.value = true;
+  }
+}
+
+function removeFromRoute(id: string) {
+  routeLocationIds.value = routeLocationIds.value.filter((lid) => lid !== id);
+}
+
+function getPointName(id: string): string {
+  return mapStore.points.find((p) => p.id === id)?.name || id.slice(0, 8);
+}
+
+async function handleBuildRoute() {
+  if (routeLocationIds.value.length < 2) return;
+  await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+}
+
+function formatDist(km: number): string {
+  if (km < 1) return `${Math.round(km * 1000)} м`;
+  return `${km.toFixed(1)} км`;
+}
+
+function formatDur(min: number): string {
+  if (min < 60) return `${Math.round(min)} мин`;
+  const h = Math.floor(min / 60);
+  const m = Math.round(min % 60);
+  return `${h}ч ${m}м`;
+}
+
+const demoProfiles = [
+  { label: "🍷 Спокойный", value: "calm_wine_mountains" },
+  { label: "🧗 Активный", value: "active_adventure" },
+  { label: "👨‍👩‍👧 Семья", value: "family_kids" },
+  { label: "🍽 Гастро-тур", value: "gastro_cultural" },
+];
 
 const categoryOptions = [
   { label: "Все", value: "" },
@@ -49,6 +103,10 @@ const hasVibeProfile = computed(() => vibeStore.hasProfile || !!authStore.user?.
 async function loadLocations() {
   const filters: Record<string, string | number | boolean | undefined> = {};
   if (categoryFilter.value) filters.category = categoryFilter.value;
+  if (demoMode.value) {
+    filters.demo = true;
+    filters.profile = demoProfile.value;
+  }
   filters.min_lat = 43.5;
   filters.max_lat = 45.5;
   filters.min_lon = 36.5;
@@ -57,11 +115,15 @@ async function loadLocations() {
   await mapStore.fetchMapLocations(filters);
 }
 
-function selectPoint(id: string) {
+function selectPoint(id: string | null) {
+  if (id === null) {
+    mapStore.selectPoint(null);
+    return;
+  }
   mapStore.selectPoint(mapStore.selectedPointId === id ? null : id);
 }
 
-watch(categoryFilter, () => {
+watch([categoryFilter, demoMode, demoProfile], () => {
   loadLocations();
 });
 
@@ -99,6 +161,14 @@ onMounted(async () => {
           </button>
           <button
             class="flex items-center gap-1.5 font-body text-[0.82rem] px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
+            :class="demoMode ? 'bg-accent/15 border-accent/30 text-accent-dark font-bold' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
+            @click="demoMode = !demoMode"
+          >
+            <Sparkles class="w-4 h-4" />
+            Демо режим
+          </button>
+          <button
+            class="flex items-center gap-1.5 font-body text-[0.82rem] px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
             :class="showFilters ? 'bg-accent/15 border-accent/30 text-accent-dark' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
             @click="showFilters = !showFilters"
           >
@@ -107,6 +177,22 @@ onMounted(async () => {
           </button>
         </div>
       </div>
+
+      <Transition name="slide">
+        <div v-if="demoMode" class="flex flex-wrap gap-1.5 mb-2">
+          <button
+            v-for="profile in demoProfiles"
+            :key="profile.value"
+            class="font-body text-[0.75rem] px-3.5 py-2 rounded-full border cursor-pointer transition-all duration-200"
+            :class="demoProfile === profile.value
+              ? 'bg-accent/20 border-accent/40 text-accent-dark font-bold'
+              : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
+            @click="demoProfile = profile.value"
+          >
+            {{ profile.label }}
+          </button>
+        </div>
+      </Transition>
 
       <Transition name="slide">
         <div v-if="showFilters" class="flex flex-wrap gap-1.5 mb-4">
@@ -148,44 +234,13 @@ onMounted(async () => {
       <div v-else class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
 
         <div class="relative bg-white/35 border border-white/50 rounded-3xl overflow-hidden min-h-[500px]">
-          <div class="absolute inset-0 bg-gradient-to-br from-primary/3 to-accent/5">
-            <svg class="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
-              <path
-                d="M100,200 Q200,80 400,100 Q550,110 650,180 Q700,220 680,300 Q650,380 500,400 Q350,420 200,380 Q120,340 100,200Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                class="text-primary/10"
-              />
-              <path
-                d="M50,250 Q80,200 100,200 Q120,340 200,380 Q180,420 100,400 Q50,350 50,250Z"
-                fill="currentColor"
-                class="text-blue-500/5"
-              />
-
-              <g v-for="point in mapStore.points" :key="point.id">
-                <circle
-                  :cx="50 + ((point.longitude - 36.5) / 4.5) * 700"
-                  :cy="450 - ((point.latitude - 43.5) / 2) * 400"
-                  :r="mapStore.selectedPointId === point.id ? 10 : 7"
-                  :fill="densityColors[point.density_level] || '#A4BE4F'"
-                  :stroke="mapStore.selectedPointId === point.id ? '#fff' : 'transparent'"
-                  stroke-width="2"
-                  class="cursor-pointer transition-all duration-200 hover:opacity-80"
-                  :opacity="mapStore.selectedPointId && mapStore.selectedPointId !== point.id ? 0.4 : 0.85"
-                  @click="selectPoint(point.id)"
-                />
-                <text
-                  v-if="mapStore.selectedPointId === point.id"
-                  :x="50 + ((point.longitude - 36.5) / 4.5) * 700"
-                  :y="450 - ((point.latitude - 43.5) / 2) * 400 - 16"
-                  text-anchor="middle"
-                  class="font-body text-[11px] fill-primary font-bold"
-                >
-                  {{ point.name.length > 20 ? point.name.slice(0, 20) + '…' : point.name }}
-                </text>
-              </g>
-            </svg>
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/3 to-accent/5 cursor-grab active:cursor-grabbing">
+            <Map3D 
+              :points="mapStore.points" 
+              :selected-id="mapStore.selectedPointId" 
+              :route-points="routesStore.currentRoute?.points"
+              @select="selectPoint" 
+            />
           </div>
 
           <div v-if="mapStore.points.length === 0" class="absolute inset-0 flex items-center justify-center">
@@ -196,7 +251,77 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="flex flex-col gap-2 max-h-[520px] max-lg:max-h-[300px] overflow-y-auto pr-1">
+        <div class="flex flex-col gap-3 max-h-[520px] max-lg:max-h-[400px] overflow-y-auto pr-1">
+
+          <button
+            class="flex items-center justify-center gap-1.5 font-body font-bold text-[0.78rem] px-4 py-2.5 rounded-2xl border cursor-pointer transition-all duration-200 shrink-0"
+            :class="showRouteBuilder ? 'bg-accent/15 border-accent/30 text-accent-dark' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
+            @click="showRouteBuilder = !showRouteBuilder"
+          >
+            <Navigation class="w-4 h-4" />
+            Маршрут
+            <span v-if="routeLocationIds.length > 0" class="bg-accent text-primary-dark text-[0.6rem] font-black rounded-full w-5 h-5 flex items-center justify-center">{{ routeLocationIds.length }}</span>
+          </button>
+
+          <Transition name="slide">
+            <div v-if="showRouteBuilder" class="bg-white/60 backdrop-blur-md border border-accent/30 rounded-2xl p-3 flex flex-col gap-2.5">
+              <div v-if="routeLocationIds.length > 0" class="flex flex-col gap-1">
+                <div
+                  v-for="(id, idx) in routeLocationIds"
+                  :key="id"
+                  class="flex items-center gap-2 px-2.5 py-1.5 bg-white/80 border border-accent/20 rounded-xl group"
+                >
+                  <span class="w-5 h-5 rounded-full bg-accent text-primary-dark flex items-center justify-center text-[0.6rem] font-black shrink-0">{{ idx + 1 }}</span>
+                  <span class="font-body text-[0.75rem] font-medium text-primary flex-1 truncate">{{ getPointName(id) }}</span>
+                  <button class="text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-all cursor-pointer bg-transparent border-none p-0.5" @click="removeFromRoute(id)">
+                    <X class="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+              <p v-else class="font-body text-[0.72rem] text-primary-light text-center py-1">Нажмите + рядом с локацией</p>
+
+              <div class="flex gap-1">
+                <button
+                  v-for="opt in routeTransportOptions"
+                  :key="opt.value"
+                  class="flex-1 font-body text-[0.78rem] py-1.5 rounded-lg border cursor-pointer transition-all"
+                  :class="routeTransport === opt.value ? 'bg-accent/20 border-accent/40 font-bold' : 'bg-white/50 border-white/50 hover:border-accent/20'"
+                  @click="routeTransport = opt.value"
+                >{{ opt.label }}</button>
+              </div>
+
+              <button
+                :disabled="routeLocationIds.length < 2 || routesStore.loading"
+                class="flex items-center justify-center gap-1.5 font-body font-bold text-[0.78rem] bg-accent hover:bg-accent-dark text-primary-dark border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                @click="handleBuildRoute"
+              >
+                <Loader2 v-if="routesStore.loading" class="w-4 h-4 animate-spin" />
+                <Navigation v-else class="w-4 h-4" />
+                Построить маршрут
+              </button>
+
+              <div v-if="routesStore.currentRoute" class="flex flex-col gap-2 mt-1">
+                <div class="flex gap-2">
+                  <div class="flex-1 flex items-center justify-center gap-1 bg-white/70 border border-accent/20 rounded-lg py-1.5">
+                    <Ruler class="w-3 h-3 text-accent-dark" />
+                    <span class="font-body font-bold text-[0.72rem] text-primary">{{ formatDist(routesStore.currentRoute.total_distance_km) }}</span>
+                  </div>
+                  <div class="flex-1 flex items-center justify-center gap-1 bg-white/70 border border-primary/10 rounded-lg py-1.5">
+                    <Clock class="w-3 h-3 text-primary" />
+                    <span class="font-body font-bold text-[0.72rem] text-primary">{{ formatDur(routesStore.currentRoute.total_time_min) }}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <div v-for="(point, idx) in routesStore.currentRoute.points" :key="point.location_id" class="flex items-center gap-2 px-2 py-1">
+                    <span class="w-4 h-4 rounded-full bg-accent text-primary-dark flex items-center justify-center text-[0.55rem] font-black shrink-0">{{ idx + 1 }}</span>
+                    <span class="font-body text-[0.72rem] text-primary truncate flex-1">{{ point.name }}</span>
+                    <span v-if="point.distance_km > 0" class="font-body text-[0.62rem] text-primary-light">{{ formatDist(point.distance_km) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Transition>
+
           <div
             v-for="point in mapStore.points"
             :key="point.id"
@@ -214,6 +339,16 @@ onMounted(async () => {
               <p class="font-body font-bold text-[0.82rem] text-primary truncate">{{ point.name }}</p>
               <p class="font-body text-[0.68rem] text-primary-light capitalize">{{ point.category }}</p>
             </div>
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-full border cursor-pointer transition-all shrink-0"
+              :class="routeLocationIds.includes(point.id)
+                ? 'bg-accent border-accent text-primary-dark'
+                : 'bg-white/50 border-primary/10 text-primary-light hover:border-accent/40 hover:text-accent-dark'"
+              @click.stop="routeLocationIds.includes(point.id) ? removeFromRoute(point.id) : addToRoute(point.id)"
+            >
+              <Navigation v-if="routeLocationIds.includes(point.id)" class="w-3 h-3" />
+              <span v-else class="text-[0.7rem] font-bold leading-none">+</span>
+            </button>
             <NuxtLink
               :to="`/location/${point.id}`"
               class="text-accent-dark hover:text-accent transition-colors shrink-0"

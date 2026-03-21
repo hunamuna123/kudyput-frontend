@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Home, Globe, Navigation, Car, User } from "lucide-vue-next";
+import { Home, Globe, Navigation, Car, Route, User } from "lucide-vue-next";
 
 const { isActive } = useNavActive();
 
@@ -12,6 +12,7 @@ interface NavTab {
 const tabs: NavTab[] = [
   { label: "Обзор", icon: Home, to: "/admin" },
   { label: "Карта", icon: Globe, to: "/map" },
+  { label: "Маршрут", icon: Route, to: "/route" },
   { label: "Поездки", icon: Car, to: "/profile/trips" },
   { label: "Профиль", icon: User, to: "/profile" },
 ];
