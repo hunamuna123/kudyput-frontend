@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const navItems = [
-  { label: 'Маршруты', href: '#routes' },
-  { label: 'Локации', href: '#locations' },
-  { label: 'О проекте', href: '#about' },
+  { label: 'Начать', to: '/start' },
+  { label: 'Локации', to: '/dashboard/locations' },
+  { label: 'Для хостов', to: '/host' },
 ] as const;
 
 const isScrolled = ref(false);
@@ -32,24 +32,27 @@ onUnmounted(() => {
         ? 'bg-cream-light/90 border-cream/60 shadow-lg backdrop-blur-2xl'
         : 'bg-cream-light/50 border-cream/30 shadow-sm backdrop-blur-xl'"
     >
-      <a href="/" class="font-body font-bold text-primary text-base tracking-wide mr-auto">
+      <NuxtLink to="/" class="font-body font-bold text-primary text-base tracking-wide mr-auto">
         КудыТуды
-      </a>
+      </NuxtLink>
 
       <div class="hidden md:flex items-center gap-7 mr-3">
-        <a
+        <NuxtLink
           v-for="item in navItems"
           :key="item.label"
-          :href="item.href"
+          :to="item.to"
           class="font-body text-[0.82rem] font-light text-primary/70 hover:text-primary transition-colors duration-200 no-underline"
         >
           {{ item.label }}
-        </a>
+        </NuxtLink>
       </div>
 
-      <button class="hidden md:block font-body font-bold text-[0.8rem] text-white bg-accent border-none rounded-full px-5 py-2 cursor-pointer transition-all duration-250 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg">
-        Начать
-      </button>
+      <NuxtLink
+        to="/auth/login"
+        class="hidden md:block font-body font-bold text-[0.8rem] text-white bg-accent border-none rounded-full px-5 py-2 cursor-pointer transition-all duration-250 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg no-underline"
+      >
+        Войти
+      </NuxtLink>
 
       <button
         class="flex md:hidden flex-col gap-1 bg-transparent border-none p-2 cursor-pointer"
@@ -66,18 +69,22 @@ onUnmounted(() => {
         v-if="mobileOpen"
         class="flex flex-col gap-1 mt-2 bg-cream-light/95 backdrop-blur-2xl rounded-2xl p-4 border border-cream/40 md:hidden"
       >
-        <a
+        <NuxtLink
           v-for="item in navItems"
           :key="item.label"
-          :href="item.href"
+          :to="item.to"
           class="font-body text-[0.9rem] font-light text-primary no-underline py-2"
           @click="mobileOpen = false"
         >
           {{ item.label }}
-        </a>
-        <button class="mt-2 w-full font-body font-bold text-[0.82rem] text-white bg-accent rounded-full py-2.5 border-none cursor-pointer">
-          Начать
-        </button>
+        </NuxtLink>
+        <NuxtLink
+          to="/auth/login"
+          class="mt-2 w-full font-body font-bold text-[0.82rem] text-white bg-accent rounded-full py-2.5 border-none cursor-pointer text-center no-underline block"
+          @click="mobileOpen = false"
+        >
+          Войти
+        </NuxtLink>
       </div>
     </Transition>
   </nav>

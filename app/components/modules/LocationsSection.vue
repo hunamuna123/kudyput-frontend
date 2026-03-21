@@ -64,9 +64,12 @@ const locations: Location[] = [
       </div>
 
       <div class="text-center mt-10">
-        <button class="font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5">
+        <NuxtLink
+          to="/dashboard/locations"
+          class="inline-block font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5 no-underline"
+        >
           Смотреть все локации
-        </button>
+        </NuxtLink>
       </div>
     </div>
   </section>

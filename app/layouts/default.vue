@@ -1,21 +1,9 @@
 <template>
-  <div class="layout">
+  <div class="min-h-screen flex flex-col">
     <ModulesAppNavbar />
-    <main class="layout__main">
+    <main class="flex-1">
       <slot />
     </main>
     <ModulesAppFooter />
   </div>
 </template>
-
-<style scoped>
-.layout {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.layout__main {
-  flex: 1;
-}
-</style>

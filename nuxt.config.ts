@@ -1,30 +1,28 @@
 import tailwindcss from "@tailwindcss/vite";
-import Aura from "@primevue/themes/aura";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  css: ['./app/assets/css/main.css'],
+  css: ["./app/assets/css/main.css"],
 
-  vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+  runtimeConfig: {
+    public: {
+      apiBase: "http://141.98.7.225:8180",
+    },
   },
 
-  modules: [
-    "@pinia/nuxt",
-    "@primevue/nuxt-module",
-  ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
 
-  primevue: {
-    options: {
-      theme: {
-        preset: Aura,
-        options: {
-          darkModeSelector: false,
-        },
-      },
-    },
+  modules: ["@pinia/nuxt", "shadcn-nuxt"],
+
+  pinia: {
+    storesDirs: ["./store/**"],
+  },
+
+  shadcn: {
+    prefix: "Ui",
+    componentDir: "./app/components/ui",
   },
 });

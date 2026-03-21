@@ -1,0 +1,2611 @@
+{
+  "components": {
+    "schemas": {
+      "AuthResponse": {
+        "description": "Ответ аутентификации с парой JWT-токенов и данными пользователя.",
+        "properties": {
+          "data": {
+            "properties": {
+              "tokens": {
+                "$ref": "#/components/schemas/TokenPair"
+              },
+              "user": {
+                "$ref": "#/components/schemas/UserProfile"
+              }
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "авторизация успешна",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "BuildRouteRequest": {
+        "description": "Запрос на построение маршрута.",
+        "properties": {
+          "location_ids": {
+            "description": "UUID локаций маршрута (минимум 2).",
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "minItems": 2,
+            "type": "array"
+          },
+          "optimize": {
+            "default": false,
+            "description": "Оптимизировать порядок точек.",
+            "type": "boolean"
+          },
+          "transport": {
+            "default": "car",
+            "description": "Тип транспорта.",
+            "enum": [
+              "car",
+              "walk",
+              "bike",
+              "public"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "location_ids"
+        ],
+        "type": "object"
+      },
+      "CreateLocationRequest": {
+        "description": "Запрос на создание новой локации. Категория — свободный текст (не enum).",
+        "properties": {
+          "access_level": {
+            "default": "open",
+            "enum": [
+              "open",
+              "semi_open",
+              "hidden"
+            ],
+            "type": "string"
+          },
+          "address": {
+            "example": "Краснодарский край, Хаджох",
+            "type": "string"
+          },
+          "capacity": {
+            "description": "Вместимость.",
+            "example": 4,
+            "type": "integer"
+          },
+          "category": {
+            "description": "Категория (свободный текст).",
+            "example": "farm",
+            "type": "string"
+          },
+          "child_friendly": {
+            "default": false,
+            "type": "boolean"
+          },
+          "density_level": {
+            "default": "green",
+            "enum": [
+              "red",
+              "yellow",
+              "green"
+            ],
+            "type": "string"
+          },
+          "description_full": {
+            "description": "Полное описание.",
+            "type": "string"
+          },
+          "description_short": {
+            "description": "Краткое описание.",
+            "type": "string"
+          },
+          "is_published": {
+            "default": false,
+            "type": "boolean"
+          },
+          "latitude": {
+            "description": "Широта [-90, 90].",
+            "example": 44.2878,
+            "format": "double",
+            "type": "number"
+          },
+          "longitude": {
+            "description": "Долгота [-180, 180].",
+            "example": 40.1763,
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "description": "Название локации.",
+            "example": "Козья ферма дяди Вани",
+            "type": "string"
+          },
+          "price_per_night": {
+            "description": "Стоимость за ночь (₽).",
+            "example": 5000,
+            "type": "integer"
+          },
+          "tags": {
+            "example": [
+              "сыр",
+              "козы",
+              "тишина"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "latitude",
+          "longitude"
+        ],
+        "type": "object"
+      },
+      "CreateTripRequest": {
+        "description": "Запрос создания поездки.",
+        "properties": {
+          "budget_rub": {
+            "description": "Бюджет в рублях.",
+            "example": 50000,
+            "type": "integer"
+          },
+          "budget_tier": {
+            "default": "comfort",
+            "enum": [
+              "economy",
+              "comfort",
+              "premium"
+            ],
+            "type": "string"
+          },
+          "date_from": {
+            "description": "Дата начала (YYYY-MM-DD).",
+            "example": "2026-04-10",
+            "format": "date",
+            "type": "string"
+          },
+          "date_to": {
+            "description": "Дата окончания (YYYY-MM-DD).",
+            "example": "2026-04-13",
+            "format": "date",
+            "type": "string"
+          },
+          "group_composition": {
+            "description": "Состав группы.",
+            "example": {
+              "adults": 2,
+              "children": [
+                {
+                  "age": 8
+                },
+                {
+                  "age": 12
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "group_size": {
+            "default": 1,
+            "description": "Количество участников.",
+            "example": 4,
+            "type": "integer"
+          },
+          "transport": {
+            "default": "car",
+            "enum": [
+              "car",
+              "public",
+              "walk",
+              "bike"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "date_from",
+          "date_to"
+        ],
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "description": "Стандартный ответ при внутренней ошибке сервера. Возвращается middleware Recovery при перехвате паники.",
+        "properties": {
+          "error": {
+            "description": "Тип ошибки.",
+            "example": "Internal Server Error",
+            "type": "string"
+          },
+          "message": {
+            "description": "Описание произошедшей ошибки.",
+            "example": "непредвиденная ошибка: runtime error",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error",
+          "message"
+        ],
+        "type": "object"
+      },
+      "FinalizeRequest": {
+        "description": "Опциональные параметры запроса финализации профиля.",
+        "properties": {
+          "child_friendly_only": {
+            "default": false,
+            "description": "Фильтровать только детские локации.",
+            "type": "boolean"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Максимальное количество рекомендаций.",
+            "maximum": 50,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "FinalizeResponse": {
+        "description": "Результат финализации профиля с обогащёнными рекомендациями.",
+        "properties": {
+          "is_curated": {
+            "description": "true, если рекомендации из curated demo набора (вектор не найден).",
+            "type": "boolean"
+          },
+          "recommendations": {
+            "description": "Top-N рекомендованных локаций.",
+            "items": {
+              "$ref": "#/components/schemas/LocationRecommendation"
+            },
+            "type": "array"
+          },
+          "total_found": {
+            "description": "Количество найденных совпадений.",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "HealthResponse": {
+        "description": "Результат проверки здоровья системы. Содержит общий статус, временную метку и детальную информацию по каждому из 6 сервисов баз данных.",
+        "properties": {
+          "services": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ServiceHealth"
+            },
+            "description": "Карта статусов каждого сервиса баз данных. Ключ -- имя сервиса (postgres, redis, qdrant, neo4j, clickhouse, minio), значение -- объект с деталями проверки.",
+            "type": "object"
+          },
+          "status": {
+            "description": "Общий статус системы. `healthy` -- все сервисы работают, `degraded` -- есть недоступные сервисы.",
+            "enum": [
+              "healthy",
+              "degraded"
+            ],
+            "example": "healthy",
+            "type": "string"
+          },
+          "timestamp": {
+            "description": "Временная метка выполнения проверки в формате RFC 3339 (UTC).",
+            "example": "2026-03-19T20:37:07Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "timestamp",
+          "services"
+        ],
+        "type": "object"
+      },
+      "JoinTripRequest": {
+        "description": "Запрос присоединения к поездке по invite-ссылке.",
+        "properties": {
+          "display_name": {
+            "description": "Имя участника.",
+            "example": "Жена Маша",
+            "type": "string"
+          },
+          "invite_token": {
+            "description": "Токен приглашения.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_child": {
+            "default": false,
+            "description": "Является ли участник ребёнком.",
+            "type": "boolean"
+          },
+          "tags": {
+            "description": "Теги предпочтений.",
+            "example": [
+              "сыр",
+              "ферма",
+              "тишина"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "invite_token",
+          "display_name"
+        ],
+        "type": "object"
+      },
+      "Location": {
+        "description": "Туристическая локация Краснодарского края с пространственными координатами (PostGIS).",
+        "properties": {
+          "access_level": {
+            "description": "Уровень доступа (Hidden Gems). open — все, semi_open — зарегистрированные, hidden — по карме.",
+            "enum": [
+              "open",
+              "semi_open",
+              "hidden"
+            ],
+            "type": "string"
+          },
+          "address": {
+            "description": "Адрес (населённый пункт, район).",
+            "example": "Краснодарский край, пос. Абрау-Дюрсо",
+            "type": "string"
+          },
+          "capacity": {
+            "description": "Максимальная вместимость.",
+            "example": 20,
+            "type": "integer"
+          },
+          "category": {
+            "description": "Категория (свободный текст: winery, farm, trail, gastro, nature, camping, resort, extreme, cultural, beach и др.).",
+            "example": "winery",
+            "type": "string"
+          },
+          "child_friendly": {
+            "description": "Подходит ли для детей.",
+            "type": "boolean"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "density_level": {
+            "description": "Плотность туристов. red — высокая, yellow — сезонная, green — Hidden Gem.",
+            "enum": [
+              "red",
+              "yellow",
+              "green"
+            ],
+            "type": "string"
+          },
+          "description_full": {
+            "description": "Полное описание (литературный текст).",
+            "type": "string"
+          },
+          "description_short": {
+            "description": "Краткое описание (для карточек).",
+            "type": "string"
+          },
+          "id": {
+            "description": "UUID локации.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_published": {
+            "description": "Опубликована ли локация.",
+            "type": "boolean"
+          },
+          "latitude": {
+            "description": "Широта (WGS 84).",
+            "example": 44.6979,
+            "format": "double",
+            "type": "number"
+          },
+          "longitude": {
+            "description": "Долгота (WGS 84).",
+            "example": 37.5949,
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "description": "Название локации.",
+            "example": "Винодельня Абрау-Дюрсо",
+            "type": "string"
+          },
+          "owner_id": {
+            "description": "UUID владельца (хоста).",
+            "format": "uuid",
+            "type": "string"
+          },
+          "price_per_night": {
+            "description": "Стоимость за ночь (₽). 0 для бесплатных.",
+            "example": 8000,
+            "type": "integer"
+          },
+          "slug": {
+            "description": "URL-дружественный идентификатор.",
+            "example": "vinodelnya-abrau-dyurso",
+            "type": "string"
+          },
+          "splat_url": {
+            "description": "URL на .splat файл (3D Gaussian Splatting).",
+            "nullable": true,
+            "type": "string"
+          },
+          "tags": {
+            "description": "Массив тегов для фильтрации.",
+            "example": [
+              "вино",
+              "дегустация",
+              "озеро"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "vibe_vector_id": {
+            "description": "ID вектора vibe-профиля в Qdrant.",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LocationListResponse": {
+        "description": "Результат поиска локаций с пагинацией.",
+        "properties": {
+          "locations": {
+            "description": "Массив найденных локаций.",
+            "items": {
+              "$ref": "#/components/schemas/Location"
+            },
+            "type": "array"
+          },
+          "page": {
+            "description": "Текущая страница.",
+            "example": 1,
+            "type": "integer"
+          },
+          "per_page": {
+            "description": "Количество записей на странице.",
+            "example": 20,
+            "type": "integer"
+          },
+          "total": {
+            "description": "Общее количество записей, удовлетворяющих фильтрам.",
+            "example": 20,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "LocationRecommendation": {
+        "description": "Обогащённая рекомендация локации для карточки на фронтенде.",
+        "properties": {
+          "category": {
+            "description": "Категория.",
+            "example": "winery",
+            "type": "string"
+          },
+          "child_friendly": {
+            "description": "Подходит для детей.",
+            "type": "boolean"
+          },
+          "density_level": {
+            "description": "Уровень туристической плотности.",
+            "enum": [
+              "red",
+              "yellow",
+              "green"
+            ],
+            "type": "string"
+          },
+          "description_short": {
+            "description": "Краткое описание для карточки.",
+            "type": "string"
+          },
+          "latitude": {
+            "description": "Широта (WGS84).",
+            "type": "number"
+          },
+          "location_id": {
+            "description": "UUID локации.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "longitude": {
+            "description": "Долгота (WGS84).",
+            "type": "number"
+          },
+          "name": {
+            "description": "Название локации.",
+            "example": "Винодельня Лефкадия",
+            "type": "string"
+          },
+          "preview_image_url": {
+            "description": "URL hero-изображения.",
+            "type": "string"
+          },
+          "reason_short": {
+            "description": "Краткая причина рекомендации.",
+            "example": "Высокое совпадение: природа, виноградник",
+            "type": "string"
+          },
+          "score": {
+            "description": "Cosine similarity (0-1).",
+            "example": 0.92,
+            "type": "number"
+          },
+          "splat_url": {
+            "description": "URL 3D-сцены (.splat).",
+            "type": "string"
+          },
+          "tags": {
+            "description": "Теги локации.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tags_match": {
+            "description": "Совпавшие теги между профилем и локацией.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "example": "tourist@deepkrai.ru",
+            "format": "email",
+            "type": "string"
+          },
+          "password": {
+            "example": "securePass123",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
+      "MapPoint": {
+        "description": "Точка для отображения на интерактивной карте.",
+        "properties": {
+          "category": {
+            "description": "Категория.",
+            "type": "string"
+          },
+          "density_level": {
+            "description": "Цвет маркера плотности.",
+            "enum": [
+              "red",
+              "yellow",
+              "green"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "description": "UUID локации.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "latitude": {
+            "description": "Широта.",
+            "type": "number"
+          },
+          "longitude": {
+            "description": "Долгота.",
+            "type": "number"
+          },
+          "name": {
+            "description": "Название.",
+            "type": "string"
+          },
+          "preview_image_url": {
+            "description": "URL превью.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RefreshRequest": {
+        "properties": {
+          "refresh_token": {
+            "description": "Действующий refresh-токен.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ],
+        "type": "object"
+      },
+      "RegisterRequest": {
+        "description": "Запрос регистрации нового пользователя.",
+        "properties": {
+          "display_name": {
+            "description": "Отображаемое имя (необязательно).",
+            "example": "Иван",
+            "type": "string"
+          },
+          "email": {
+            "description": "Email пользователя.",
+            "example": "tourist@deepkrai.ru",
+            "format": "email",
+            "type": "string"
+          },
+          "password": {
+            "description": "Пароль (минимум 8 символов).",
+            "example": "securePass123",
+            "minLength": 8,
+            "type": "string"
+          },
+          "role": {
+            "default": "tourist",
+            "description": "Роль пользователя. tourist — турист (по умолчанию), host — хост (владелец локаций).",
+            "enum": [
+              "tourist",
+              "host"
+            ],
+            "example": "tourist",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
+      "RoutePoint": {
+        "description": "Точка маршрута.",
+        "properties": {
+          "distance_km": {
+            "description": "Расстояние до следующей точки в км.",
+            "type": "number"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "order": {
+            "description": "Порядковый номер в маршруте.",
+            "type": "integer"
+          },
+          "travel_time_min": {
+            "description": "Время до следующей точки в минутах.",
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "RoutePreview": {
+        "description": "Предварительный просмотр маршрута.",
+        "properties": {
+          "points": {
+            "description": "Точки маршрута в порядке следования.",
+            "items": {
+              "$ref": "#/components/schemas/RoutePoint"
+            },
+            "type": "array"
+          },
+          "total_distance_km": {
+            "description": "Общая дистанция маршрута в км.",
+            "type": "number"
+          },
+          "total_time_min": {
+            "description": "Общее время в пути в минутах.",
+            "type": "number"
+          },
+          "transport": {
+            "description": "Тип транспорта.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ServerInfo": {
+        "description": "Базовая информация о сервере КудыТуды API.",
+        "properties": {
+          "service": {
+            "description": "Название сервиса.",
+            "example": "КудыТуды API",
+            "type": "string"
+          },
+          "status": {
+            "description": "Текущий статус сервера.",
+            "enum": [
+              "running"
+            ],
+            "example": "running",
+            "type": "string"
+          },
+          "version": {
+            "description": "Текущая версия API.",
+            "example": "1.0.0",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "version",
+          "status"
+        ],
+        "type": "object"
+      },
+      "ServiceHealth": {
+        "description": "Результат проверки здоровья одного сервиса базы данных.",
+        "properties": {
+          "error": {
+            "description": "Описание ошибки при недоступности сервиса. Пустая строка при статусе `up`.",
+            "example": "",
+            "type": "string"
+          },
+          "latency_ms": {
+            "description": "Время отклика сервиса в миллисекундах. При статусе `down` может быть 0 (таймаут).",
+            "example": 2,
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "status": {
+            "description": "Текущий статус сервиса. `up` -- сервис доступен и отвечает, `down` -- сервис недоступен.",
+            "enum": [
+              "up",
+              "down"
+            ],
+            "example": "up",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "latency_ms"
+        ],
+        "type": "object"
+      },
+      "SwipeRequest": {
+        "description": "Запрос свайпа сцены.",
+        "properties": {
+          "direction": {
+            "description": "Направление свайпа.",
+            "enum": [
+              "right",
+              "left"
+            ],
+            "type": "string"
+          },
+          "scene_id": {
+            "description": "UUID сцены.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "scene_id",
+          "direction"
+        ],
+        "type": "object"
+      },
+      "TokenPair": {
+        "properties": {
+          "access_token": {
+            "description": "JWT access-токен (15 мин).",
+            "type": "string"
+          },
+          "access_token_expires_at": {
+            "description": "Unix timestamp истечения access.",
+            "format": "int64",
+            "type": "integer"
+          },
+          "refresh_token": {
+            "description": "JWT refresh-токен (7 дней).",
+            "type": "string"
+          },
+          "refresh_token_expires_at": {
+            "description": "Unix timestamp истечения refresh.",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Trip": {
+        "description": "Объект поездки с датами, бюджетом, транспортом и составом группы.",
+        "properties": {
+          "budget_rub": {
+            "description": "Бюджет в рублях.",
+            "example": 50000,
+            "type": "integer"
+          },
+          "budget_tier": {
+            "description": "Уровень бюджета.",
+            "enum": [
+              "economy",
+              "comfort",
+              "premium"
+            ],
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "creator_id": {
+            "description": "UUID создателя поездки.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "date_from": {
+            "description": "Дата начала.",
+            "example": "2026-04-10",
+            "format": "date",
+            "type": "string"
+          },
+          "date_to": {
+            "description": "Дата окончания.",
+            "example": "2026-04-13",
+            "format": "date",
+            "type": "string"
+          },
+          "group_composition": {
+            "description": "Состав группы (JSONB).",
+            "type": "object"
+          },
+          "group_size": {
+            "description": "Планируемое количество участников.",
+            "example": 4,
+            "type": "integer"
+          },
+          "id": {
+            "description": "Уникальный идентификатор поездки.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "invite_token": {
+            "description": "Токен для приглашения участников.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "merged_vibe_vector_id": {
+            "description": "ID средневзвешенного vibe-вектора группы.",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "description": "Статус поездки.",
+            "enum": [
+              "planning",
+              "active",
+              "completed",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "transport": {
+            "description": "Вид транспорта.",
+            "enum": [
+              "car",
+              "public",
+              "walk",
+              "bike"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TripMember": {
+        "description": "Участник поездки.",
+        "properties": {
+          "display_name": {
+            "description": "Отображаемое имя.",
+            "example": "Маша",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_child": {
+            "description": "Ребёнок.",
+            "type": "boolean"
+          },
+          "joined_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "role": {
+            "description": "Роль в поездке.",
+            "enum": [
+              "creator",
+              "member"
+            ],
+            "type": "string"
+          },
+          "tags": {
+            "description": "Теги предпочтений.",
+            "example": [
+              "вино",
+              "горы"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "trip_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "UUID пользователя (null для неавторизованных).",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "vibe_vector_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateLocationRequest": {
+        "description": "Запрос на обновление локации. Все поля опциональны — обновляются только переданные.",
+        "properties": {
+          "access_level": {
+            "enum": [
+              "open",
+              "semi_open",
+              "hidden"
+            ],
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "integer"
+          },
+          "category": {
+            "type": "string"
+          },
+          "child_friendly": {
+            "type": "boolean"
+          },
+          "density_level": {
+            "enum": [
+              "red",
+              "yellow",
+              "green"
+            ],
+            "type": "string"
+          },
+          "description_full": {
+            "type": "string"
+          },
+          "description_short": {
+            "type": "string"
+          },
+          "is_published": {
+            "type": "boolean"
+          },
+          "latitude": {
+            "format": "double",
+            "type": "number"
+          },
+          "longitude": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price_per_night": {
+            "type": "integer"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "UploadResponse": {
+        "description": "Ответ на запрос загрузки медиафайла в хранилище MinIO.",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadResult",
+            "description": "Данные о загруженном файле. Присутствует только при успешной загрузке (success=true)."
+          },
+          "message": {
+            "description": "Человекочитаемое описание результата операции.",
+            "example": "файл успешно загружен",
+            "type": "string"
+          },
+          "success": {
+            "description": "Флаг успешности операции. `true` -- файл загружен, `false` -- произошла ошибка.",
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success",
+          "message"
+        ],
+        "type": "object"
+      },
+      "UploadResult": {
+        "description": "Данные о загруженном файле в S3-хранилище.",
+        "properties": {
+          "bucket": {
+            "description": "Имя бакета MinIO, в который загружен файл.",
+            "example": "deepkrai-media",
+            "type": "string"
+          },
+          "object_name": {
+            "description": "Полное имя объекта в бакете MinIO, включая путь. Формат: `uploads/{unix_nano}_{original_name}`.",
+            "example": "uploads/1710873427000000_vineyard_photo.jpg",
+            "type": "string"
+          },
+          "size": {
+            "description": "Размер загруженного файла в байтах.",
+            "example": 245760,
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "url": {
+            "description": "Presigned URL для доступа к загруженному файлу. URL действителен 24 часа с момента генерации.",
+            "example": "http://localhost:9000/deepkrai-media/uploads/1710873427000000_vineyard_photo.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "object_name",
+          "bucket",
+          "size",
+          "url"
+        ],
+        "type": "object"
+      },
+      "UserProfile": {
+        "description": "Публичный профиль пользователя (без password_hash).",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "karma": {
+            "type": "integer"
+          },
+          "role": {
+            "enum": [
+              "tourist",
+              "host",
+              "b2g_admin"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "vibe_vector_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "VibeAxes": {
+        "description": "Оси vibe-профиля пользователя. Каждая ось описывает предпочтение по шкале.",
+        "properties": {
+          "culture_vs_adventure": {
+            "description": "Культура vs приключения (-1.0 to 1.0).",
+            "example": 0.3,
+            "type": "number"
+          },
+          "gastro_vs_nature": {
+            "description": "Гастрономия vs природа (-1.0 to 1.0).",
+            "example": 0.4,
+            "type": "number"
+          },
+          "relax_vs_adrenaline": {
+            "description": "Релакс vs адреналин (-1.0 to 1.0).",
+            "example": -0.3,
+            "type": "number"
+          },
+          "solitude_vs_social": {
+            "description": "Уединение vs компания (-1.0 to 1.0).",
+            "example": -0.5,
+            "type": "number"
+          },
+          "stress_level": {
+            "description": "Уровень стресса (0.0 = спокоен, 1.0 = устал).",
+            "example": 0.7,
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "VoiceProfileResponse": {
+        "description": "Результат голосового профилирования. Screenshot-ready формат для vibe passport.",
+        "properties": {
+          "axes": {
+            "$ref": "#/components/schemas/VibeAxes"
+          },
+          "extracted_tags": {
+            "description": "3-8 семантических тегов предпочтений.",
+            "example": [
+              "горы",
+              "лес",
+              "ферма",
+              "виноградник",
+              "каякинг"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "processing_time_ms": {
+            "description": "Время обработки пайплайна в миллисекундах.",
+            "example": 2012,
+            "type": "integer"
+          },
+          "transcription": {
+            "description": "Распознанный текст из аудио.",
+            "example": "Мне нравится отдыхать на природе, подальше от города.",
+            "type": "string"
+          },
+          "vector_id": {
+            "description": "ID вектора в Qdrant.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "vibe_passport_title": {
+            "description": "Заголовок vibe-паспорта для экрана.",
+            "example": "Исследователь Кубани",
+            "type": "string"
+          },
+          "vibe_summary": {
+            "description": "Краткое резюме настроения на русском.",
+            "example": "Семейный турист, предпочитающий природный отдых с элементами приключений.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "bearerFormat": "JWT",
+        "description": "JWT access-токен. Получите через POST /api/v1/auth/login.",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "КудыТуды Team"
+    },
+    "description": "REST API платформы пространственного туризма КудыТуды.\n\nКудыТуды -- PWA-платформа, соединяющая путешественников со скрытыми местами Краснодарского края через мультимодальный ИИ, 3D-визуализацию (Gaussian Splatting) и интеллектуальное построение маршрутов.\n\n## Аутентификация\n\nAPI использует JWT (JSON Web Tokens) для аутентификации.\nДля доступа к защищённым эндпоинтам передавайте access-токен в заголовке `Authorization: Bearer <token>`.\nТокены получаются через POST /api/v1/auth/login или POST /api/v1/auth/register.",
+    "license": {
+      "name": "Proprietary"
+    },
+    "title": "КудыТуды API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Возвращает базовую информацию о сервере КудыТуды API: имя сервиса, версию и текущий статус работы. Используется для быстрой проверки доступности сервера.",
+        "operationId": "getServerInfo",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "service": "КудыТуды API",
+                  "status": "running",
+                  "version": "1.0.0"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            },
+            "description": "Сервер работает и доступен для обработки запросов."
+          }
+        },
+        "summary": "Информация о сервере",
+        "tags": [
+          "Информация"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Проверяет email и пароль. При успехе возвращает пару JWT-токенов и данные профиля.",
+        "operationId": "loginUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description": "Авторизация успешна."
+          },
+          "401": {
+            "description": "Неверный email или пароль."
+          }
+        },
+        "summary": "Авторизация пользователя",
+        "tags": [
+          "Аутентификация"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "description": "Принимает refresh-токен и возвращает новую пару access + refresh токенов.",
+        "operationId": "refreshTokens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Токены обновлены."
+          },
+          "401": {
+            "description": "Невалидный или истекший refresh-токен."
+          }
+        },
+        "summary": "Обновление токенов",
+        "tags": [
+          "Аутентификация"
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "description": "Создаёт нового пользователя с ролью tourist. Пароль хэшируется через bcrypt (cost=12). Возвращает пару JWT-токенов (access + refresh) и данные профиля.",
+        "operationId": "registerUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description": "Пользователь зарегистрирован."
+          },
+          "400": {
+            "description": "Ошибка валидации (некорректный email, короткий пароль)."
+          },
+          "409": {
+            "description": "Пользователь с таким email уже существует."
+          }
+        },
+        "summary": "Регистрация нового пользователя",
+        "tags": [
+          "Аутентификация"
+        ]
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "description": "Выполняет асинхронный пинг всех 6 баз данных (PostgreSQL, Redis, Qdrant, Neo4j, ClickHouse, MinIO) и возвращает детальный отчёт о состоянии каждого сервиса.\n\nКаждая проверка выполняется в отдельной горутине с таймаутом 5 секунд. Результат включает статус сервиса (\"up\" или \"down\"), время отклика в миллисекундах и описание ошибки при недоступности.\n\n**Общий статус системы:**\n- `healthy` -- все 6 сервисов доступны и отвечают в пределах таймаута.\n- `degraded` -- хотя бы один сервис недоступен или не отвечает.\n\n**HTTP статус-коды:**\n- `200 OK` -- все сервисы здоровы.\n- `503 Service Unavailable` -- есть недоступные сервисы.\n\nПредназначен для использования в системах мониторинга (Prometheus, Grafana), балансировщиках нагрузки (health check) и Kubernetes liveness/readiness probes.",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "services": {
+                    "clickhouse": {
+                      "latency_ms": 2,
+                      "status": "up"
+                    },
+                    "minio": {
+                      "latency_ms": 1,
+                      "status": "up"
+                    },
+                    "neo4j": {
+                      "latency_ms": 5,
+                      "status": "up"
+                    },
+                    "postgres": {
+                      "latency_ms": 2,
+                      "status": "up"
+                    },
+                    "qdrant": {
+                      "latency_ms": 3,
+                      "status": "up"
+                    },
+                    "redis": {
+                      "latency_ms": 1,
+                      "status": "up"
+                    }
+                  },
+                  "status": "healthy",
+                  "timestamp": "2026-03-19T20:37:07Z"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Все сервисы работают корректно. Каждый из 6 сервисов баз данных доступен и отвечает на пинг-запросы."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "services": {
+                    "clickhouse": {
+                      "latency_ms": 2,
+                      "status": "up"
+                    },
+                    "minio": {
+                      "latency_ms": 1,
+                      "status": "up"
+                    },
+                    "neo4j": {
+                      "error": "connection reset by peer",
+                      "latency_ms": 0,
+                      "status": "down"
+                    },
+                    "postgres": {
+                      "latency_ms": 2,
+                      "status": "up"
+                    },
+                    "qdrant": {
+                      "latency_ms": 3,
+                      "status": "up"
+                    },
+                    "redis": {
+                      "error": "dial tcp 127.0.0.1:6379: connect: connection refused",
+                      "latency_ms": 0,
+                      "status": "down"
+                    }
+                  },
+                  "status": "degraded",
+                  "timestamp": "2026-03-19T20:37:07Z"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Один или несколько сервисов недоступны. Система работает в деградированном режиме -- часть функциональности может быть ограничена."
+          }
+        },
+        "summary": "Проверка здоровья всех сервисов",
+        "tags": [
+          "Мониторинг"
+        ]
+      }
+    },
+    "/api/v1/locations": {
+      "get": {
+        "description": "Выполняет пространственный поиск локаций с поддержкой PostGIS. Поддерживает поиск по радиусу (ST_DWithin), по bounding box (ST_Within + ST_MakeEnvelope), фильтрацию по категории, child_friendly, density_level. Результаты пагинируются.",
+        "operationId": "searchLocations",
+        "parameters": [
+          {
+            "description": "Широта центра поиска (для радиуса). Используется с lon и radius_km.",
+            "example": 45.03,
+            "in": "query",
+            "name": "lat",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Долгота центра поиска (для радиуса). Используется с lat и radius_km.",
+            "example": 38.97,
+            "in": "query",
+            "name": "lon",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Радиус поиска в километрах. Требует lat и lon.",
+            "example": 50,
+            "in": "query",
+            "name": "radius_km",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Минимальная широта bbox. Используется с max_lat, min_lon, max_lon.",
+            "example": 43.5,
+            "in": "query",
+            "name": "min_lat",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Максимальная широта bbox.",
+            "example": 46,
+            "in": "query",
+            "name": "max_lat",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Минимальная долгота bbox.",
+            "example": 36.5,
+            "in": "query",
+            "name": "min_lon",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Максимальная долгота bbox.",
+            "example": 41,
+            "in": "query",
+            "name": "max_lon",
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "description": "Фильтр по категории (свободный текст: winery, farm, trail, gastro, nature, camping, resort, extreme, cultural, beach и др.).",
+            "example": "winery",
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Фильтр по пригодности для детей.",
+            "example": true,
+            "in": "query",
+            "name": "child_friendly",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Фильтр по уровню туристической плотности. red — высокая, yellow — сезонная, green — Hidden Gem.",
+            "example": "green",
+            "in": "query",
+            "name": "density_level",
+            "schema": {
+              "enum": [
+                "red",
+                "yellow",
+                "green"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Номер страницы (начиная с 1).",
+            "example": 1,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Количество записей на странице (макс. 100).",
+            "example": 20,
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LocationListResponse"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список локаций с пагинацией."
+          },
+          "500": {
+            "description": "Внутренняя ошибка сервера."
+          }
+        },
+        "summary": "Поиск локаций с пространственными фильтрами",
+        "tags": [
+          "Локации"
+        ]
+      },
+      "post": {
+        "description": "Создаёт новую туристическую локацию. Доступно только пользователям с ролью host или b2g_admin. Автоматически генерирует slug из названия (транслитерация кириллицы).",
+        "operationId": "createLocation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Location"
+                    },
+                    "message": {
+                      "example": "локация успешно создана",
+                      "type": "string"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Локация создана."
+          },
+          "400": {
+            "description": "Ошибка валидации (пустое имя, координаты вне диапазона)."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Недостаточно прав (требуется роль host или b2g_admin)."
+          },
+          "409": {
+            "description": "Локация с таким slug уже существует."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Создание новой локации",
+        "tags": [
+          "Локации"
+        ]
+      }
+    },
+    "/api/v1/locations/{id}": {
+      "delete": {
+        "description": "Удаляет локацию. Доступно только владельцу (owner_id).",
+        "operationId": "deleteLocation",
+        "parameters": [
+          {
+            "description": "UUID локации.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Локация удалена."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Нет прав на удаление этой локации (не владелец)."
+          },
+          "404": {
+            "description": "Локация не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Удаление локации",
+        "tags": [
+          "Локации"
+        ]
+      },
+      "get": {
+        "description": "Возвращает полные данные локации по UUID. Публичный эндпоинт, не требует авторизации.",
+        "operationId": "getLocationByID",
+        "parameters": [
+          {
+            "description": "UUID локации.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Location"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Данные локации."
+          },
+          "404": {
+            "description": "Локация не найдена."
+          }
+        },
+        "summary": "Получение локации по ID",
+        "tags": [
+          "Локации"
+        ]
+      },
+      "put": {
+        "description": "Обновляет данные локации. Доступно только владельцу (owner_id). Все поля опциональны — обновляются только переданные.",
+        "operationId": "updateLocation",
+        "parameters": [
+          {
+            "description": "UUID локации.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Location"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Локация обновлена."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Нет прав на изменение этой локации (не владелец)."
+          },
+          "404": {
+            "description": "Локация не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Обновление локации",
+        "tags": [
+          "Локации"
+        ]
+      }
+    },
+    "/api/v1/map/locations": {
+      "get": {
+        "description": "Возвращает локации для отображения на интерактивной карте. Поддерживает фильтрацию по bounding box (min_lat, max_lat, min_lon, max_lon) через PostGIS ST_Within.\n\nВсе координаты в формате WGS84 (EPSG:4326). По умолчанию возвращает до 100 локаций.",
+        "operationId": "getMapLocations",
+        "parameters": [
+          {
+            "description": "Минимальная широта bounding box.",
+            "example": 43.5,
+            "in": "query",
+            "name": "min_lat",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "description": "Максимальная широта bounding box.",
+            "example": 45.5,
+            "in": "query",
+            "name": "max_lat",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "description": "Минимальная долгота bounding box.",
+            "example": 36.5,
+            "in": "query",
+            "name": "min_lon",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "description": "Максимальная долгота bounding box.",
+            "example": 41,
+            "in": "query",
+            "name": "max_lon",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "description": "Фильтр по категории.",
+            "example": "winery",
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Максимальное количество точек.",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 100,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "points": {
+                          "items": {
+                            "$ref": "#/components/schemas/MapPoint"
+                          },
+                          "type": "array"
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Массив точек для карты."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Локации для карты",
+        "tags": [
+          "Карта"
+        ]
+      }
+    },
+    "/api/v1/media/upload": {
+      "post": {
+        "description": "Загружает медиафайл в S3-совместимое хранилище MinIO.\n\nФайл передаётся через multipart/form-data в поле `file`. Перед загрузкой выполняется валидация:\n\n1. **Наличие файла** -- поле `file` обязательно.\n2. **Размер** -- максимум 100 МБ (104 857 600 байт).\n3. **MIME-тип** -- разрешены только определённые типы файлов.\n\n**Разрешённые MIME-типы:**\n- Изображения: `image/jpeg`, `image/png`, `image/gif`, `image/webp`\n- Видео: `video/mp4`, `video/webm`, `video/quicktime`\n- Аудио: `audio/mpeg`, `audio/mp3`, `audio/ogg`, `audio/webm`, `audio/wav`\n- Бинарные: `application/octet-stream` (для .splat и других 3D-файлов)\n\nПосле успешной загрузки генерируется уникальное имя объекта в формате `uploads/{unix_nano}_{original_name}` и создаётся presigned URL с временем жизни 24 часа для доступа к файлу.\n\n**Примеры использования:**\n- Загрузка фото локации фермером при онбординге.\n- Загрузка видео для генерации 3D-слепка (Gaussian Splatting).\n- Загрузка готового .splat файла.\n- Загрузка аудио-истории для POI.",
+        "operationId": "uploadMedia",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "description": "Загружаемый файл. Максимальный размер -- 100 МБ. Допустимые форматы: JPEG, PNG, GIF, WebP, MP4, WebM, MOV, MP3, OGG, WAV, бинарные файлы (.splat).",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "Multipart-форма с загружаемым файлом. Поле `file` является обязательным.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "bucket": "deepkrai-media",
+                    "object_name": "uploads/1710873427000000_vineyard_photo.jpg",
+                    "size": 245760,
+                    "url": "http://localhost:9000/deepkrai-media/uploads/1710873427000000_vineyard_photo.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&..."
+                  },
+                  "message": "файл успешно загружен",
+                  "success": true
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            },
+            "description": "Файл успешно загружен в хранилище. Ответ содержит имя объекта, бакет, размер и временный публичный URL для доступа (действителен 24 часа)."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "file_missing": {
+                    "description": "В запросе отсутствует поле `file` с загружаемым файлом.",
+                    "summary": "Файл не найден",
+                    "value": {
+                      "message": "файл не найден в запросе, используйте поле 'file'",
+                      "success": false
+                    }
+                  },
+                  "file_too_large": {
+                    "description": "Размер файла превышает максимально допустимый размер в 100 МБ.",
+                    "summary": "Файл слишком большой",
+                    "value": {
+                      "message": "размер файла (157286400 байт) превышает максимально допустимый (104857600 байт)",
+                      "success": false
+                    }
+                  },
+                  "invalid_mime": {
+                    "description": "MIME-тип файла не входит в список разрешённых типов.",
+                    "summary": "Неподдерживаемый тип",
+                    "value": {
+                      "message": "неподдерживаемый тип файла: text/html",
+                      "success": false
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации запроса. Возможные причины:\n- Файл отсутствует в запросе (поле `file` не найдено).\n- Размер файла превышает 100 МБ.\n- MIME-тип файла не входит в список разрешённых."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "ошибка загрузки файла в хранилище",
+                  "success": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера при загрузке файла. Возможные причины: MinIO недоступен, ошибка записи, нехватка места."
+          }
+        },
+        "summary": "Загрузка медиафайла",
+        "tags": [
+          "Медиа"
+        ]
+      }
+    },
+    "/api/v1/profile/finalize": {
+      "post": {
+        "description": "Берёт vibe-вектор пользователя из Qdrant и ищет Top-N ближайших локаций по cosine similarity. При отсутствии вектора возвращает curated demo набор (is_curated=true). Тело запроса опционально.",
+        "operationId": "finalizeProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizeRequest"
+              }
+            }
+          },
+          "description": "Опциональные параметры финализации.",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/FinalizeResponse"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Top-N рекомендаций с обогащёнными данными."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Финализация профиля и получение рекомендаций",
+        "tags": [
+          "Профилирование"
+        ]
+      }
+    },
+    "/api/v1/profile/me": {
+      "get": {
+        "description": "Возвращает данные авторизованного пользователя (без хэша пароля). Требует JWT access-токен.",
+        "operationId": "getProfile",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfile"
+                }
+              }
+            },
+            "description": "Данные профиля."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Профиль текущего пользователя",
+        "tags": [
+          "Профиль"
+        ]
+      },
+      "put": {
+        "description": "Обновляет display_name текущего авторизованного пользователя. Требует JWT access-токен.",
+        "operationId": "updateProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "display_name": {
+                    "description": "Новое отображаемое имя пользователя.",
+                    "example": "Иван Путешественник",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "display_name"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfile"
+                }
+              }
+            },
+            "description": "Профиль обновлён."
+          },
+          "400": {
+            "description": "Некорректный запрос."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Обновление профиля",
+        "tags": [
+          "Профиль"
+        ]
+      }
+    },
+    "/api/v1/profile/scenes": {
+      "get": {
+        "description": "Возвращает все сцены свайп-анкеты, отсортированные по display_order.",
+        "operationId": "getSwipeScenes",
+        "responses": {
+          "200": {
+            "description": "Массив сцен с id, title, description, image_url, display_order."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Список сцен для свайпа",
+        "tags": [
+          "Профилирование"
+        ]
+      }
+    },
+    "/api/v1/profile/swipe": {
+      "post": {
+        "description": "Сдвигает vibe-вектор пользователя к (right) или от (left) вектора сцены. Формула: new = normalize(0.85*user ± 0.15*scene).",
+        "operationId": "swipeScene",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SwipeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Вектор обновлён."
+          },
+          "400": {
+            "description": "Невалидный scene_id или direction."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Свайп сцены",
+        "tags": [
+          "Профилирование"
+        ]
+      }
+    },
+    "/api/v1/profile/voice": {
+      "post": {
+        "description": "Загрузка аудиозаписи для построения vibe-профиля. Пайплайн: Vosk STT -> LLM (оси) -> Embeddings (3072d) -> Qdrant upsert.\n\nВозвращает screenshot-ready vibe passport: вложенные оси, заголовок паспорта, теги и время обработки.\n\nВ mock-режиме (AI_API_KEY пуст) ответ детерминированный с controlled latency 2 секунды.",
+        "operationId": "voiceProfile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "audio": {
+                    "description": "Аудиофайл (mp3, wav, webm, ogg).",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "audio"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/VoiceProfileResponse"
+                    },
+                    "success": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Профиль создан. Возвращает vibe passport с осями, тегами, summary, заголовком и vector_id."
+          },
+          "400": {
+            "description": "Аудиофайл не передан."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "500": {
+            "description": "Аудио не распознано, ошибка STT/LLM/Embeddings."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Голосовое профилирование",
+        "tags": [
+          "Профилирование"
+        ]
+      }
+    },
+    "/api/v1/route/build": {
+      "post": {
+        "description": "Строит маршрут через указанные локации с расчётом расстояния (Haversine) и предполагаемого времени в пути.\n\nDemo-режим: используются прямые расстояния и настраиваемые скорости по типу транспорта. Полная маршрутизация через Neo4j запланирована в будущих фазах.",
+        "operationId": "buildRoute",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuildRouteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/RoutePreview"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Маршрут построен."
+          },
+          "400": {
+            "description": "Менее 2 location_ids или невалидные UUID."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Построение маршрута",
+        "tags": [
+          "Маршруты"
+        ]
+      }
+    },
+    "/api/v1/trips": {
+      "post": {
+        "description": "Создаёт новую поездку с датами, бюджетом, транспортом и составом группы. Создатель автоматически добавляется как первый участник с ролью creator. Генерируется invite_token для приглашения участников.",
+        "operationId": "createTrip",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTripRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Поездка создана. Возвращает объект поездки с invite_token и списком участников."
+          },
+          "400": {
+            "description": "Ошибка валидации (некорректные даты, бюджет, транспорт)."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Создание поездки",
+        "tags": [
+          "Поездки"
+        ]
+      }
+    },
+    "/api/v1/trips/{id}": {
+      "get": {
+        "description": "Возвращает полную информацию о поездке со списком всех участников.",
+        "operationId": "getTripByID",
+        "parameters": [
+          {
+            "description": "UUID поездки.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Объект поездки с участниками."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "404": {
+            "description": "Поездка не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Детали поездки",
+        "tags": [
+          "Поездки"
+        ]
+      }
+    },
+    "/api/v1/trips/{id}/invite": {
+      "post": {
+        "description": "Генерирует новый invite-токен для поездки. Старый токен становится недействительным. Доступно только создателю поездки.",
+        "operationId": "generateTripInvite",
+        "parameters": [
+          {
+            "description": "UUID поездки.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Новый invite-токен и ссылка для приглашения."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Нет прав (не создатель поездки)."
+          },
+          "404": {
+            "description": "Поездка не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Генерация invite-токена",
+        "tags": [
+          "Поездки"
+        ]
+      }
+    },
+    "/api/v1/trips/{id}/join": {
+      "post": {
+        "description": "Присоединяет участника к поездке по invite-токену. Эндпоинт доступен БЕЗ авторизации — неавторизованные пользователи передают display_name и теги напрямую. Проверяет валидность токена и ограничение group_size.",
+        "operationId": "joinTrip",
+        "parameters": [
+          {
+            "description": "UUID поездки.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinTripRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Участник присоединился. Возвращает объект TripMember."
+          },
+          "400": {
+            "description": "Ошибка валидации или неверный invite-токен."
+          },
+          "404": {
+            "description": "Поездка не найдена."
+          },
+          "409": {
+            "description": "Превышен лимит участников или пользователь уже участвует."
+          }
+        },
+        "summary": "Присоединение к поездке",
+        "tags": [
+          "Поездки"
+        ]
+      }
+    },
+    "/api/v1/trips/{id}/members": {
+      "get": {
+        "description": "Возвращает всех участников поездки, отсортированных по дате присоединения.",
+        "operationId": "listTripMembers",
+        "parameters": [
+          {
+            "description": "UUID поездки.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Массив участников поездки."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "404": {
+            "description": "Поездка не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Список участников поездки",
+        "tags": [
+          "Поездки"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Текущий сервер",
+      "url": "http://141.98.7.225:8180"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Эндпоинты для проверки состояния системы и здоровья сервисов. Используются для мониторинга, алертинга и проверки работоспособности инфраструктуры (liveness/readiness probes).",
+      "name": "Мониторинг"
+    },
+    {
+      "description": "Эндпоинты для работы с медиафайлами: загрузка изображений, видео, аудио и 3D-файлов (.splat) в S3-совместимое хранилище MinIO. Поддерживается multipart/form-data загрузка с валидацией MIME-типов и ограничением размера.",
+      "name": "Медиа"
+    },
+    {
+      "description": "Общая информация о сервере и API.",
+      "name": "Информация"
+    },
+    {
+      "description": "Регистрация, авторизация и обновление JWT-токенов. Публичные эндпоинты, не требующие авторизации.",
+      "name": "Аутентификация"
+    },
+    {
+      "description": "Управление профилем текущего авторизованного пользователя. Все эндпоинты требуют JWT-аутентификации.",
+      "name": "Профиль"
+    },
+    {
+      "description": "CRUD-операции для туристических локаций с пространственными запросами PostGIS. Поддерживает поиск по радиусу (ST_DWithin), по bounding box (ST_Within), фильтрацию по категории, child_friendly и density_level.",
+      "name": "Локации"
+    },
+    {
+      "description": "Модуль планирования поездок с механикой invite-ссылок для групп. Создание поездки, присоединение участников, генерация invite-токенов, Group Vibe Merge.",
+      "name": "Поездки"
+    },
+    {
+      "description": "Мультимодальный пайплайн профилирования туриста. Голосовой ввод (Vosk STT), извлечение осей предпочтений (LLM), генерация vibe-вектора (Embeddings), свайп-анкета, vibe passport и поиск рекомендаций.",
+      "name": "Профилирование"
+    },
+    {
+      "description": "Эндпоинты для работы с интерактивной картой Краснодарского края. Пространственный поиск локаций по bounding box через PostGIS.",
+      "name": "Карта"
+    },
+    {
+      "description": "Построение маршрутов между локациями с расчётом расстояния (Haversine) и времени в пути. Demo-режим без внешних API.",
+      "name": "Маршруты"
+    }
+  ]
+}

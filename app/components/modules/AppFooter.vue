@@ -2,10 +2,10 @@
 const year = new Date().getFullYear();
 
 const links = [
-  { label: 'Маршруты', href: '#routes' },
-  { label: 'Локации', href: '#locations' },
-  { label: 'О проекте', href: '#about' },
-  { label: 'Для владельцев', href: '/host' },
+  { label: 'Начать', href: '/start' },
+  { label: 'Локации', href: '/dashboard/locations' },
+  { label: 'Для хостов', href: '/host' },
+  { label: 'Войти', href: '/auth/login' },
 ] as const;
 </script>
 
@@ -22,14 +22,14 @@ const links = [
 
         <div class="flex flex-col gap-2">
           <span class="font-body font-bold text-[0.6rem] tracking-[0.12em] uppercase text-accent mb-1">Навигация</span>
-          <a
+          <NuxtLink
             v-for="l in links"
             :key="l.label"
-            :href="l.href"
+            :to="l.href"
             class="font-body font-light text-cream/50 text-[0.82rem] no-underline hover:text-cream transition-colors duration-200"
           >
             {{ l.label }}
-          </a>
+          </NuxtLink>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -42,7 +42,9 @@ const links = [
       </div>
 
       <div class="h-px bg-cream/10 mb-5"></div>
-      <p class="font-body font-light text-cream/25 text-[0.72rem] text-center">© {{ year }} КудыТуды. Все права защищены.</p>
+      <p class="font-body font-light text-cream/25 text-[0.72rem] text-center">
+        &copy; {{ year }} КудыТуды. Все права защищены.
+      </p>
     </div>
   </footer>
 </template>

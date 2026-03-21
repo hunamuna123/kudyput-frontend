@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
   <section class="relative min-h-screen flex flex-col justify-center overflow-hidden">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/10 -top-20 right-[5%] blur-[120px] pointer-events-none animate-pulse"></div>
@@ -29,12 +26,12 @@
           </p>
 
           <div class="flex gap-3 flex-wrap justify-center lg:justify-start">
-            <button class="font-body font-bold text-[0.85rem] text-white bg-accent border-2 border-accent rounded-full px-7 py-3 cursor-pointer transition-all duration-300 shadow-[0_6px_28px_rgba(164,190,79,0.3)] hover:bg-accent-dark hover:border-accent-dark hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(164,190,79,0.4)]">
+            <NuxtLink to="/start" class="font-body font-bold text-[0.85rem] text-white bg-accent border-2 border-accent rounded-full px-7 py-3 cursor-pointer transition-all duration-300 shadow-[0_6px_28px_rgba(164,190,79,0.3)] hover:bg-accent-dark hover:border-accent-dark hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(164,190,79,0.4)] no-underline">
               Начать путешествие
-            </button>
-            <button class="font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5">
+            </NuxtLink>
+            <a href="#about" class="font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5 no-underline">
               Узнать больше
-            </button>
+            </a>
           </div>
         </div>
 
