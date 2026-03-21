@@ -71,7 +71,7 @@ onMounted(async () => {
       <div v-else-if="locationsStore.error" class="flex flex-col items-center gap-4 py-20">
         <span class="text-4xl">😔</span>
         <p class="font-body text-red-600 text-[0.88rem]">{{ locationsStore.error }}</p>
-        <NuxtLink to="/dashboard/locations" class="font-body font-bold text-accent-dark no-underline hover:text-accent">
+        <NuxtLink to="/map" class="font-body font-bold text-accent-dark no-underline hover:text-accent">
           Вернуться к списку
         </NuxtLink>
       </div>

@@ -7,11 +7,10 @@ const route = useRoute();
 
 const pageTitle = computed(() => {
   const titles: Record<string, string> = {
-    "/dashboard": "Обзор",
-    "/dashboard/locations": "Локации",
-    "/dashboard/route": "Маршрут",
-    "/dashboard/trips": "Поездки",
-    "/dashboard/profile": "Профиль",
+    "/admin": "Обзор",
+    "/admin/locations": "Локации",
+    "/profile": "Профиль",
+    "/profile/trips": "Поездки",
   };
   return titles[route.path] || "Панель";
 });

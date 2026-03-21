@@ -65,7 +65,7 @@ const locations: Location[] = [
 
       <div class="text-left mt-10">
         <NuxtLink
-          to="/dashboard/locations"
+          to="/map"
           class="inline-block font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 no-underline"
         >
           Смотреть все локации

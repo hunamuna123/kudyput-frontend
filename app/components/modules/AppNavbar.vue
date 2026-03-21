@@ -7,7 +7,7 @@ const authStore = useAuthStore();
 const navItems = [
   { label: 'Начать', to: '/start' },
   { label: 'Карта', to: '/map' },
-  { label: 'Локации', to: '/dashboard/locations' },
+  { label: 'Локации', to: '/map' },
   { label: 'Для Бизнесменов', to: '/host' },
 ] as const;
 
@@ -56,7 +56,7 @@ onUnmounted(() => {
 
       <template v-if="authStore.isAuthenticated">
         <NuxtLink
-          to="/dashboard/profile"
+          to="/profile"
           class="hidden md:flex items-center gap-1.5 font-body font-bold text-[0.76rem] text-primary bg-accent/15 border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-all duration-250 hover:bg-accent/25 no-underline"
         >
           <User class="w-3.5 h-3.5 text-accent-dark" />
@@ -99,7 +99,7 @@ onUnmounted(() => {
 
         <template v-if="authStore.isAuthenticated">
           <NuxtLink
-            to="/dashboard/profile"
+            to="/profile"
             class="mt-1.5 w-full font-body font-bold text-[0.78rem] text-primary bg-accent/15 rounded-full py-2 border-none text-center no-underline block"
             @click="mobileOpen = false"
           >

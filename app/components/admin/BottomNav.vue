@@ -10,11 +10,10 @@ interface NavTab {
 }
 
 const tabs: NavTab[] = [
-  { label: "Обзор", icon: Home, to: "/dashboard" },
+  { label: "Обзор", icon: Home, to: "/admin" },
   { label: "Карта", icon: Globe, to: "/map" },
-  { label: "Маршрут", icon: Navigation, to: "/dashboard/route" },
-  { label: "Поездки", icon: Car, to: "/dashboard/trips" },
-  { label: "Профиль", icon: User, to: "/dashboard/profile" },
+  { label: "Поездки", icon: Car, to: "/profile/trips" },
+  { label: "Профиль", icon: User, to: "/profile" },
 ];
 </script>
 

@@ -19,7 +19,7 @@ const tabs: NavTab[] = [
   { label: "Главная", icon: Home, to: "/" },
   { label: "Начать", icon: Sparkles, to: "/start" },
   { label: "Карта", icon: Map, to: "/map" },
-  { label: "Профиль", icon: User, to: "/dashboard/profile" },
+  { label: "Профиль", icon: User, to: "/profile" },
 ];
 
 const isLanding = computed(() => route.path === "/");

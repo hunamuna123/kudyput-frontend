@@ -3,7 +3,7 @@ const year = new Date().getFullYear();
 
 const links = [
   { label: 'Начать', href: '/start' },
-  { label: 'Локации', href: '/dashboard/locations' },
+  { label: 'Локации', href: '/map' },
   { label: 'Для Бизнесменов', href: '/host' },
   { label: 'Войти', href: '/auth/login' },
 ] as const;

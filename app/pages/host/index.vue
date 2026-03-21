@@ -166,7 +166,7 @@ onMounted(() => {
         </UiButton>
 
         <p class="mt-4 text-center">
-          <NuxtLink to="/dashboard" class="font-body text-[0.78rem] text-primary-light no-underline hover:text-primary">
+          <NuxtLink to="/host/dashboard" class="font-body text-[0.78rem] text-primary-light no-underline hover:text-primary">
             Пропустить →
           </NuxtLink>
         </p>
@@ -278,7 +278,7 @@ onMounted(() => {
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <NuxtLink
-            to="/dashboard/locations"
+            to="/host/dashboard"
             class="font-body font-bold text-[0.88rem] text-white bg-accent rounded-2xl px-6 py-3.5 no-underline hover:bg-accent-dark transition-colors inline-flex items-center justify-center gap-2"
           >
             Мои локации

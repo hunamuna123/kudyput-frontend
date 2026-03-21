@@ -144,7 +144,7 @@ async function handleCreate() {
 
         <div class="flex flex-col sm:flex-row gap-3 w-full">
           <NuxtLink
-            to="/dashboard/trips"
+            to="/profile/trips"
             class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-white bg-accent rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg"
           >
             Мои поездки

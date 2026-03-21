@@ -85,7 +85,7 @@ onMounted(() => {
         <h2 class="font-heading text-primary text-[1.3rem]">Вы в команде!</h2>
         <p class="font-body font-light text-primary-light text-[0.85rem] max-w-xs">Теперь ваши предпочтения будут учтены при построении маршрута.</p>
         <NuxtLink
-          to="/dashboard"
+          to="/profile/trips"
           class="mt-2 font-body font-bold text-[0.85rem] text-white bg-accent rounded-2xl px-6 py-3 no-underline hover:bg-accent-dark transition-colors"
         >
           В панель управления
