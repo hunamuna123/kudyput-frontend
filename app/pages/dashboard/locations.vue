@@ -79,7 +79,7 @@ onMounted(() => {
       <div class="flex flex-col gap-1 min-w-[180px] flex-1 max-w-[260px]">
         <label class="font-body text-[0.72rem] font-bold text-primary-light">Категория</label>
         <UiSelect v-model="categoryFilter">
-          <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
+          <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
             <UiSelectValue placeholder="Все категории" />
           </UiSelectTrigger>
           <UiSelectContent class="rounded-2xl">
@@ -92,7 +92,7 @@ onMounted(() => {
       <div class="flex flex-col gap-1 min-w-[180px] flex-1 max-w-[260px]">
         <label class="font-body text-[0.72rem] font-bold text-primary-light">Плотность</label>
         <UiSelect v-model="densityFilter">
-          <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
+          <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
             <UiSelectValue placeholder="Любая" />
           </UiSelectTrigger>
           <UiSelectContent class="rounded-2xl">
@@ -140,7 +140,7 @@ onMounted(() => {
         v-for="loc in locationsStore.locations"
         :key="loc.id"
         :to="`/location/${loc.id}`"
-        class="flex flex-col gap-3 p-6 bg-cream/35 border border-cream/50 rounded-3xl transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(40,90,113,0.06)] no-underline"
+        class="flex flex-col gap-3 p-6 bg-white/35 border border-accent/40 rounded-3xl transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(40,90,113,0.06)] no-underline"
       >
         <div class="flex items-start justify-between gap-2">
           <h3 class="font-heading text-[1rem] text-primary leading-snug">{{ loc.name }}</h3>

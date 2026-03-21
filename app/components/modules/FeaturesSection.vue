@@ -27,7 +27,7 @@ const features: Feature[] = [
 <template>
   <section id="about" class="py-24 md:py-32">
     <div class="container">
-      <div class="text-center mb-14">
+      <div class="text-left mb-14">
         <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-4">
           Как это работает
         </span>
@@ -40,7 +40,7 @@ const features: Feature[] = [
         <article
           v-for="(f, i) in features"
           :key="i"
-          class="group bg-cream/40 border border-cream/50 rounded-3xl p-8 md:p-10 text-center transition-all duration-350 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/20 hover:bg-cream/60"
+          class="group bg-white/40 border border-accent/40 rounded-3xl p-8 md:p-10 text-left transition-all duration-350 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/20 hover:bg-white/60"
         >
           <span class="text-3xl block mb-5">{{ f.icon }}</span>
           <span class="font-body font-bold text-[0.6rem] tracking-[0.14em] uppercase text-accent-dark block mb-2">

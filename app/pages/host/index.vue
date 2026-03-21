@@ -4,7 +4,7 @@ import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 
 useHead({
-  title: "Хост — Онбординг — КудыТуды",
+  title: "Бизнесмен — Онбординг — КудыТуды",
 });
 
 const authStore = useAuthStore();
@@ -103,17 +103,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-4 pt-8 pb-16">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] right-[5%] blur-[120px] pointer-events-none"></div>
     <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 bottom-[-80px] left-[8%] blur-[100px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-xl w-full">
-      <NuxtLink to="/" class="font-body font-bold text-[1.2rem] text-primary no-underline mb-6 block text-center hover:text-accent transition-colors">
+      <NuxtLink to="/" class="font-body font-bold text-[1.1rem] text-primary no-underline mb-4 block text-center hover:text-accent transition-colors">
         КудыТуды
       </NuxtLink>
 
 
-      <div class="flex justify-center gap-2 mb-8">
+      <div class="flex justify-center gap-2 mb-6">
         <div
           v-for="s in 3"
           :key="s"
@@ -123,9 +123,9 @@ onMounted(() => {
       </div>
 
 
-      <div v-if="step === 1" class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10">
-        <div class="text-center mb-6">
-          <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-3">
+      <div v-if="step === 1" class="bg-white/50 border border-accent/40 rounded-3xl p-6 md:p-8">
+        <div class="text-center mb-4">
+          <span class="inline-block font-body font-bold text-[0.62rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-2">
             Шаг 1 из 3
           </span>
           <h1 class="font-heading text-primary" style="font-size: clamp(1.2rem, 3vw, 1.6rem);">
@@ -137,7 +137,7 @@ onMounted(() => {
         </div>
 
 
-        <label class="flex flex-col items-center gap-4 p-10 border-2 border-dashed border-primary/15 rounded-3xl cursor-pointer hover:border-accent/40 transition-colors mb-4">
+        <label class="flex flex-col items-center gap-3 p-8 border-2 border-dashed rounded-3xl cursor-pointer hover:border-accent/40 transition-colors mb-3">
           <div class="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
             <Camera class="w-7 h-7 text-accent-dark" />
           </div>
@@ -173,9 +173,9 @@ onMounted(() => {
       </div>
 
 
-      <div v-else-if="step === 2" class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10">
-        <div class="text-center mb-6">
-          <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-3">
+      <div v-else-if="step === 2" class="bg-white/50 border border-accent/40 rounded-3xl p-6 md:p-8">
+        <div class="text-center mb-4">
+          <span class="inline-block font-body font-bold text-[0.62rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-2">
             Шаг 2 из 3
           </span>
           <h1 class="font-heading text-primary" style="font-size: clamp(1.2rem, 3vw, 1.6rem);">
@@ -183,16 +183,16 @@ onMounted(() => {
           </h1>
         </div>
 
-        <form class="flex flex-col gap-4" @submit.prevent="handleCreateLocation">
+        <form class="flex flex-col gap-3" @submit.prevent="handleCreateLocation">
           <div class="flex flex-col gap-1.5">
             <label class="font-body text-[0.78rem] font-bold text-primary">Название</label>
-            <UiInput v-model="form.name" placeholder="Ферма дядя Гурам" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
+            <UiInput v-model="form.name" placeholder="Ферма дядя Гурам" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent" />
           </div>
 
           <div class="flex flex-col gap-1.5">
             <label class="font-body text-[0.78rem] font-bold text-primary">Категория</label>
             <UiSelect v-model="form.category">
-              <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
+              <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
                 <UiSelectValue placeholder="Выберите" />
               </UiSelectTrigger>
               <UiSelectContent class="rounded-2xl">
@@ -205,22 +205,22 @@ onMounted(() => {
 
           <div class="flex flex-col gap-1.5">
             <label class="font-body text-[0.78rem] font-bold text-primary">Краткое описание</label>
-            <UiInput v-model="form.description_short" placeholder="Горная ферма с козами и домашним вином" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
+            <UiInput v-model="form.description_short" placeholder="Горная ферма с козами и домашним вином" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent" />
           </div>
 
           <div class="flex flex-col gap-1.5">
             <label class="font-body text-[0.78rem] font-bold text-primary">Адрес</label>
-            <UiInput v-model="form.address" placeholder="с. Дивноморское, ул. Горная 15" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
+            <UiInput v-model="form.address" placeholder="с. Дивноморское, ул. Горная 15" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent" />
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div class="flex flex-col gap-1.5">
               <label class="font-body text-[0.78rem] font-bold text-primary">Цена ₽/ночь</label>
-              <UiInput v-model.number="form.price_per_night" type="number" min="0" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
+              <UiInput v-model.number="form.price_per_night" type="number" min="0" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent" />
             </div>
             <div class="flex flex-col gap-1.5">
               <label class="font-body text-[0.78rem] font-bold text-primary">Вместимость</label>
-              <UiInput v-model.number="form.capacity" type="number" min="1" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
+              <UiInput v-model.number="form.capacity" type="number" min="1" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent" />
             </div>
           </div>
 
@@ -231,7 +231,7 @@ onMounted(() => {
               <UiInput
                 v-model="tagInput"
                 placeholder="Введите тег"
-                class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent flex-1"
+                class="rounded-2xl px-4 py-3 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent flex-1"
                 @keydown.enter.prevent="addTag"
               />
               <UiButton type="button" variant="outline" class="rounded-2xl shrink-0" @click="addTag">
@@ -268,7 +268,7 @@ onMounted(() => {
       </div>
 
 
-      <div v-else class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10 text-center">
+      <div v-else class="bg-white/50 border border-accent/40 rounded-3xl p-6 md:p-8 text-center">
         <div class="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4">
           <Check class="w-10 h-10 text-accent-dark" />
         </div>
@@ -285,7 +285,7 @@ onMounted(() => {
             <ArrowRight class="w-4 h-4" />
           </NuxtLink>
           <button
-            class="font-body font-bold text-[0.85rem] text-primary border-2 border-primary/20 rounded-2xl px-6 py-3.5 bg-transparent cursor-pointer hover:bg-primary hover:text-cream transition-all"
+            class="font-body font-bold text-[0.85rem] text-primary border-2 border-primary/20 rounded-2xl px-6 py-3.5 bg-transparent cursor-pointer hover:bg-primary hover:text-white transition-all"
             @click="step = 1; mediaFile = null"
           >
             Добавить ещё

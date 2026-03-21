@@ -77,47 +77,47 @@ onMounted(fetchData);
 <template>
   <div class="w-full">
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
-        <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0 bg-accent/15 text-accent-dark">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3 mb-6">
+      <div class="flex items-center gap-3 p-4 bg-white/35 border border-accent/40 rounded-3xl">
+        <div class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0 bg-accent/15 text-accent-dark">
           <Server class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
-          <span class="font-body text-[0.7rem] text-primary-light">Сервер</span>
+          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
+          <span class="font-body text-[0.65rem] text-primary-light">Сервер</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
-        <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0 bg-primary/8 text-primary">
+      <div class="flex items-center gap-3 p-4 bg-white/35 border border-accent/40 rounded-3xl">
+        <div class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0 bg-primary/8 text-primary">
           <Code class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
-          <span class="font-body text-[0.7rem] text-primary-light">Версия API</span>
+          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
+          <span class="font-body text-[0.65rem] text-primary-light">Версия API</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
+      <div class="flex items-center gap-3.5 p-5 bg-white/35 border border-accent/40 rounded-3xl">
         <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0 bg-accent/15 text-accent-dark">
           <CheckCircle class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
-          <span class="font-body text-[0.7rem] text-primary-light">Сервисы</span>
+          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
+          <span class="font-body text-[0.65rem] text-primary-light">Сервисы</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
+      <div class="flex items-center gap-3.5 p-5 bg-white/35 border border-accent/40 rounded-3xl">
         <div
-          class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0"
+          class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0"
           :class="healthData?.status === 'healthy' ? 'bg-accent/15 text-accent-dark' : 'bg-yellow-500/12 text-yellow-700'"
         >
           <Heart class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
-          <span class="font-body text-[0.7rem] text-primary-light">Статус</span>
+          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
+          <span class="font-body text-[0.65rem] text-primary-light">Статус</span>
         </div>
       </div>
     </div>
@@ -148,16 +148,16 @@ onMounted(fetchData);
 
 
     <div v-else>
-      <h2 class="font-heading text-[1.1rem] text-primary mb-4">Сервисы</h2>
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3">
+      <h2 class="font-heading text-[1rem] text-primary mb-3">Сервисы</h2>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
         <div
           v-for="(service, key) in healthData?.services"
           :key="key"
-          class="flex flex-col gap-2 p-[18px] bg-cream/35 border rounded-3xl transition-colors duration-200 hover:border-accent/30"
-          :class="service.status !== 'up' ? 'border-red-500/20' : 'border-cream/50'"
+          class="flex flex-col gap-1.5 p-4 bg-white/35 border border-accent/40 border rounded-3xl transition-colors duration-200 hover:border-accent/30"
+          :class="service.status !== 'up' ? 'border-red-500/20' : 'border-white/50'"
         >
           <div class="flex items-center justify-between gap-2">
-            <span class="font-body font-bold text-[0.88rem] text-primary">{{ serviceNames[key as string] || key }}</span>
+            <span class="font-body font-bold text-[0.82rem] text-primary">{{ serviceNames[key as string] || key }}</span>
             <UiBadge
               :variant="service.status === 'up' ? 'default' : 'destructive'"
               class="rounded-lg text-[0.65rem]"
@@ -172,7 +172,7 @@ onMounted(fetchData);
       </div>
     </div>
 
-    <p v-if="healthData" class="mt-6 font-body text-[0.7rem] text-primary-light opacity-50">
+    <p v-if="healthData" class="mt-5 font-body text-[0.65rem] text-primary-light opacity-50">
       Обновлено: {{ new Date(healthData.timestamp).toLocaleString("ru-RU") }}
     </p>
   </div>

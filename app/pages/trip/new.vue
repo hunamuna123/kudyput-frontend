@@ -15,12 +15,19 @@ const dateTo = ref("");
 const budgetTier = ref("comfort");
 const budgetRub = ref(50000);
 const transport = ref("car");
+const format = ref("weekend");
 const groupSize = ref(2);
 const adults = ref(2);
 const children = ref<{ age: number }[]>([]);
 const isSubmitting = ref(false);
 const createdTrip = ref<{ id: string; invite_token: string } | null>(null);
 const copied = ref(false);
+
+const formatOptions = [
+  { label: "☀️ Одним днём", value: "day_trip" },
+  { label: "🌙 Выходные", value: "weekend" },
+  { label: "🗓 Многодневный", value: "multi_day" },
+];
 
 const budgetOptions = [
   { label: "💰 Эконом", value: "economy", range: "до 30 000 ₽" },
@@ -89,7 +96,7 @@ async function handleCreate() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-8 pb-16">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] left-[15%] blur-[120px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-lg w-full">
@@ -114,7 +121,7 @@ async function handleCreate() {
         </div>
 
 
-        <div class="w-full bg-cream/50 border border-cream/60 rounded-[24px] p-5">
+        <div class="w-full bg-white/50 border border-accent/40 rounded-[24px] p-5">
           <div class="flex items-center gap-2 mb-3">
             <Link2 class="w-4 h-4 text-accent-dark" />
             <span class="font-body font-bold text-[0.82rem] text-primary">Ссылка-приглашение</span>
@@ -123,7 +130,7 @@ async function handleCreate() {
             <input
               :value="inviteUrl()"
               readonly
-              class="flex-1 font-mono text-[0.72rem] text-primary bg-cream-light/60 border border-primary/10 rounded-xl px-3 py-2.5 truncate"
+              class="flex-1 font-mono text-[0.72rem] text-primary bg-white/60 border border-accent/40 rounded-xl px-3 py-2.5 truncate"
             />
             <button
               class="flex items-center gap-1.5 font-body font-bold text-[0.78rem] bg-accent hover:bg-accent-dark text-primary-dark border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all duration-200 shrink-0"
@@ -143,8 +150,8 @@ async function handleCreate() {
             Мои поездки
           </NuxtLink>
           <NuxtLink
-            to="/dashboard/map"
-            class="flex-1 flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-cream"
+            to="/map"
+            class="flex-1 flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
           >
             Открыть карту
           </NuxtLink>
@@ -171,7 +178,7 @@ async function handleCreate() {
               <UiInput
                 v-model="dateFrom"
                 type="date"
-                class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full"
+                class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent w-full"
               />
             </div>
             <div class="flex flex-col gap-1.5">
@@ -179,7 +186,7 @@ async function handleCreate() {
               <UiInput
                 v-model="dateTo"
                 type="date"
-                class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full"
+                class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent w-full"
               />
             </div>
           </div>
@@ -192,7 +199,7 @@ async function handleCreate() {
                 v-for="opt in budgetOptions"
                 :key="opt.value"
                 :value="opt.value"
-                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-primary/15 transition-all duration-200"
+                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-accent/40 transition-all duration-200"
               >
                 {{ opt.label }}
               </UiToggleGroupItem>
@@ -210,7 +217,7 @@ async function handleCreate() {
               type="number"
               min="1000"
               step="1000"
-              class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent max-w-[200px]"
+              class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent max-w-[200px]"
             />
           </div>
 
@@ -222,9 +229,24 @@ async function handleCreate() {
                 v-for="opt in transportOptions"
                 :key="opt.value"
                 :value="opt.value"
-                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-primary/15 transition-all duration-200 inline-flex items-center gap-1.5"
+                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-accent/40 transition-all duration-200 inline-flex items-center gap-1.5"
               >
                 <component :is="opt.icon" class="w-4 h-4" />
+                {{ opt.label }}
+              </UiToggleGroupItem>
+            </UiToggleGroup>
+          </div>
+
+
+          <div class="flex flex-col gap-1.5">
+            <label class="font-body text-[0.78rem] font-bold text-primary">Формат поездки</label>
+            <UiToggleGroup type="single" :model-value="format" @update:model-value="(v: unknown) => { if (v) format = String(v) }" class="justify-start flex-wrap">
+              <UiToggleGroupItem
+                v-for="opt in formatOptions"
+                :key="opt.value"
+                :value="opt.value"
+                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-accent/40 transition-all duration-200"
+              >
                 {{ opt.label }}
               </UiToggleGroupItem>
             </UiToggleGroup>
@@ -237,7 +259,7 @@ async function handleCreate() {
               Состав группы
             </label>
 
-            <div class="bg-cream/30 border border-cream/50 rounded-2xl p-5 flex flex-col gap-4">
+            <div class="bg-white/30 border border-accent/40 rounded-2xl p-5 flex flex-col gap-4">
 
               <div class="flex items-center justify-between">
                 <span class="font-body text-[0.82rem] text-primary">Взрослые</span>
@@ -285,7 +307,7 @@ async function handleCreate() {
                     type="number"
                     min="0"
                     max="17"
-                    class="rounded-xl px-3 py-2 font-body text-[0.82rem] border-primary/15 bg-cream/25 focus-visible:ring-accent w-20"
+                    class="rounded-xl px-3 py-2 font-body text-[0.82rem] bg-white/25 border border-accent/40 focus-visible:ring-accent w-20"
                   />
                   <span class="font-body text-[0.68rem] text-primary-light">лет</span>
                   <button

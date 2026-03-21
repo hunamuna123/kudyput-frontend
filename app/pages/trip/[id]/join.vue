@@ -69,7 +69,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-8 pb-16">
     <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/10 top-[-80px] right-[10%] blur-[120px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-md w-full text-center flex flex-col items-center">
@@ -78,7 +78,7 @@ onMounted(() => {
       </NuxtLink>
 
 
-      <div v-if="joined" class="flex flex-col items-center gap-4 py-10 bg-cream/50 border border-cream/60 rounded-3xl px-8 w-full">
+      <div v-if="joined" class="flex flex-col items-center gap-4 py-10 bg-white/50 border border-accent/40 rounded-3xl px-8 w-full">
         <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center">
           <Check class="w-8 h-8 text-accent-dark" />
         </div>
@@ -93,7 +93,7 @@ onMounted(() => {
       </div>
 
 
-      <div v-else class="flex flex-col items-center gap-4 w-full bg-cream/50 border border-cream/60 rounded-3xl px-8 py-10">
+      <div v-else class="flex flex-col items-center gap-4 w-full bg-white/50 border border-accent/40 rounded-3xl px-8 py-10">
         <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
           <Users class="w-7 h-7 text-primary" />
         </div>
@@ -106,7 +106,7 @@ onMounted(() => {
           <UiInput
             v-model="displayName"
             placeholder="Ваше имя"
-            class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent text-center"
+            class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent text-center"
           />
 
 
@@ -118,7 +118,7 @@ onMounted(() => {
               class="font-body text-[0.72rem] px-3 py-1.5 rounded-full border transition-all duration-200 cursor-pointer"
               :class="tags.includes(tag)
                 ? 'bg-accent/20 border-accent/40 text-accent-dark font-bold'
-                : 'bg-transparent border-primary/15 text-primary-light hover:border-accent/30'"
+                : 'bg-transparent text-primary-light hover:border-accent/30'"
               @click="toggleTag(tag)"
             >
               {{ tag }}

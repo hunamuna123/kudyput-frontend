@@ -21,9 +21,14 @@ let recordingInterval: ReturnType<typeof setInterval> | null = null;
 let analyser: AnalyserNode | null = null;
 let animationFrame: number | null = null;
 
+let isUnmountedComponent = false;
+
 onMounted(() => {
   authStore.restoreSession();
+  isUnmountedComponent = false;
 });
+
+let recordingStartTime = 0;
 
 async function startRecording() {
   try {
@@ -57,11 +62,22 @@ async function startRecording() {
       if (animationFrame) cancelAnimationFrame(animationFrame);
       audioLevel.value = 0;
 
+      if (isUnmountedComponent) return;
+      
+      const duration = Date.now() - recordingStartTime;
+      if (duration < 3000) {
+        vibeStore.error = "Запись слишком короткая. Пожалуйста, расскажите подробнее (минимум 3 секунды).";
+        return;
+      }
+
       if (audioChunks.length === 0) return;
       const blob = new Blob(audioChunks, { type: "audio/webm" });
       isProcessing.value = true;
 
       const result = await vibeStore.voiceProfile(blob);
+      
+      if (isUnmountedComponent) return;
+      
       isProcessing.value = false;
 
       if (result) {
@@ -70,6 +86,7 @@ async function startRecording() {
     };
 
     mediaRecorder.start();
+    recordingStartTime = Date.now();
     isRecording.value = true;
     recordingTime.value = 0;
     recordingInterval = setInterval(() => {
@@ -98,6 +115,7 @@ function formatTime(seconds: number): string {
 }
 
 onUnmounted(() => {
+  isUnmountedComponent = true;
   if (mediaRecorder && mediaRecorder.state === "recording") {
     mediaRecorder.stop();
   }
@@ -105,21 +123,19 @@ onUnmounted(() => {
   if (animationFrame) cancelAnimationFrame(animationFrame);
 });
 </script>
-
 <template>
-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5">
-    <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] right-[10%] blur-[120px] pointer-events-none"></div>
-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 bottom-[-80px] left-[5%] blur-[100px] pointer-events-none"></div>
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-4 pt-4 pb-16">
+    <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/8 top-[-100px] right-[10%] blur-[100px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-lg w-full text-center flex flex-col items-center">
-      <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-12 hover:text-primary transition-colors inline-flex items-center gap-1.5">
+      <NuxtLink to="/start" class="font-body text-[0.75rem] text-primary-light no-underline mb-4 hover:text-primary transition-colors inline-flex items-center gap-1">
         <ArrowLeft class="w-3.5 h-3.5" />
         Назад
       </NuxtLink>
 
 
-      <div v-if="isProcessing" class="flex flex-col items-center gap-6">
-        <div class="relative w-32 h-32 flex items-center justify-center">
+      <div v-if="isProcessing" class="flex flex-col items-center gap-4">
+        <div class="relative w-28 h-28 flex items-center justify-center">
 
           <div class="absolute inset-0 animate-spin-slow">
             <div class="absolute w-2.5 h-2.5 rounded-full bg-accent top-0 left-1/2 -ml-1.25 animate-pulse"></div>
@@ -135,8 +151,8 @@ onUnmounted(() => {
             <Loader2 class="w-8 h-8 text-accent-dark animate-spin" />
           </div>
         </div>
-        <h2 class="font-heading text-primary text-[1.2rem]">ИИ создаёт ваш профиль…</h2>
-        <p class="font-body font-light text-primary-light text-[0.85rem]">Анализируем настроение и предпочтения</p>
+        <h2 class="font-heading text-primary text-[1.05rem]">ИИ создаёт ваш профиль…</h2>
+        <p class="font-body font-light text-primary-light text-[0.8rem]">Анализируем настроение и предпочтения</p>
         <div class="flex gap-2 mt-2">
           <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay: 0ms;"></div>
           <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay: 200ms;"></div>
@@ -145,7 +161,7 @@ onUnmounted(() => {
       </div>
 
 
-      <div v-else-if="vibeStore.error" class="flex flex-col items-center gap-4">
+      <div v-else-if="vibeStore.error" class="flex flex-col items-center gap-3">
         <div class="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center">
           <span class="text-3xl">😔</span>
         </div>
@@ -159,21 +175,21 @@ onUnmounted(() => {
       </div>
 
 
-      <div v-else class="flex flex-col items-center gap-6">
-        <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full">
+      <div v-else class="flex flex-col items-center gap-3">
+        <span class="inline-block font-body font-bold text-[0.6rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full">
           Голосовой ввод
         </span>
 
-        <h1 class="font-heading text-primary leading-[1.25]" style="font-size: clamp(1.2rem, 3vw, 1.8rem);">
+        <h1 class="font-heading text-primary leading-[1.25]" style="font-size: clamp(1.1rem, 3vw, 1.6rem);">
           Расскажи, <span class="text-accent">чего хочешь</span>
         </h1>
-        <p class="font-body font-light text-primary-light text-[0.85rem] leading-relaxed max-w-sm">
+        <p class="font-body font-light text-primary-light text-[0.8rem] leading-relaxed max-w-sm">
           Нажми и расскажи о своих мечтах — тишина, горы, вино, адреналин... Без фильтров.
         </p>
 
 
         <button
-          class="relative w-32 h-32 rounded-full border-none cursor-pointer transition-all duration-300 mt-4"
+          class="relative w-28 h-28 rounded-full border-none cursor-pointer transition-all duration-300 mt-2"
           :class="isRecording
             ? 'bg-red-500 shadow-[0_0_60px_rgba(239,68,68,0.4)]'
             : 'bg-accent shadow-[0_8px_40px_rgba(164,190,79,0.3)] hover:scale-105 hover:shadow-[0_12px_50px_rgba(164,190,79,0.4)]'"
@@ -184,7 +200,7 @@ onUnmounted(() => {
           @touchstart.prevent="startRecording"
           @touchend.prevent="stopRecording"
         >
-          <Mic class="w-10 h-10 text-white mx-auto" />
+          <Mic class="w-9 h-9 text-white mx-auto" />
           <div v-if="isRecording" class="absolute inset-0 rounded-full border-4 border-red-300 animate-ping opacity-30"></div>
         </button>
 

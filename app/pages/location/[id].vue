@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box } from "lucide-vue-next";
+import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box, Heart, CalendarCheck, Route } from "lucide-vue-next";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 
@@ -50,15 +50,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cream-light relative overflow-hidden">
+  <div class="min-h-screen bg-white border border-accent/40 relative overflow-hidden">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] right-[-10%] blur-[120px] pointer-events-none"></div>
     <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 bottom-[-80px] left-[-5%] blur-[100px] pointer-events-none"></div>
 
-    <div class="relative z-10 max-w-3xl mx-auto px-5 py-10">
+    <div class="relative z-10 mx-auto px-5 py-10" style="max-width: 1140px;">
 
-      <NuxtLink to="/dashboard/locations" class="font-body text-[0.78rem] text-primary-light no-underline mb-8 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
+      <NuxtLink to="/map" class="font-body text-[0.78rem] text-primary-light no-underline mb-8 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
         <ArrowLeft class="w-3.5 h-3.5" />
-        Все локации
+        Назад к карте
       </NuxtLink>
 
 
@@ -79,7 +79,7 @@ onMounted(async () => {
 
       <div v-else-if="locationsStore.currentLocation" class="flex flex-col gap-6 mt-6">
 
-        <div class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10">
+        <div class="bg-white/50 border border-accent/40 rounded-3xl p-8 md:p-10">
           <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
             <div>
               <span class="text-3xl mr-2">{{ categoryEmoji[locationsStore.currentLocation.category] || '📍' }}</span>
@@ -102,19 +102,19 @@ onMounted(async () => {
 
 
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div v-if="locationsStore.currentLocation.category" class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
+            <div v-if="locationsStore.currentLocation.category" class="flex items-center gap-2 p-3.5 bg-white/60 border border-accent/40 rounded-2xl">
               <Tag class="w-4 h-4 text-accent-dark shrink-0" />
               <span class="font-body text-[0.78rem] text-primary capitalize">{{ locationsStore.currentLocation.category }}</span>
             </div>
-            <div v-if="locationsStore.currentLocation.address" class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
+            <div v-if="locationsStore.currentLocation.address" class="flex items-center gap-2 p-3.5 bg-white/60 border border-accent/40 rounded-2xl">
               <MapPin class="w-4 h-4 text-accent-dark shrink-0" />
               <span class="font-body text-[0.78rem] text-primary truncate">{{ locationsStore.currentLocation.address }}</span>
             </div>
-            <div class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
+            <div class="flex items-center gap-2 p-3.5 bg-white/60 border border-accent/40 rounded-2xl">
               <Wallet class="w-4 h-4 text-accent-dark shrink-0" />
               <span class="font-body text-[0.78rem] text-primary">{{ formatPrice(locationsStore.currentLocation.price_per_night) }}</span>
             </div>
-            <div v-if="locationsStore.currentLocation.capacity" class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
+            <div v-if="locationsStore.currentLocation.capacity" class="flex items-center gap-2 p-3.5 bg-white/60 border border-accent/40 rounded-2xl">
               <Users class="w-4 h-4 text-accent-dark shrink-0" />
               <span class="font-body text-[0.78rem] text-primary">до {{ locationsStore.currentLocation.capacity }} чел.</span>
             </div>
@@ -136,13 +136,13 @@ onMounted(async () => {
         <div class="flex gap-3 flex-wrap">
           <div
             v-if="locationsStore.currentLocation.child_friendly"
-            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-cream/50 border border-cream/60 rounded-2xl"
+            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-white/50 border border-accent/40 rounded-2xl"
           >
             👶 Подходит для детей
           </div>
           <div
             v-if="locationsStore.currentLocation.access_level === 'hidden'"
-            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-cream/50 border border-cream/60 rounded-2xl"
+            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-white/50 border border-accent/40 rounded-2xl"
           >
             <Star class="w-3.5 h-3.5 text-yellow-600" />
             Скрытая жемчужина — доступ по карме
@@ -150,7 +150,7 @@ onMounted(async () => {
         </div>
 
 
-        <div class="bg-cream/50 border border-cream/60 rounded-3xl p-6 flex items-center gap-4">
+        <div class="bg-white/50 border border-accent/40 rounded-3xl p-6 flex items-center gap-4">
           <div class="w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center shrink-0">
             <Navigation class="w-6 h-6 text-primary" />
           </div>
@@ -180,10 +180,24 @@ onMounted(async () => {
             to="/trip/new"
             class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.88rem] text-white bg-accent rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg"
           >
-            Собрать маршрут
-            <ArrowRight class="w-4 h-4" />
+            <Route class="w-4 h-4" />
+            Добавить в маршрут
           </NuxtLink>
+          <button
+            class="flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 cursor-pointer transition-all duration-200 hover:border-accent hover:text-accent-dark"
+          >
+            <Heart class="w-4 h-4" />
+            В избранное
+          </button>
         </div>
+
+
+        <button
+          class="w-full flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-primary border-2 border-accent/30 bg-accent/5 rounded-2xl px-6 py-3.5 cursor-pointer transition-all duration-200 hover:bg-accent/15 hover:border-accent/50"
+        >
+          <CalendarCheck class="w-4 h-4 text-accent-dark" />
+          Забронировать
+        </button>
 
 
         <p class="font-body text-[0.68rem] text-primary-light opacity-40">

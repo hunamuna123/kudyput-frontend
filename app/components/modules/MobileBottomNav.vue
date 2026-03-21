@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { Home, Globe, Navigation, Car, User } from "lucide-vue-next";
+import { Home, Map, Sparkles, User } from "lucide-vue-next";
+import { useAuthStore } from "~~/store/auth";
 
-const { isActive } = useNavActive();
+const route = useRoute();
+const authStore = useAuthStore();
+
+onMounted(() => {
+  authStore.restoreSession();
+});
 
 interface NavTab {
   label: string;
@@ -10,17 +16,23 @@ interface NavTab {
 }
 
 const tabs: NavTab[] = [
-  { label: "Обзор", icon: Home, to: "/dashboard" },
-  { label: "Карта", icon: Globe, to: "/map" },
-  { label: "Маршрут", icon: Navigation, to: "/dashboard/route" },
-  { label: "Поездки", icon: Car, to: "/dashboard/trips" },
+  { label: "Главная", icon: Home, to: "/" },
+  { label: "Начать", icon: Sparkles, to: "/start" },
+  { label: "Карта", icon: Map, to: "/map" },
   { label: "Профиль", icon: User, to: "/dashboard/profile" },
 ];
+
+const isLanding = computed(() => route.path === "/");
+
+function isActive(path: string): boolean {
+  if (path === "/") return route.path === "/";
+  return route.path.startsWith(path);
+}
 </script>
 
 <template>
-  <nav class="fixed bottom-0 left-0 right-0 z-[1000] px-2.5 pb-1.5 md:hidden">
-    <div class="flex items-center justify-around bg-white/92 border border-accent/40 rounded-[24px] px-1 py-1.5 shadow-[0_-4px_20px_rgba(40,90,113,0.07)] backdrop-blur-2xl">
+  <nav v-if="!isLanding" class="fixed bottom-0 left-0 right-0 z-[1000] px-2.5 pb-1.5 md:hidden">
+    <div class="flex items-center justify-around bg-white/92 border border-primary/8 rounded-[24px] px-1 py-1.5 shadow-[0_-4px_20px_rgba(40,90,113,0.07)] backdrop-blur-2xl">
       <NuxtLink
         v-for="tab in tabs"
         :key="tab.to"

@@ -74,11 +74,19 @@ export const useVibeStore = defineStore("vibe", {
     displayAxes: (state) => {
       if (!state.profile?.axes) return [];
       const a = state.profile.axes;
+      
+      const normalize = (val: number | undefined) => {
+        if (typeof val !== 'number') return 0.5;
+        // The API returns -1.0 to 1.0, but progress bar needs 0.0 to 1.0.
+        return (Math.max(-1, Math.min(1, val)) + 1) / 2;
+      };
+
       return [
-        { label: "🔇 Уединение", opposite: "Компания 🎉", value: (a.solitude_vs_social + 1) / 2 },
-        { label: "🧘 Релакс", opposite: "Адреналин ⚡", value: (a.relax_vs_adrenaline + 1) / 2 },
-        { label: "🍷 Гастрономия", opposite: "Природа 🌿", value: (a.gastro_vs_nature + 1) / 2 },
-        { label: "🏛 Культура", opposite: "Приключения 🗺", value: (a.culture_vs_adventure + 1) / 2 },
+        { label: "😌 Спокойствие", opposite: "Стресс 🤯", value: a.stress_level ?? 0.5 }, // already 0 to 1
+        { label: "🔇 Уединение", opposite: "Компания 🎉", value: normalize(a.solitude_vs_social) },
+        { label: "🧘 Релакс", opposite: "Адреналин ⚡", value: normalize(a.relax_vs_adrenaline) },
+        { label: "🍷 Гастрономия", opposite: "Природа 🌿", value: normalize(a.gastro_vs_nature) },
+        { label: "🏛 Культура", opposite: "Приключения 🗺", value: normalize(a.culture_vs_adventure) },
       ];
     },
   },
@@ -91,10 +99,12 @@ export const useVibeStore = defineStore("vibe", {
         const { request } = useApiClient();
         const formData = new FormData();
         formData.append("audio", audioBlob, "recording.webm");
+        
         const response = await request<{ success: boolean; data: VibeProfile }>(
           "/api/v1/profile/voice",
           { method: "POST", body: formData },
         );
+        
         this.profile = response.data;
         return response.data;
       } catch (err: unknown) {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle, Plus, X } from "lucide-vue-next";
+import { Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle, Plus, X, Sparkles } from "lucide-vue-next";
 import { useRoutesStore } from "~~/store/routes";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
@@ -78,7 +78,7 @@ onMounted(async () => {
 <template>
   <div class="w-full">
     <div class="flex items-center gap-3 mb-6">
-      <NuxtLink to="/dashboard" class="font-body text-[0.78rem] text-primary-light no-underline hover:text-primary transition-colors inline-flex items-center gap-1.5">
+      <NuxtLink to="/map" class="font-body text-[0.78rem] text-primary-light no-underline hover:text-primary transition-colors inline-flex items-center gap-1.5">
         <ArrowLeft class="w-3.5 h-3.5" />
       </NuxtLink>
       <h1 class="font-heading text-[1.3rem] text-primary">Построить маршрут</h1>
@@ -88,13 +88,13 @@ onMounted(async () => {
 
       <div class="flex flex-col gap-5">
 
-        <div class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
+        <div class="bg-white/35 border border-accent/40 rounded-3xl p-6">
           <h3 class="font-heading text-[0.95rem] text-primary mb-4">Добавьте точки маршрута</h3>
 
           <UiInput
             v-model="searchQuery"
             placeholder="Поиск локаций…"
-            class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent mb-3"
+            class="rounded-2xl px-4 py-3 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent mb-3"
           />
 
           <div class="flex flex-col gap-1.5 max-h-[250px] overflow-y-auto">
@@ -104,7 +104,7 @@ onMounted(async () => {
               class="flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl font-body text-[0.82rem] text-left border-none cursor-pointer transition-colors"
               :class="selectedLocationIds.includes(loc.id)
                 ? 'bg-accent/15 text-accent-dark'
-                : 'bg-transparent text-primary hover:bg-cream/60'"
+                : 'bg-transparent text-primary hover:bg-white/60 border border-accent/40'"
               @click="addLocation(loc.id)"
             >
               <span class="truncate">{{ loc.name }}</span>
@@ -116,7 +116,7 @@ onMounted(async () => {
         </div>
 
 
-        <div v-if="selectedLocationIds.length > 0" class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
+        <div v-if="selectedLocationIds.length > 0" class="bg-white/35 border border-accent/40 rounded-3xl p-6">
           <h3 class="font-heading text-[0.95rem] text-primary mb-3">
             Точки маршрута ({{ selectedLocationIds.length }})
           </h3>
@@ -124,7 +124,7 @@ onMounted(async () => {
             <div
               v-for="(id, idx) in selectedLocationIds"
               :key="id"
-              class="flex items-center gap-3 px-4 py-2.5 bg-cream-light/60 rounded-xl"
+              class="flex items-center gap-3 px-4 py-2.5 bg-white/60 border border-accent/40 rounded-xl"
             >
               <span class="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-[0.72rem] font-body font-bold text-accent-dark shrink-0">
                 {{ idx + 1 }}
@@ -162,6 +162,15 @@ onMounted(async () => {
           Построить маршрут
         </UiButton>
 
+        <UiButton
+          variant="outline"
+          class="rounded-2xl font-body border-accent/30 bg-accent/5 text-accent-dark hover:bg-accent/15 hover:border-accent/50 py-3.5"
+          @click="() => {}"
+        >
+          <Sparkles class="w-4 h-4 mr-2" />
+          ИИ, собери маршрут
+        </UiButton>
+
         <UiAlert v-if="routesStore.error" variant="destructive" class="rounded-2xl">
           <AlertCircle class="h-4 w-4" />
           <UiAlertDescription>{{ routesStore.error }}</UiAlertDescription>
@@ -171,7 +180,7 @@ onMounted(async () => {
 
       <div>
 
-        <div v-if="!routesStore.currentRoute && !routesStore.loading" class="flex flex-col items-center gap-4 py-16 bg-cream/35 border border-cream/50 rounded-3xl">
+        <div v-if="!routesStore.currentRoute && !routesStore.loading" class="flex flex-col items-center gap-4 py-16 bg-white/35 border border-accent/40 rounded-3xl">
           <div class="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center">
             <Navigation class="w-7 h-7 text-accent-dark" />
           </div>
@@ -189,7 +198,7 @@ onMounted(async () => {
         <div v-else-if="routesStore.currentRoute" class="flex flex-col gap-4">
 
           <div class="grid grid-cols-2 gap-3">
-            <div class="flex items-center gap-3 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
+            <div class="flex items-center gap-3 p-5 bg-white/35 border border-accent/40 rounded-3xl">
               <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-accent/15">
                 <Ruler class="w-5 h-5 text-accent-dark" />
               </div>
@@ -198,7 +207,7 @@ onMounted(async () => {
                 <span class="font-body text-[0.68rem] text-primary-light">Расстояние</span>
               </div>
             </div>
-            <div class="flex items-center gap-3 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
+            <div class="flex items-center gap-3 p-5 bg-white/35 border border-accent/40 rounded-3xl">
               <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/8">
                 <Clock class="w-5 h-5 text-primary" />
               </div>
@@ -210,7 +219,7 @@ onMounted(async () => {
           </div>
 
 
-          <div class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
+          <div class="bg-white/35 border border-accent/40 rounded-3xl p-6">
             <h3 class="font-heading text-[0.95rem] text-primary mb-4">Точки маршрута</h3>
             <div class="flex flex-col gap-0">
               <div

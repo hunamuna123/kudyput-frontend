@@ -1,0 +1,1744 @@
+diff --git a/app/assets/css/main.css b/app/assets/css/main.css
+index b2a2a22..6ed1bad 100644
+--- a/app/assets/css/main.css
++++ b/app/assets/css/main.css
+@@ -34,3 +33,0 @@
+-  --color-cream: #FCE4C0;
+-  --color-cream-light: #fdf0de;
+-  --color-cream-dark: #f5d4a4;
+@@ -60 +57 @@
+-    background-color: var(--color-cream-light);
++    background-color: #ffffff;
+@@ -69 +66,4 @@
+-    line-height: 1.35;
++    line-height: 1.3;
++    letter-spacing: -0.02em;
++    word-break: break-word;
++    overflow-wrap: break-word;
+@@ -71,0 +72,4 @@
++  h1 { font-size: 1.35rem; }
++  h2 { font-size: 1.05rem; }
++  h3 { font-size: 0.9rem; }
++
+@@ -73 +77 @@
+-    max-width: 1140px;
++    max-width: 1080px;
+@@ -75 +79 @@
+-    padding-inline: 32px;
++    padding-inline: 24px;
+@@ -80 +84 @@
+-      letter-spacing: 0.01em;
++      letter-spacing: -0.01em;
+@@ -83,0 +88,4 @@
++    h1 { font-size: 1.15rem; }
++    h2 { font-size: 0.95rem; }
++    h3 { font-size: 0.82rem; }
++
+@@ -85 +93 @@
+-      padding-inline: 20px;
++      padding-inline: 16px;
+diff --git a/app/components/dashboard/BottomNav.vue b/app/components/dashboard/BottomNav.vue
+index a05fba6..192f8ec 100644
+--- a/app/components/dashboard/BottomNav.vue
++++ b/app/components/dashboard/BottomNav.vue
+@@ -14 +14 @@ const tabs: NavTab[] = [
+-  { label: "Карта", icon: Globe, to: "/dashboard/map" },
++  { label: "Карта", icon: Globe, to: "/map" },
+@@ -22,2 +22,2 @@ const tabs: NavTab[] = [
+-  <nav class="fixed bottom-0 left-0 right-0 z-[1000] px-3 pb-2 md:hidden">
+-    <div class="flex items-center justify-around bg-cream/92 border border-primary/8 rounded-[28px] px-1 py-2 shadow-[0_-4px_24px_rgba(40,90,113,0.08)] backdrop-blur-2xl">
++  <nav class="fixed bottom-0 left-0 right-0 z-[1000] px-2.5 pb-1.5 md:hidden">
++    <div class="flex items-center justify-around bg-white/92 border border-primary/8 rounded-[24px] px-1 py-1.5 shadow-[0_-4px_20px_rgba(40,90,113,0.07)] backdrop-blur-2xl">
+@@ -28 +28 @@ const tabs: NavTab[] = [
+-        class="flex flex-col items-center gap-1 no-underline px-2 py-1 min-w-14 transition-all duration-200"
++        class="flex flex-col items-center gap-0.5 no-underline px-1.5 py-1 min-w-12 transition-all duration-200"
+@@ -31,2 +31,2 @@ const tabs: NavTab[] = [
+-          class="w-10 h-10 flex items-center justify-center rounded-full transition-all duration-250"
+-          :class="isActive(tab.to) ? 'bg-primary shadow-[0_4px_16px_rgba(40,90,113,0.25)]' : ''"
++          class="w-9 h-9 flex items-center justify-center rounded-full transition-all duration-250"
++          :class="isActive(tab.to) ? 'bg-primary shadow-[0_3px_12px_rgba(40,90,113,0.2)]' : ''"
+@@ -36,2 +36,2 @@ const tabs: NavTab[] = [
+-            class="w-5 h-5 transition-colors duration-200"
+-            :class="isActive(tab.to) ? 'text-cream-light' : 'text-primary-light'"
++            class="w-[18px] h-[18px] transition-colors duration-200"
++            :class="isActive(tab.to) ? 'text-white' : 'text-primary-light'"
+@@ -41 +41 @@ const tabs: NavTab[] = [
+-          class="font-body text-[0.62rem] font-bold whitespace-nowrap transition-colors duration-200"
++          class="font-body text-[0.58rem] font-bold whitespace-nowrap transition-colors duration-200"
+diff --git a/app/components/dashboard/Header.vue b/app/components/dashboard/Header.vue
+index 591f8b9..9b1bbe9 100644
+--- a/app/components/dashboard/Header.vue
++++ b/app/components/dashboard/Header.vue
+@@ -12 +11,0 @@ const pageTitle = computed(() => {
+-    "/dashboard/map": "Карта",
+@@ -22,3 +21,3 @@ const pageTitle = computed(() => {
+-  <header class="flex items-center justify-between px-5 py-4 md:px-8 md:py-5 border-b border-primary/6 bg-cream-light/80 backdrop-blur-lg">
+-    <div class="flex items-center gap-3">
+-      <h1 class="font-body font-bold text-[1.1rem] text-primary m-0">{{ pageTitle }}</h1>
++  <header class="flex items-center justify-between px-4 py-3 md:px-6 md:py-3 border-b border-primary/6 bg-white/80 backdrop-blur-lg">
++    <div class="flex items-center gap-2.5">
++      <h1 class="font-body font-bold text-[1rem] text-primary m-0">{{ pageTitle }}</h1>
+@@ -26,2 +25,2 @@ const pageTitle = computed(() => {
+-    <div class="flex items-center gap-4">
+-      <span class="hidden md:block font-body text-[0.82rem] font-light text-primary-light">
++    <div class="flex items-center gap-3">
++      <span class="hidden md:block font-body text-[0.78rem] font-light text-primary-light">
+@@ -31 +30 @@ const pageTitle = computed(() => {
+-        class="w-9 h-9 flex items-center justify-center rounded-[10px] border border-primary/8 bg-transparent text-primary-light cursor-pointer transition-all duration-200 text-[0.9rem] hover:bg-red-500/8 hover:border-red-500/15 hover:text-red-500"
++        class="w-8 h-8 flex items-center justify-center rounded-[10px] border border-primary/8 bg-transparent text-primary-light cursor-pointer transition-all duration-200 text-[0.85rem] hover:bg-red-500/8 hover:border-red-500/15 hover:text-red-500"
+@@ -34 +33 @@ const pageTitle = computed(() => {
+-        <LogOut class="w-4 h-4" />
++        <LogOut class="w-3.5 h-3.5" />
+diff --git a/app/components/dashboard/Sidebar.vue b/app/components/dashboard/Sidebar.vue
+index 5022b0c..df48e6c 100644
+--- a/app/components/dashboard/Sidebar.vue
++++ b/app/components/dashboard/Sidebar.vue
+@@ -15 +15 @@ const navItems: NavItem[] = [
+-  { label: "Карта", icon: Globe, to: "/dashboard/map" },
++  { label: "Карта", icon: Globe, to: "/map" },
+@@ -23,3 +23,3 @@ const navItems: NavItem[] = [
+-  <aside class="w-60 min-h-screen bg-cream border-r border-primary/8 flex flex-col py-6 px-4 shrink-0">
+-    <div class="flex items-center gap-2.5 mb-10 px-2">
+-      <NuxtLink to="/" class="font-body font-bold text-[1.1rem] text-primary no-underline transition-colors duration-200 hover:text-accent">
++  <aside class="w-52 min-h-screen bg-white border-r border-primary/8 flex flex-col py-4 px-3 shrink-0">
++    <div class="flex items-center gap-2 mb-6 px-1.5">
++      <NuxtLink to="/" class="font-body font-bold text-[1rem] text-primary no-underline transition-colors duration-200 hover:text-accent">
+@@ -28 +28 @@ const navItems: NavItem[] = [
+-      <span class="font-body text-[0.6rem] font-bold uppercase tracking-widest text-accent-dark bg-accent/15 px-2 py-0.5 rounded-md">Panel</span>
++      <span class="font-body text-[0.55rem] font-bold uppercase tracking-widest text-accent-dark bg-accent/15 px-1.5 py-0.5 rounded-md">Panel</span>
+@@ -31 +31 @@ const navItems: NavItem[] = [
+-    <nav class="flex flex-col gap-1 flex-1">
++    <nav class="flex flex-col gap-0.5 flex-1">
+@@ -36 +36 @@ const navItems: NavItem[] = [
+-        class="flex items-center gap-3 px-3.5 py-3 rounded-xl no-underline text-primary-light font-body text-[0.88rem] font-light transition-all duration-200 hover:bg-primary/6 hover:text-primary"
++        class="flex items-center gap-2.5 px-3 py-2 rounded-xl no-underline text-primary-light font-body text-[0.82rem] font-light transition-all duration-200 hover:bg-primary/6 hover:text-primary"
+@@ -39 +39 @@ const navItems: NavItem[] = [
+-        <component :is="item.icon" class="w-5 h-5" />
++        <component :is="item.icon" class="w-[18px] h-[18px]" />
+@@ -44,2 +44,2 @@ const navItems: NavItem[] = [
+-    <div class="px-2">
+-      <span class="font-body text-[0.7rem] text-primary-light opacity-40">v1.0.0</span>
++    <div class="px-1.5">
++      <span class="font-body text-[0.65rem] text-primary-light opacity-40">v1.0.0</span>
+diff --git a/app/components/modules/AppFooter.vue b/app/components/modules/AppFooter.vue
+index 6af926a..d535e2c 100644
+--- a/app/components/modules/AppFooter.vue
++++ b/app/components/modules/AppFooter.vue
+@@ -7 +7 @@ const links = [
+-  { label: 'Для хостов', href: '/host' },
++  { label: 'Для Бизнесменов', href: '/host' },
+@@ -13 +13 @@ const links = [
+-  <footer class="bg-primary rounded-t-[32px] pt-14 pb-7 px-8">
++  <footer class="bg-primary rounded-t-[28px] pt-10 pb-5 px-6">
+@@ -15 +15 @@ const links = [
+-      <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-10 mb-10">
++      <div class="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-6 mb-6">
+@@ -17,2 +17,2 @@ const links = [
+-          <span class="font-body font-bold text-cream text-lg block mb-2">КудыТуды</span>
+-          <p class="font-body font-light text-cream/40 text-[0.82rem] leading-relaxed">
++          <span class="font-body font-bold text-white text-base block mb-1.5">КудыТуды</span>
++          <p class="font-body font-light text-white/40 text-[0.78rem] leading-relaxed">
+@@ -23,2 +23,2 @@ const links = [
+-        <div class="flex flex-col gap-2">
+-          <span class="font-body font-bold text-[0.6rem] tracking-[0.12em] uppercase text-accent mb-1">Навигация</span>
++        <div class="flex flex-col gap-1.5">
++          <span class="font-body font-bold text-[0.58rem] tracking-[0.12em] uppercase text-accent mb-0.5">Навигация</span>
+@@ -29 +29 @@ const links = [
+-            class="font-body font-light text-cream/50 text-[0.82rem] no-underline hover:text-cream transition-colors duration-200"
++            class="font-body font-light text-white/50 text-[0.78rem] no-underline hover:text-white transition-colors duration-200"
+@@ -35,3 +35,3 @@ const links = [
+-        <div class="flex flex-col gap-2">
+-          <span class="font-body font-bold text-[0.6rem] tracking-[0.12em] uppercase text-accent mb-1">Контакты</span>
+-          <a href="mailto:hello@kudytudy.ru" class="font-body font-light text-cream/50 text-[0.82rem] no-underline hover:text-cream transition-colors duration-200">
++        <div class="flex flex-col gap-1.5">
++          <span class="font-body font-bold text-[0.58rem] tracking-[0.12em] uppercase text-accent mb-0.5">Контакты</span>
++          <a href="mailto:hello@kudytudy.ru" class="font-body font-light text-white/50 text-[0.78rem] no-underline hover:text-white transition-colors duration-200">
+@@ -40 +40 @@ const links = [
+-          <span class="font-body font-light text-cream/50 text-[0.82rem]">Краснодар, Россия</span>
++          <span class="font-body font-light text-white/50 text-[0.78rem]">Краснодар, Россия</span>
+@@ -44,2 +44,2 @@ const links = [
+-      <div class="h-px bg-cream/10 mb-5"></div>
+-      <p class="font-body font-light text-cream/25 text-[0.72rem] text-center">
++      <div class="h-px bg-white/10 mb-4"></div>
++      <p class="font-body font-light text-white/25 text-[0.68rem] text-center">
+diff --git a/app/components/modules/AppNavbar.vue b/app/components/modules/AppNavbar.vue
+index 4d1a00e..3432e73 100644
+--- a/app/components/modules/AppNavbar.vue
++++ b/app/components/modules/AppNavbar.vue
+@@ -1,0 +2,5 @@
++import { useAuthStore } from "~~/store/auth";
++import { User, LogOut } from "lucide-vue-next";
++
++const authStore = useAuthStore();
++
+@@ -3,0 +9 @@ const navItems = [
++  { label: 'Карта', to: '/map' },
+@@ -5 +11 @@ const navItems = [
+-  { label: 'Для хостов', to: '/host' },
++  { label: 'Для Бизнесменов', to: '/host' },
+@@ -15,0 +22 @@ onMounted(() => {
++  authStore.restoreSession();
+@@ -26,2 +33,2 @@ onUnmounted(() => {
+-    class="fixed top-4 left-1/2 -translate-x-1/2 z-[1000] w-[calc(100%-40px)] transition-all duration-300"
+-    style="max-width: 1140px;"
++    class="fixed top-3 left-1/2 -translate-x-1/2 z-[1000] w-[calc(100%-32px)] transition-all duration-300"
++    style="max-width: 1080px;"
+@@ -30 +37 @@ onUnmounted(() => {
+-      class="flex items-center gap-2 px-6 py-2.5 rounded-full border transition-all duration-300"
++      class="flex items-center gap-1.5 px-4 py-2 rounded-full border transition-all duration-300"
+@@ -32,2 +39,2 @@ onUnmounted(() => {
+-        ? 'bg-cream-light/90 border-cream/60 shadow-lg backdrop-blur-2xl'
+-        : 'bg-cream-light/50 border-cream/30 shadow-sm backdrop-blur-xl'"
++        ? 'bg-white/90 border-white/60 shadow-lg backdrop-blur-2xl'
++        : 'bg-white/50 border-white/30 shadow-sm backdrop-blur-xl'"
+@@ -35 +42 @@ onUnmounted(() => {
+-      <NuxtLink to="/" class="font-body font-bold text-primary text-base tracking-wide mr-auto">
++      <NuxtLink to="/" class="font-body font-bold text-primary text-[0.9rem] tracking-wide mr-auto">
+@@ -39 +46 @@ onUnmounted(() => {
+-      <div class="hidden md:flex items-center gap-7 mr-3">
++      <div class="hidden md:flex items-center gap-5 mr-2">
+@@ -44 +51 @@ onUnmounted(() => {
+-          class="font-body text-[0.82rem] font-light text-primary/70 hover:text-primary transition-colors duration-200 no-underline"
++          class="font-body text-[0.78rem] font-light text-primary/70 hover:text-primary transition-colors duration-200 no-underline"
+@@ -50,6 +57,17 @@ onUnmounted(() => {
+-      <NuxtLink
+-        to="/auth/login"
+-        class="hidden md:block font-body font-bold text-[0.8rem] text-white bg-accent border-none rounded-full px-5 py-2 cursor-pointer transition-all duration-250 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg no-underline"
+-      >
+-        Войти
+-      </NuxtLink>
++      <template v-if="authStore.isAuthenticated">
++        <NuxtLink
++          to="/dashboard/profile"
++          class="hidden md:flex items-center gap-1.5 font-body font-bold text-[0.76rem] text-primary bg-accent/15 border-none rounded-full px-3.5 py-1.5 cursor-pointer transition-all duration-250 hover:bg-accent/25 no-underline"
++        >
++          <User class="w-3.5 h-3.5 text-accent-dark" />
++          {{ authStore.userName || 'Профиль' }}
++        </NuxtLink>
++      </template>
++      <template v-else>
++        <NuxtLink
++          to="/auth/login"
++          class="hidden md:block font-body font-bold text-[0.76rem] text-white bg-accent border-none rounded-full px-4 py-1.5 cursor-pointer transition-all duration-250 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg no-underline"
++        >
++          Войти
++        </NuxtLink>
++      </template>
+@@ -58 +76 @@ onUnmounted(() => {
+-        class="flex md:hidden flex-col gap-1 bg-transparent border-none p-2 cursor-pointer"
++        class="flex md:hidden flex-col gap-1 bg-transparent border-none p-1.5 cursor-pointer"
+@@ -61,3 +79,3 @@ onUnmounted(() => {
+-        <span class="block w-[18px] h-0.5 bg-primary rounded-sm"></span>
+-        <span class="block w-[18px] h-0.5 bg-primary rounded-sm"></span>
+-        <span class="block w-[18px] h-0.5 bg-primary rounded-sm"></span>
++        <span class="block w-[16px] h-0.5 bg-primary rounded-sm"></span>
++        <span class="block w-[16px] h-0.5 bg-primary rounded-sm"></span>
++        <span class="block w-[16px] h-0.5 bg-primary rounded-sm"></span>
+@@ -70 +88 @@ onUnmounted(() => {
+-        class="flex flex-col gap-1 mt-2 bg-cream-light/95 backdrop-blur-2xl rounded-2xl p-4 border border-cream/40 md:hidden"
++        class="flex flex-col gap-0.5 mt-1.5 bg-white/95 backdrop-blur-2xl rounded-2xl p-3 border border-white/40 md:hidden"
+@@ -76 +94 @@ onUnmounted(() => {
+-          class="font-body text-[0.9rem] font-light text-primary no-underline py-2"
++          class="font-body text-[0.84rem] font-light text-primary no-underline py-1.5"
+@@ -81,7 +99,25 @@ onUnmounted(() => {
+-        <NuxtLink
+-          to="/auth/login"
+-          class="mt-2 w-full font-body font-bold text-[0.82rem] text-white bg-accent rounded-full py-2.5 border-none cursor-pointer text-center no-underline block"
+-          @click="mobileOpen = false"
+-        >
+-          Войти
+-        </NuxtLink>
++
++        <template v-if="authStore.isAuthenticated">
++          <NuxtLink
++            to="/dashboard/profile"
++            class="mt-1.5 w-full font-body font-bold text-[0.78rem] text-primary bg-accent/15 rounded-full py-2 border-none text-center no-underline block"
++            @click="mobileOpen = false"
++          >
++            {{ authStore.userName || 'Профиль' }}
++          </NuxtLink>
++          <button
++            class="w-full font-body text-[0.74rem] text-red-500 bg-transparent border-none py-1.5 cursor-pointer"
++            @click="authStore.logout(); mobileOpen = false"
++          >
++            Выйти
++          </button>
++        </template>
++        <template v-else>
++          <NuxtLink
++            to="/auth/login"
++            class="mt-1.5 w-full font-body font-bold text-[0.78rem] text-white bg-accent rounded-full py-2 border-none cursor-pointer text-center no-underline block"
++            @click="mobileOpen = false"
++          >
++            Войти
++          </NuxtLink>
++        </template>
+diff --git a/app/components/modules/FeaturesSection.vue b/app/components/modules/FeaturesSection.vue
+index 7d870fe..3135773 100644
+--- a/app/components/modules/FeaturesSection.vue
++++ b/app/components/modules/FeaturesSection.vue
+@@ -30 +30 @@ const features: Feature[] = [
+-      <div class="text-center mb-14">
++      <div class="text-left mb-14">
+@@ -43 +43 @@ const features: Feature[] = [
+-          class="group bg-cream/40 border border-cream/50 rounded-3xl p-8 md:p-10 text-center transition-all duration-350 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/20 hover:bg-cream/60"
++          class="group bg-white/40 border border-white/50 rounded-3xl p-8 md:p-10 text-left transition-all duration-350 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/20 hover:bg-white/60"
+diff --git a/app/components/modules/HeroSection.vue b/app/components/modules/HeroSection.vue
+index f0edd62..30a321c 100644
+--- a/app/components/modules/HeroSection.vue
++++ b/app/components/modules/HeroSection.vue
+@@ -2 +2 @@
+-  <section class="relative min-h-screen flex flex-col justify-center overflow-hidden">
++  <section class="relative min-h-screen flex flex-col justify-center overflow-hidden -mt-20 pt-20">
+@@ -14 +14 @@
+-        <div class="flex-1 min-w-0 text-center lg:text-left">
++        <div class="flex-1 min-w-0 text-left">
+@@ -24 +24 @@
+-          <p class="font-body font-light text-primary-light text-[0.92rem] leading-relaxed max-w-md mx-auto lg:mx-0 mb-8">
++          <p class="font-body font-light text-primary-light text-[0.92rem] leading-relaxed max-w-md mx-0 mb-8">
+@@ -28 +28 @@
+-          <div class="flex gap-3 flex-wrap justify-center lg:justify-start">
++          <div class="flex gap-3 flex-wrap justify-start">
+@@ -30 +30,4 @@
+-              Начать путешествие
++              ✨ ИИ подберёт
++            </NuxtLink>
++            <NuxtLink to="/trip/new" class="font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 no-underline">
++              🗺 Выберу сам
+@@ -32,3 +34,0 @@
+-            <a href="#about" class="font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5 no-underline">
+-              Узнать больше
+-            </a>
+diff --git a/app/components/modules/LocationsSection.vue b/app/components/modules/LocationsSection.vue
+index 22ed734..3df50c1 100644
+--- a/app/components/modules/LocationsSection.vue
++++ b/app/components/modules/LocationsSection.vue
+@@ -35 +35 @@ const locations: Location[] = [
+-      <div class="text-center mb-14">
++      <div class="text-left mb-14">
+@@ -66 +66 @@ const locations: Location[] = [
+-      <div class="text-center mt-10">
++      <div class="text-left mt-10">
+@@ -69 +69 @@ const locations: Location[] = [
+-          class="inline-block font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5 no-underline"
++          class="inline-block font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 no-underline"
+diff --git a/app/components/ui/button/index.ts b/app/components/ui/button/index.ts
+index 1e1c173..427bd4c 100644
+--- a/app/components/ui/button/index.ts
++++ b/app/components/ui/button/index.ts
+@@ -7 +7 @@ export const buttonVariants = cva(
+-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-3xl text-sm font-bold font-body ring-offset-cream transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
++  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-3xl text-sm font-bold font-body ring-offset-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+diff --git a/app/components/ui/card/Card.vue b/app/components/ui/card/Card.vue
+index 4c8f184..c1f6c9f 100644
+--- a/app/components/ui/card/Card.vue
++++ b/app/components/ui/card/Card.vue
+@@ -14 +14 @@ const props = defineProps<{
+-        'rounded-3xl border border-primary/10 bg-cream/35 text-primary shadow-sm font-body',
++        'rounded-3xl border border-primary/10 bg-white/35 text-primary shadow-sm font-body',
+diff --git a/app/components/ui/input/Input.vue b/app/components/ui/input/Input.vue
+index 96165c8..5b62337 100644
+--- a/app/components/ui/input/Input.vue
++++ b/app/components/ui/input/Input.vue
+@@ -23 +23 @@ const modelValue = useVModel(props, "modelValue", emits, {
+-  <input v-model="modelValue" :class="cn('flex h-11 w-full rounded-2xl border border-primary/15 bg-cream/25 px-4 py-3 text-sm font-body text-primary ring-offset-cream file:border-0 file:bg-transparent file:text-primary file:text-sm file:font-medium placeholder:text-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', props.class)">
++  <input v-model="modelValue" :class="cn('flex h-11 w-full rounded-2xl border border-primary/15 bg-white/25 px-4 py-3 text-sm font-body text-primary ring-offset-white file:border-0 file:bg-transparent file:text-primary file:text-sm file:font-medium placeholder:text-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', props.class)">
+diff --git a/app/components/ui/select/SelectContent.vue b/app/components/ui/select/SelectContent.vue
+index 6e6dcd6..92270d1 100644
+--- a/app/components/ui/select/SelectContent.vue
++++ b/app/components/ui/select/SelectContent.vue
+@@ -35 +35 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
+-        'relative z-50 max-h-96 min-w-32 overflow-hidden rounded-2xl border border-primary/15 bg-cream text-primary shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
++        'relative z-50 max-h-96 min-w-32 overflow-hidden rounded-2xl border border-primary/15 bg-white text-primary shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+diff --git a/app/components/ui/select/SelectTrigger.vue b/app/components/ui/select/SelectTrigger.vue
+index 25262d9..b120b71 100644
+--- a/app/components/ui/select/SelectTrigger.vue
++++ b/app/components/ui/select/SelectTrigger.vue
+@@ -20 +20 @@ const forwardedProps = useForwardProps(delegatedProps)
+-      'flex h-11 w-full items-center justify-between rounded-2xl border border-primary/15 bg-cream/25 px-4 py-3 text-sm font-body text-primary ring-offset-cream data-[placeholder]:text-primary/40 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:truncate text-start',
++      'flex h-11 w-full items-center justify-between rounded-2xl border border-primary/15 bg-white/25 px-4 py-3 text-sm font-body text-primary ring-offset-white data-[placeholder]:text-primary/40 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:truncate text-start',
+diff --git a/app/components/ui/toggle/index.ts b/app/components/ui/toggle/index.ts
+index 354659f..48ea09c 100644
+--- a/app/components/ui/toggle/index.ts
++++ b/app/components/ui/toggle/index.ts
+@@ -7 +7 @@ export const toggleVariants = cva(
+-  'inline-flex items-center justify-center gap-2 rounded-2xl text-sm font-bold font-body text-primary-light hover:bg-accent/10 hover:text-primary disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:shadow-[0_2px_8px_rgba(164,190,79,0.2)] [&_svg]:pointer-events-none [&_svg:not([class*=\'size-\'])]:size-4 [&_svg]:shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ring-offset-cream transition-all duration-200 whitespace-nowrap',
++  'inline-flex items-center justify-center gap-2 rounded-2xl text-sm font-bold font-body text-primary-light hover:bg-accent/10 hover:text-primary disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:shadow-[0_2px_8px_rgba(164,190,79,0.2)] [&_svg]:pointer-events-none [&_svg:not([class*=\'size-\'])]:size-4 [&_svg]:shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ring-offset-white transition-all duration-200 whitespace-nowrap',
+diff --git a/app/layouts/auth.vue b/app/layouts/auth.vue
+index 82c3e49..fe0ad90 100644
+--- a/app/layouts/auth.vue
++++ b/app/layouts/auth.vue
+@@ -2 +2 @@
+-  <div class="min-h-screen flex items-center justify-center bg-cream-light relative overflow-hidden px-5">
++  <div class="min-h-screen flex flex-col items-center justify-start bg-white relative overflow-hidden px-4 pt-12 pb-16 md:pb-0">
+@@ -6,2 +6,2 @@
+-    <div class="relative z-10 w-full max-w-[420px] flex flex-col items-center">
+-      <NuxtLink to="/" class="font-body font-bold text-[1.4rem] text-primary no-underline mb-8 tracking-wide transition-colors duration-200 hover:text-accent">
++    <div class="relative z-10 w-full max-w-[400px] flex flex-col items-center">
++      <NuxtLink to="/" class="font-body font-bold text-[1.2rem] text-primary no-underline mb-6 tracking-wide transition-colors duration-200 hover:text-accent">
+@@ -11,0 +12,2 @@
++
++    <ModulesMobileBottomNav />
+diff --git a/app/layouts/dashboard.vue b/app/layouts/dashboard.vue
+index f76c9d9..503d26a 100644
+--- a/app/layouts/dashboard.vue
++++ b/app/layouts/dashboard.vue
+@@ -15 +15 @@ onMounted(() => {
+-  <div class="flex min-h-screen bg-cream-light text-primary font-body">
++  <div class="flex min-h-screen bg-white text-primary font-body">
+@@ -19 +19 @@ onMounted(() => {
+-      <main class="flex-1 p-5 pb-25 md:px-10 md:py-8 md:pb-8">
++      <main class="flex-1 p-4 pb-20 md:px-8 md:py-6 md:pb-6">
+diff --git a/app/layouts/default.vue b/app/layouts/default.vue
+index 88d0707..6df4970 100644
+--- a/app/layouts/default.vue
++++ b/app/layouts/default.vue
+@@ -4 +4 @@
+-    <main class="flex-1">
++    <main class="flex-1 md:pt-16 pb-16 md:pb-0">
+@@ -7 +7,2 @@
+-    <ModulesAppFooter />
++    <ModulesAppFooter class="hidden md:block" />
++    <ModulesMobileBottomNav />
+diff --git a/app/middleware/auth.ts b/app/middleware/auth.ts
+index 3aa848d..940c625 100644
+--- a/app/middleware/auth.ts
++++ b/app/middleware/auth.ts
+@@ -7 +6,0 @@ export default defineNuxtRouteMiddleware((to) => {
+-  authStore.restoreSession();
+@@ -9 +8,6 @@ export default defineNuxtRouteMiddleware((to) => {
+-  // Only check for token presence — profile is loaded async in the layout
++  try {
++    authStore.restoreSession();
++  } catch {
++    return navigateTo(`/auth/login?redirect=${encodeURIComponent(to.fullPath)}`);
++  }
++
+@@ -11 +15 @@ export default defineNuxtRouteMiddleware((to) => {
+-    return navigateTo("/auth/login");
++    return navigateTo(`/auth/login?redirect=${encodeURIComponent(to.fullPath)}`);
+diff --git a/app/middleware/guest.ts b/app/middleware/guest.ts
+index eec8bf2..10df94f 100644
+--- a/app/middleware/guest.ts
++++ b/app/middleware/guest.ts
+@@ -7 +6,0 @@ export default defineNuxtRouteMiddleware(() => {
+-  authStore.restoreSession();
+@@ -9,2 +8,8 @@ export default defineNuxtRouteMiddleware(() => {
+-  if (authStore.isAuthenticated) {
+-    return navigateTo("/dashboard");
++  try {
++    authStore.restoreSession();
++  } catch {
++    return;
++  }
++
++  if (authStore.accessToken) {
++    return navigateTo("/start");
+diff --git a/app/pages/auth/login.vue b/app/pages/auth/login.vue
+index f6f4216..6c64261 100644
+--- a/app/pages/auth/login.vue
++++ b/app/pages/auth/login.vue
+@@ -18,0 +19,2 @@ const showPassword = ref(false);
++const route = useRoute();
++
+@@ -22 +24,6 @@ async function handleLogin() {
+-    navigateTo("/dashboard");
++    const redirect = route.query.redirect as string;
++    if (redirect) {
++      navigateTo(redirect);
++    } else {
++      navigateTo("/start");
++    }
+@@ -28,4 +35,4 @@ async function handleLogin() {
+-  <div class="w-full max-w-[420px]">
+-    <div class="bg-cream/35 border border-cream/50 rounded-3xl py-10 px-8">
+-      <h1 class="font-heading text-[1.6rem] text-primary mb-1 text-center">Войти</h1>
+-      <p class="font-body text-[0.85rem] text-primary-light text-center mb-8">Управляйте поездками и локациями</p>
++  <div class="w-full max-w-[400px]">
++    <div class="bg-white/35 border border-white/50 rounded-3xl py-8 px-6">
++      <h1 class="font-heading text-[1.4rem] text-primary mb-1 text-center">Войти</h1>
++      <p class="font-body text-[0.82rem] text-primary-light text-center mb-6">Управляйте поездками и локациями</p>
+@@ -33 +40 @@ async function handleLogin() {
+-      <form class="flex flex-col gap-5" @submit.prevent="handleLogin">
++      <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
+@@ -35 +42 @@ async function handleLogin() {
+-          <label for="login-email" class="font-body text-[0.78rem] font-bold text-primary">Email</label>
++          <label for="login-email" class="font-body text-[0.75rem] font-bold text-primary">Email</label>
+@@ -41 +48 @@ async function handleLogin() {
+-            class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 placeholder:text-primary/40 focus-visible:ring-accent"
++            class="rounded-2xl px-3.5 py-3 font-body border-primary/15 bg-white/25 placeholder:text-primary/40 focus-visible:ring-accent"
+@@ -46 +53 @@ async function handleLogin() {
+-          <label for="login-password" class="font-body text-[0.78rem] font-bold text-primary">Пароль</label>
++          <label for="login-password" class="font-body text-[0.75rem] font-bold text-primary">Пароль</label>
+@@ -53 +60 @@ async function handleLogin() {
+-              class="rounded-2xl px-4 py-3.5 pr-12 font-body border-primary/15 bg-cream/25 placeholder:text-primary/40 focus-visible:ring-accent w-full"
++              class="rounded-2xl px-3.5 py-3 pr-12 font-body border-primary/15 bg-white/25 placeholder:text-primary/40 focus-visible:ring-accent w-full"
+@@ -74 +81 @@ async function handleLogin() {
+-          class="w-full mt-1 bg-accent hover:bg-accent-dark border-accent hover:border-accent-dark text-primary-dark font-body font-bold rounded-2xl py-3.5 text-[0.88rem] transition-all duration-200"
++          class="w-full mt-0.5 bg-accent hover:bg-accent-dark border-accent hover:border-accent-dark text-primary-dark font-body font-bold rounded-2xl py-3 text-[0.85rem] transition-all duration-200"
+@@ -81 +88 @@ async function handleLogin() {
+-      <p class="font-body text-[0.78rem] text-primary-light text-center mt-6">
++      <p class="font-body text-[0.75rem] text-primary-light text-center mt-5">
+diff --git a/app/pages/auth/register.vue b/app/pages/auth/register.vue
+index 01150e2..9ebba5d 100644
+--- a/app/pages/auth/register.vue
++++ b/app/pages/auth/register.vue
+@@ -23 +23 @@ const roleOptions = [
+-  { label: "Хост", value: "host" },
++  { label: "Бизнесмен", value: "host" },
+@@ -34 +34 @@ async function handleRegister() {
+-    navigateTo("/vibe/choice");
++    navigateTo(role.value === "host" ? "/host" : "/start");
+@@ -40,2 +40,2 @@ async function handleRegister() {
+-  <div class="w-full max-w-[420px]">
+-    <div class="bg-cream/35 border border-cream/50 rounded-3xl py-10 px-8">
++  <div class="w-full max-w-[400px]">
++    <div class="bg-white/35 border border-white/50 rounded-3xl py-8 px-6">
+@@ -43 +43 @@ async function handleRegister() {
+-      <p class="font-body text-[0.85rem] text-primary-light text-center mb-8">Создайте аккаунт для доступа</p>
++      <p class="font-body text-[0.82rem] text-primary-light text-center mb-6">Создайте аккаунт для доступа</p>
+@@ -45 +45 @@ async function handleRegister() {
+-      <form class="flex flex-col gap-[18px]" @submit.prevent="handleRegister">
++      <form class="flex flex-col gap-4" @submit.prevent="handleRegister">
+@@ -47 +47 @@ async function handleRegister() {
+-          <label for="reg-name" class="font-body text-[0.78rem] font-bold text-primary">Имя</label>
++          <label for="reg-name" class="font-body text-[0.75rem] font-bold text-primary">Имя</label>
+@@ -52 +52 @@ async function handleRegister() {
+-            class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 placeholder:text-primary/40 focus-visible:ring-accent"
++            class="rounded-2xl px-3.5 py-3 font-body border-primary/15 bg-white/25 placeholder:text-primary/40 focus-visible:ring-accent"
+@@ -57 +57 @@ async function handleRegister() {
+-          <label for="reg-email" class="font-body text-[0.78rem] font-bold text-primary">Email</label>
++          <label for="reg-email" class="font-body text-[0.75rem] font-bold text-primary">Email</label>
+@@ -63 +63 @@ async function handleRegister() {
+-            class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 placeholder:text-primary/40 focus-visible:ring-accent"
++            class="rounded-2xl px-3.5 py-3 font-body border-primary/15 bg-white/25 placeholder:text-primary/40 focus-visible:ring-accent"
+@@ -68 +68 @@ async function handleRegister() {
+-          <label for="reg-password" class="font-body text-[0.78rem] font-bold text-primary">Пароль</label>
++          <label for="reg-password" class="font-body text-[0.75rem] font-bold text-primary">Пароль</label>
+@@ -75 +75 @@ async function handleRegister() {
+-              class="rounded-2xl px-4 py-3.5 pr-12 font-body border-primary/15 bg-cream/25 placeholder:text-primary/40 focus-visible:ring-accent w-full"
++              class="rounded-2xl px-3.5 py-3 pr-12 font-body border-primary/15 bg-white/25 placeholder:text-primary/40 focus-visible:ring-accent w-full"
+@@ -89 +89 @@ async function handleRegister() {
+-          <label class="font-body text-[0.78rem] font-bold text-primary">Роль</label>
++          <label class="font-body text-[0.75rem] font-bold text-primary">Роль</label>
+@@ -95 +95 @@ async function handleRegister() {
+-              class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-primary/15 transition-all duration-200"
++              class="rounded-2xl px-4 py-2 font-body text-[0.78rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-primary/15 transition-all duration-200"
+@@ -110 +110 @@ async function handleRegister() {
+-          class="w-full mt-1 bg-accent hover:bg-accent-dark border-accent hover:border-accent-dark text-primary-dark font-body font-bold rounded-2xl py-3.5 text-[0.88rem] transition-all duration-200"
++          class="w-full mt-0.5 bg-accent hover:bg-accent-dark border-accent hover:border-accent-dark text-primary-dark font-body font-bold rounded-2xl py-3 text-[0.85rem] transition-all duration-200"
+@@ -117 +117 @@ async function handleRegister() {
+-      <p class="font-body text-[0.78rem] text-primary-light text-center mt-6">
++      <p class="font-body text-[0.75rem] text-primary-light text-center mt-5">
+diff --git a/app/pages/dashboard/index.vue b/app/pages/dashboard/index.vue
+index d8ee913..640e911 100644
+--- a/app/pages/dashboard/index.vue
++++ b/app/pages/dashboard/index.vue
+@@ -80,3 +80,3 @@ onMounted(fetchData);
+-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
+-        <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0 bg-accent/15 text-accent-dark">
++    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3 mb-6">
++      <div class="flex items-center gap-3 p-4 bg-white/35 border border-white/50 rounded-3xl">
++        <div class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0 bg-accent/15 text-accent-dark">
+@@ -86,2 +86,2 @@ onMounted(fetchData);
+-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
+-          <span class="font-body text-[0.7rem] text-primary-light">Сервер</span>
++          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
++          <span class="font-body text-[0.65rem] text-primary-light">Сервер</span>
+@@ -91,2 +91,2 @@ onMounted(fetchData);
+-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
+-        <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0 bg-primary/8 text-primary">
++      <div class="flex items-center gap-3 p-4 bg-white/35 border border-white/50 rounded-3xl">
++        <div class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0 bg-primary/8 text-primary">
+@@ -96,2 +96,2 @@ onMounted(fetchData);
+-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
+-          <span class="font-body text-[0.7rem] text-primary-light">Версия API</span>
++          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
++          <span class="font-body text-[0.65rem] text-primary-light">Версия API</span>
+@@ -101 +101 @@ onMounted(fetchData);
+-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
++      <div class="flex items-center gap-3.5 p-5 bg-white/35 border border-white/50 rounded-3xl">
+@@ -106,2 +106,2 @@ onMounted(fetchData);
+-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
+-          <span class="font-body text-[0.7rem] text-primary-light">Сервисы</span>
++          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
++          <span class="font-body text-[0.65rem] text-primary-light">Сервисы</span>
+@@ -111 +111 @@ onMounted(fetchData);
+-      <div class="flex items-center gap-3.5 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
++      <div class="flex items-center gap-3.5 p-5 bg-white/35 border border-white/50 rounded-3xl">
+@@ -113 +113 @@ onMounted(fetchData);
+-          class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0"
++          class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0"
+@@ -119,2 +119,2 @@ onMounted(fetchData);
+-          <span class="font-body font-bold text-[1.05rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
+-          <span class="font-body text-[0.7rem] text-primary-light">Статус</span>
++          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
++          <span class="font-body text-[0.65rem] text-primary-light">Статус</span>
+@@ -151,2 +151,2 @@ onMounted(fetchData);
+-      <h2 class="font-heading text-[1.1rem] text-primary mb-4">Сервисы</h2>
+-      <div class="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3">
++      <h2 class="font-heading text-[1rem] text-primary mb-3">Сервисы</h2>
++      <div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
+@@ -156,2 +156,2 @@ onMounted(fetchData);
+-          class="flex flex-col gap-2 p-[18px] bg-cream/35 border rounded-3xl transition-colors duration-200 hover:border-accent/30"
+-          :class="service.status !== 'up' ? 'border-red-500/20' : 'border-cream/50'"
++          class="flex flex-col gap-1.5 p-4 bg-white/35 border rounded-3xl transition-colors duration-200 hover:border-accent/30"
++          :class="service.status !== 'up' ? 'border-red-500/20' : 'border-white/50'"
+@@ -160 +160 @@ onMounted(fetchData);
+-            <span class="font-body font-bold text-[0.88rem] text-primary">{{ serviceNames[key as string] || key }}</span>
++            <span class="font-body font-bold text-[0.82rem] text-primary">{{ serviceNames[key as string] || key }}</span>
+@@ -175 +175 @@ onMounted(fetchData);
+-    <p v-if="healthData" class="mt-6 font-body text-[0.7rem] text-primary-light opacity-50">
++    <p v-if="healthData" class="mt-5 font-body text-[0.65rem] text-primary-light opacity-50">
+diff --git a/app/pages/dashboard/locations.vue b/app/pages/dashboard/locations.vue
+index 826a944..f3ebeb8 100644
+--- a/app/pages/dashboard/locations.vue
++++ b/app/pages/dashboard/locations.vue
+@@ -82 +82 @@ onMounted(() => {
+-          <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
++          <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-white/25">
+@@ -95 +95 @@ onMounted(() => {
+-          <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
++          <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-white/25">
+@@ -143 +143 @@ onMounted(() => {
+-        class="flex flex-col gap-3 p-6 bg-cream/35 border border-cream/50 rounded-3xl transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(40,90,113,0.06)] no-underline"
++        class="flex flex-col gap-3 p-6 bg-white/35 border border-white/50 rounded-3xl transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(40,90,113,0.06)] no-underline"
+diff --git a/app/pages/dashboard/map.vue b/app/pages/dashboard/map.vue
+index 485b076..01f6630 100644
+--- a/app/pages/dashboard/map.vue
++++ b/app/pages/dashboard/map.vue
+@@ -2,4 +1,0 @@
+-import { MapPin, Filter, Loader2, AlertCircle, Navigation, X, ExternalLink } from "lucide-vue-next";
+-import { useMapStore } from "~~/store/map";
+-import { useAuthStore } from "~~/store/auth";
+-
+@@ -7,63 +3 @@ definePageMeta({
+-  layout: "dashboard",
+-  middleware: ["auth"],
+-});
+-
+-useHead({
+-  title: "Карта - КудыТуды",
+-});
+-
+-const mapStore = useMapStore();
+-const authStore = useAuthStore();
+-const categoryFilter = ref("");
+-const showFilters = ref(false);
+-
+-const categoryOptions = [
+-  { label: "Все", value: "" },
+-  { label: "🍷 Винодельня", value: "winery" },
+-  { label: "🐐 Ферма", value: "farm" },
+-  { label: "🥾 Тропа", value: "trail" },
+-  { label: "🍽 Гастро", value: "gastro" },
+-  { label: "🌿 Природа", value: "nature" },
+-  { label: "🏕 Кемпинг", value: "camping" },
+-  { label: "🏖 Курорт", value: "resort" },
+-  { label: "⚡ Экстрим", value: "extreme" },
+-  { label: "🏛 Культура", value: "cultural" },
+-  { label: "🌊 Пляж", value: "beach" },
+-];
+-
+-const densityColors: Record<string, string> = {
+-  green: "#22c55e",
+-  yellow: "#eab308",
+-  red: "#ef4444",
+-};
+-
+-const densityLabels: Record<string, string> = {
+-  green: "Спокойно",
+-  yellow: "Средне",
+-  red: "Популярно",
+-};
+-
+-const mapCenter = ref({ lat: 44.5, lon: 39.0 });
+-
+-async function loadLocations() {
+-  const filters: Record<string, string | number | boolean | undefined> = {};
+-  if (categoryFilter.value) filters.category = categoryFilter.value;
+-  filters.min_lat = 43.5;
+-  filters.max_lat = 45.5;
+-  filters.min_lon = 36.5;
+-  filters.max_lon = 41.0;
+-  filters.limit = 100;
+-  await mapStore.fetchMapLocations(filters);
+-}
+-
+-function selectPoint(id: string) {
+-  mapStore.selectPoint(mapStore.selectedPointId === id ? null : id);
+-}
+-
+-watch(categoryFilter, () => {
+-  loadLocations();
+-});
+-
+-onMounted(async () => {
+-  authStore.restoreSession();
+-  await loadLocations();
++  middleware: [() => navigateTo("/map", { redirectCode: 301 })],
+@@ -74,149 +8 @@ onMounted(async () => {
+-  <div class="w-full">
+-
+-    <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+-      <h1 class="font-heading text-[1.3rem] text-primary">Интерактивная карта</h1>
+-      <div class="flex gap-2">
+-        <button
+-          class="flex items-center gap-1.5 font-body text-[0.82rem] px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
+-          :class="showFilters ? 'bg-accent/15 border-accent/30 text-accent-dark' : 'bg-cream/35 border-cream/50 text-primary-light hover:border-accent/30'"
+-          @click="showFilters = !showFilters"
+-        >
+-          <Filter class="w-4 h-4" />
+-          Фильтры
+-        </button>
+-      </div>
+-    </div>
+-
+-
+-    <Transition name="slide">
+-      <div v-if="showFilters" class="flex flex-wrap gap-1.5 mb-4">
+-        <button
+-          v-for="cat in categoryOptions"
+-          :key="cat.value"
+-          class="font-body text-[0.75rem] px-3.5 py-2 rounded-full border cursor-pointer transition-all duration-200"
+-          :class="categoryFilter === cat.value
+-            ? 'bg-accent/20 border-accent/40 text-accent-dark font-bold'
+-            : 'bg-cream/35 border-cream/50 text-primary-light hover:border-accent/30'"
+-          @click="categoryFilter = cat.value"
+-        >
+-          {{ cat.label }}
+-        </button>
+-      </div>
+-    </Transition>
+-
+-
+-    <div class="flex items-center gap-4 mb-5">
+-      <span class="font-body text-[0.78rem] text-primary-light">
+-        {{ mapStore.total }} {{ mapStore.total === 1 ? 'локация' : 'локаций' }}
+-      </span>
+-      <div class="flex gap-3">
+-        <span v-for="(color, level) in densityColors" :key="level" class="flex items-center gap-1 font-body text-[0.68rem] text-primary-light">
+-          <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: color }"></span>
+-          {{ densityLabels[level] }}
+-        </span>
+-      </div>
+-    </div>
+-
+-
+-    <div v-if="mapStore.loading" class="flex justify-center py-20">
+-      <Loader2 class="w-8 h-8 text-accent-dark animate-spin" />
+-    </div>
+-
+-
+-    <UiAlert v-else-if="mapStore.error" variant="destructive" class="rounded-2xl mb-4">
+-      <AlertCircle class="h-4 w-4" />
+-      <UiAlertDescription>{{ mapStore.error }}</UiAlertDescription>
+-    </UiAlert>
+-
+-
+-    <div v-else class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
+-
+-      <div class="relative bg-cream/35 border border-cream/50 rounded-3xl overflow-hidden min-h-[500px]">
+-  
+-        <div class="absolute inset-0 bg-gradient-to-br from-primary/3 to-accent/5">
+-          <svg class="w-full h-full" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet">
+-
+-            <path
+-              d="M100,200 Q200,80 400,100 Q550,110 650,180 Q700,220 680,300 Q650,380 500,400 Q350,420 200,380 Q120,340 100,200Z"
+-              fill="none"
+-              stroke="currentColor"
+-              stroke-width="1.5"
+-              class="text-primary/10"
+-            />
+-
+-            <path
+-              d="M50,250 Q80,200 100,200 Q120,340 200,380 Q180,420 100,400 Q50,350 50,250Z"
+-              fill="currentColor"
+-              class="text-blue-500/5"
+-            />
+-
+-
+-            <g v-for="point in mapStore.points" :key="point.id">
+-              <circle
+-                :cx="50 + ((point.longitude - 36.5) / 4.5) * 700"
+-                :cy="450 - ((point.latitude - 43.5) / 2) * 400"
+-                :r="mapStore.selectedPointId === point.id ? 10 : 7"
+-                :fill="densityColors[point.density_level] || '#A4BE4F'"
+-                :stroke="mapStore.selectedPointId === point.id ? '#fff' : 'transparent'"
+-                stroke-width="2"
+-                class="cursor-pointer transition-all duration-200 hover:opacity-80"
+-                :opacity="mapStore.selectedPointId && mapStore.selectedPointId !== point.id ? 0.4 : 0.85"
+-                @click="selectPoint(point.id)"
+-              />
+-
+-              <text
+-                v-if="mapStore.selectedPointId === point.id"
+-                :x="50 + ((point.longitude - 36.5) / 4.5) * 700"
+-                :y="450 - ((point.latitude - 43.5) / 2) * 400 - 16"
+-                text-anchor="middle"
+-                class="font-body text-[11px] fill-primary font-bold"
+-              >
+-                {{ point.name.length > 20 ? point.name.slice(0, 20) + '…' : point.name }}
+-              </text>
+-            </g>
+-          </svg>
+-        </div>
+-
+-
+-        <div v-if="mapStore.points.length === 0" class="absolute inset-0 flex items-center justify-center">
+-          <div class="text-center">
+-            <MapPin class="w-10 h-10 text-primary-light opacity-30 mx-auto mb-2" />
+-            <p class="font-body text-[0.85rem] text-primary-light">Нет локаций по фильтру</p>
+-          </div>
+-        </div>
+-      </div>
+-
+-
+-      <div class="flex flex-col gap-2 max-h-[520px] max-lg:max-h-[300px] overflow-y-auto pr-1">
+-        <div
+-          v-for="point in mapStore.points"
+-          :key="point.id"
+-          class="flex items-center gap-3 p-4 rounded-2xl border transition-all duration-200 cursor-pointer"
+-          :class="mapStore.selectedPointId === point.id
+-            ? 'bg-accent/10 border-accent/30'
+-            : 'bg-cream/35 border-cream/50 hover:border-accent/20'"
+-          @click="selectPoint(point.id)"
+-        >
+-          <span
+-            class="w-3 h-3 rounded-full shrink-0"
+-            :style="{ backgroundColor: densityColors[point.density_level] || '#A4BE4F' }"
+-          ></span>
+-          <div class="flex-1 min-w-0">
+-            <p class="font-body font-bold text-[0.82rem] text-primary truncate">{{ point.name }}</p>
+-            <p class="font-body text-[0.68rem] text-primary-light capitalize">{{ point.category }}</p>
+-          </div>
+-          <NuxtLink
+-            :to="`/location/${point.id}`"
+-            class="text-accent-dark hover:text-accent transition-colors shrink-0"
+-            @click.stop
+-          >
+-            <ExternalLink class="w-4 h-4" />
+-          </NuxtLink>
+-        </div>
+-
+-        <div v-if="mapStore.points.length === 0 && !mapStore.loading" class="py-8 text-center">
+-          <p class="font-body text-[0.82rem] text-primary-light">Нет точек</p>
+-        </div>
+-      </div>
+-    </div>
+-  </div>
++  <div></div>
+@@ -224,12 +9,0 @@ onMounted(async () => {
+-
+-<style scoped>
+-.slide-enter-active,
+-.slide-leave-active {
+-  transition: all 0.3s ease;
+-}
+-.slide-enter-from,
+-.slide-leave-to {
+-  opacity: 0;
+-  transform: translateY(-8px);
+-}
+-</style>
+diff --git a/app/pages/dashboard/profile.vue b/app/pages/dashboard/profile.vue
+index d09e352..766f04c 100644
+--- a/app/pages/dashboard/profile.vue
++++ b/app/pages/dashboard/profile.vue
+@@ -16,0 +17,4 @@ const vibeStore = useVibeStore();
++onMounted(() => {
++  authStore.fetchProfile();
++});
++
+@@ -35 +39 @@ const roleLabels: Record<string, string> = {
+-  host: "Хост",
++  host: "Бизнесмен",
+@@ -84 +88 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
+-    <div class="flex items-center gap-6 p-8 bg-cream/35 border border-cream/50 rounded-3xl max-sm:flex-col max-sm:text-center">
++    <div class="flex items-center gap-6 p-8 bg-white/35 border border-white/50 rounded-3xl max-sm:flex-col max-sm:text-center">
+@@ -105 +109 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
+-              class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent flex-1"
++              class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-white/25 focus-visible:ring-accent flex-1"
+@@ -133 +137 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
+-    <div class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
++    <div class="bg-white/35 border border-white/50 rounded-3xl p-6">
+@@ -159 +163 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
+-    <div v-if="hasVibe && vibeAxes.length > 0" class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
++    <div v-if="hasVibe && vibeAxes.length > 0" class="bg-white/35 border border-white/50 rounded-3xl p-6">
+@@ -209 +213 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
+-      <div class="flex flex-col gap-2 py-5 px-6 bg-cream/35 border border-cream/50 rounded-3xl">
++      <div class="flex flex-col gap-2 py-5 px-6 bg-white/35 border border-white/50 rounded-3xl">
+@@ -216 +220 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
+-      <div class="flex flex-col gap-2 py-5 px-6 bg-cream/35 border border-cream/50 rounded-3xl">
++      <div class="flex flex-col gap-2 py-5 px-6 bg-white/35 border border-white/50 rounded-3xl">
+diff --git a/app/pages/dashboard/route.vue b/app/pages/dashboard/route.vue
+index 08d425a..d12be0f 100644
+--- a/app/pages/dashboard/route.vue
++++ b/app/pages/dashboard/route.vue
+@@ -2 +2 @@
+-import { Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle, Plus, X } from "lucide-vue-next";
++import { Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle, Plus, X, Sparkles } from "lucide-vue-next";
+@@ -81 +81 @@ onMounted(async () => {
+-      <NuxtLink to="/dashboard" class="font-body text-[0.78rem] text-primary-light no-underline hover:text-primary transition-colors inline-flex items-center gap-1.5">
++      <NuxtLink to="/map" class="font-body text-[0.78rem] text-primary-light no-underline hover:text-primary transition-colors inline-flex items-center gap-1.5">
+@@ -91 +91 @@ onMounted(async () => {
+-        <div class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
++        <div class="bg-white/35 border border-white/50 rounded-3xl p-6">
+@@ -97 +97 @@ onMounted(async () => {
+-            class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent mb-3"
++            class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-white/25 focus-visible:ring-accent mb-3"
+@@ -107 +107 @@ onMounted(async () => {
+-                : 'bg-transparent text-primary hover:bg-cream/60'"
++                : 'bg-transparent text-primary hover:bg-white/60'"
+@@ -119 +119 @@ onMounted(async () => {
+-        <div v-if="selectedLocationIds.length > 0" class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
++        <div v-if="selectedLocationIds.length > 0" class="bg-white/35 border border-white/50 rounded-3xl p-6">
+@@ -127 +127 @@ onMounted(async () => {
+-              class="flex items-center gap-3 px-4 py-2.5 bg-cream-light/60 rounded-xl"
++              class="flex items-center gap-3 px-4 py-2.5 bg-white/60 rounded-xl"
+@@ -164,0 +165,9 @@ onMounted(async () => {
++        <UiButton
++          variant="outline"
++          class="rounded-2xl font-body border-accent/30 bg-accent/5 text-accent-dark hover:bg-accent/15 hover:border-accent/50 py-3.5"
++          @click="() => {}"
++        >
++          <Sparkles class="w-4 h-4 mr-2" />
++          ИИ, собери маршрут
++        </UiButton>
++
+@@ -174 +183 @@ onMounted(async () => {
+-        <div v-if="!routesStore.currentRoute && !routesStore.loading" class="flex flex-col items-center gap-4 py-16 bg-cream/35 border border-cream/50 rounded-3xl">
++        <div v-if="!routesStore.currentRoute && !routesStore.loading" class="flex flex-col items-center gap-4 py-16 bg-white/35 border border-white/50 rounded-3xl">
+@@ -192 +201 @@ onMounted(async () => {
+-            <div class="flex items-center gap-3 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
++            <div class="flex items-center gap-3 p-5 bg-white/35 border border-white/50 rounded-3xl">
+@@ -201 +210 @@ onMounted(async () => {
+-            <div class="flex items-center gap-3 p-5 bg-cream/35 border border-cream/50 rounded-3xl">
++            <div class="flex items-center gap-3 p-5 bg-white/35 border border-white/50 rounded-3xl">
+@@ -213 +222 @@ onMounted(async () => {
+-          <div class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
++          <div class="bg-white/35 border border-white/50 rounded-3xl p-6">
+diff --git a/app/pages/dashboard/trips.vue b/app/pages/dashboard/trips.vue
+index f44c678..3e7a981 100644
+--- a/app/pages/dashboard/trips.vue
++++ b/app/pages/dashboard/trips.vue
+@@ -117 +117 @@ async function handleCreate() {
+-      <div v-if="showForm" class="bg-cream/35 border border-cream/50 rounded-3xl p-8 mb-6">
++      <div v-if="showForm" class="bg-white/35 border border-white/50 rounded-3xl p-8 mb-6">
+@@ -123 +123 @@ async function handleCreate() {
+-              <UiInput v-model="dateFrom" type="date" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full" />
++              <UiInput v-model="dateFrom" type="date" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent w-full" />
+@@ -127 +127 @@ async function handleCreate() {
+-              <UiInput v-model="dateTo" type="date" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full" />
++              <UiInput v-model="dateTo" type="date" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent w-full" />
+@@ -135 +135 @@ async function handleCreate() {
+-                <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
++                <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-white/25">
+@@ -148 +148 @@ async function handleCreate() {
+-                <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
++                <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-white/25">
+@@ -162 +162 @@ async function handleCreate() {
+-            <UiInput v-model.number="groupSize" type="number" min="1" max="50" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent max-w-[140px]" />
++            <UiInput v-model.number="groupSize" type="number" min="1" max="50" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent max-w-[140px]" />
+@@ -195 +195 @@ async function handleCreate() {
+-        class="flex flex-col bg-cream/35 border border-cream/50 rounded-3xl transition-all duration-200 hover:border-accent/30 overflow-hidden"
++        class="flex flex-col bg-white/35 border border-white/50 rounded-3xl transition-all duration-200 hover:border-accent/30 overflow-hidden"
+@@ -230 +230 @@ async function handleCreate() {
+-              class="font-mono text-[0.65rem] text-primary bg-cream-light/60 border border-primary/8 rounded-lg px-2.5 py-1.5 flex-1 min-w-0 truncate"
++              class="font-mono text-[0.65rem] text-primary bg-white/60 border border-primary/8 rounded-lg px-2.5 py-1.5 flex-1 min-w-0 truncate"
+@@ -253 +253 @@ async function handleCreate() {
+-          <div v-if="expandedTripId === trip.id" class="border-t border-primary/8 px-6 py-4 bg-cream-light/30">
++          <div v-if="expandedTripId === trip.id" class="border-t border-primary/8 px-6 py-4 bg-white/30">
+diff --git a/app/pages/host/index.vue b/app/pages/host/index.vue
+index 8041924..1c6cecd 100644
+--- a/app/pages/host/index.vue
++++ b/app/pages/host/index.vue
+@@ -7 +7 @@ useHead({
+-  title: "Хост — Онбординг — КудыТуды",
++  title: "Бизнесмен — Онбординг — КудыТуды",
+@@ -106 +106 @@ onMounted(() => {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-4 pt-8 pb-16">
+@@ -111 +111 @@ onMounted(() => {
+-      <NuxtLink to="/" class="font-body font-bold text-[1.2rem] text-primary no-underline mb-6 block text-center hover:text-accent transition-colors">
++      <NuxtLink to="/" class="font-body font-bold text-[1.1rem] text-primary no-underline mb-4 block text-center hover:text-accent transition-colors">
+@@ -116 +116 @@ onMounted(() => {
+-      <div class="flex justify-center gap-2 mb-8">
++      <div class="flex justify-center gap-2 mb-6">
+@@ -126,3 +126,3 @@ onMounted(() => {
+-      <div v-if="step === 1" class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10">
+-        <div class="text-center mb-6">
+-          <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-3">
++      <div v-if="step === 1" class="bg-white/50 border border-white/60 rounded-3xl p-6 md:p-8">
++        <div class="text-center mb-4">
++          <span class="inline-block font-body font-bold text-[0.62rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-2">
+@@ -140 +140 @@ onMounted(() => {
+-        <label class="flex flex-col items-center gap-4 p-10 border-2 border-dashed border-primary/15 rounded-3xl cursor-pointer hover:border-accent/40 transition-colors mb-4">
++        <label class="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-primary/15 rounded-3xl cursor-pointer hover:border-accent/40 transition-colors mb-3">
+@@ -176,3 +176,3 @@ onMounted(() => {
+-      <div v-else-if="step === 2" class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10">
+-        <div class="text-center mb-6">
+-          <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-3">
++      <div v-else-if="step === 2" class="bg-white/50 border border-white/60 rounded-3xl p-6 md:p-8">
++        <div class="text-center mb-4">
++          <span class="inline-block font-body font-bold text-[0.62rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-2">
+@@ -186 +186 @@ onMounted(() => {
+-        <form class="flex flex-col gap-4" @submit.prevent="handleCreateLocation">
++        <form class="flex flex-col gap-3" @submit.prevent="handleCreateLocation">
+@@ -189 +189 @@ onMounted(() => {
+-            <UiInput v-model="form.name" placeholder="Ферма дядя Гурам" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
++            <UiInput v-model="form.name" placeholder="Ферма дядя Гурам" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent" />
+@@ -195 +195 @@ onMounted(() => {
+-              <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
++              <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-white/25">
+@@ -208 +208 @@ onMounted(() => {
+-            <UiInput v-model="form.description_short" placeholder="Горная ферма с козами и домашним вином" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
++            <UiInput v-model="form.description_short" placeholder="Горная ферма с козами и домашним вином" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent" />
+@@ -213 +213 @@ onMounted(() => {
+-            <UiInput v-model="form.address" placeholder="с. Дивноморское, ул. Горная 15" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
++            <UiInput v-model="form.address" placeholder="с. Дивноморское, ул. Горная 15" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent" />
+@@ -219 +219 @@ onMounted(() => {
+-              <UiInput v-model.number="form.price_per_night" type="number" min="0" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
++              <UiInput v-model.number="form.price_per_night" type="number" min="0" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent" />
+@@ -223 +223 @@ onMounted(() => {
+-              <UiInput v-model.number="form.capacity" type="number" min="1" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent" />
++              <UiInput v-model.number="form.capacity" type="number" min="1" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent" />
+@@ -234 +234 @@ onMounted(() => {
+-                class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent flex-1"
++                class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-white/25 focus-visible:ring-accent flex-1"
+@@ -271 +271 @@ onMounted(() => {
+-      <div v-else class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10 text-center">
++      <div v-else class="bg-white/50 border border-white/60 rounded-3xl p-6 md:p-8 text-center">
+@@ -288 +288 @@ onMounted(() => {
+-            class="font-body font-bold text-[0.85rem] text-primary border-2 border-primary/20 rounded-2xl px-6 py-3.5 bg-transparent cursor-pointer hover:bg-primary hover:text-cream transition-all"
++            class="font-body font-bold text-[0.85rem] text-primary border-2 border-primary/20 rounded-2xl px-6 py-3.5 bg-transparent cursor-pointer hover:bg-primary hover:text-white transition-all"
+diff --git a/app/pages/location/[id].vue b/app/pages/location/[id].vue
+index d873465..981ab5f 100644
+--- a/app/pages/location/[id].vue
++++ b/app/pages/location/[id].vue
+@@ -2 +2 @@
+-import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box } from "lucide-vue-next";
++import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box, Heart, CalendarCheck, Route } from "lucide-vue-next";
+@@ -53 +53 @@ onMounted(async () => {
+-  <div class="min-h-screen bg-cream-light relative overflow-hidden">
++  <div class="min-h-screen bg-white relative overflow-hidden">
+@@ -57 +57 @@ onMounted(async () => {
+-    <div class="relative z-10 max-w-3xl mx-auto px-5 py-10">
++    <div class="relative z-10 mx-auto px-5 py-10" style="max-width: 1140px;">
+@@ -59 +59 @@ onMounted(async () => {
+-      <NuxtLink to="/dashboard/locations" class="font-body text-[0.78rem] text-primary-light no-underline mb-8 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
++      <NuxtLink to="/map" class="font-body text-[0.78rem] text-primary-light no-underline mb-8 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
+@@ -61 +61 @@ onMounted(async () => {
+-        Все локации
++        Назад к карте
+@@ -82 +82 @@ onMounted(async () => {
+-        <div class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10">
++        <div class="bg-white/50 border border-white/60 rounded-3xl p-8 md:p-10">
+@@ -105 +105 @@ onMounted(async () => {
+-            <div v-if="locationsStore.currentLocation.category" class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
++            <div v-if="locationsStore.currentLocation.category" class="flex items-center gap-2 p-3.5 bg-white/60 rounded-2xl">
+@@ -109 +109 @@ onMounted(async () => {
+-            <div v-if="locationsStore.currentLocation.address" class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
++            <div v-if="locationsStore.currentLocation.address" class="flex items-center gap-2 p-3.5 bg-white/60 rounded-2xl">
+@@ -113 +113 @@ onMounted(async () => {
+-            <div class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
++            <div class="flex items-center gap-2 p-3.5 bg-white/60 rounded-2xl">
+@@ -117 +117 @@ onMounted(async () => {
+-            <div v-if="locationsStore.currentLocation.capacity" class="flex items-center gap-2 p-3.5 bg-cream-light/60 rounded-2xl">
++            <div v-if="locationsStore.currentLocation.capacity" class="flex items-center gap-2 p-3.5 bg-white/60 rounded-2xl">
+@@ -139 +139 @@ onMounted(async () => {
+-            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-cream/50 border border-cream/60 rounded-2xl"
++            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-white/50 border border-white/60 rounded-2xl"
+@@ -145 +145 @@ onMounted(async () => {
+-            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-cream/50 border border-cream/60 rounded-2xl"
++            class="flex items-center gap-1.5 font-body text-[0.78rem] text-primary-light px-4 py-2.5 bg-white/50 border border-white/60 rounded-2xl"
+@@ -153 +153 @@ onMounted(async () => {
+-        <div class="bg-cream/50 border border-cream/60 rounded-3xl p-6 flex items-center gap-4">
++        <div class="bg-white/50 border border-white/60 rounded-3xl p-6 flex items-center gap-4">
+@@ -183,2 +183,2 @@ onMounted(async () => {
+-            Собрать маршрут
+-            <ArrowRight class="w-4 h-4" />
++            <Route class="w-4 h-4" />
++            Добавить в маршрут
+@@ -185,0 +186,6 @@ onMounted(async () => {
++          <button
++            class="flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 cursor-pointer transition-all duration-200 hover:border-accent hover:text-accent-dark"
++          >
++            <Heart class="w-4 h-4" />
++            В избранное
++          </button>
+@@ -188,0 +195,8 @@ onMounted(async () => {
++        <button
++          class="w-full flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-primary border-2 border-accent/30 bg-accent/5 rounded-2xl px-6 py-3.5 cursor-pointer transition-all duration-200 hover:bg-accent/15 hover:border-accent/50"
++        >
++          <CalendarCheck class="w-4 h-4 text-accent-dark" />
++          Забронировать
++        </button>
++
++
+diff --git a/app/pages/start.vue b/app/pages/start.vue
+index c25d2c2..11fc9cd 100644
+--- a/app/pages/start.vue
++++ b/app/pages/start.vue
+@@ -11 +10,0 @@ useHead({
+-
+@@ -13,3 +12,2 @@ useHead({
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5">
+-    <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/10 -top-20 right-[5%] blur-[120px] pointer-events-none animate-pulse"></div>
+-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 -bottom-16 left-[8%] blur-[100px] pointer-events-none"></div>
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-5 pt-4 pb-16">
++    <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/10 -top-20 right-[5%] blur-[100px] pointer-events-none animate-pulse"></div>
+@@ -17,2 +15,2 @@ useHead({
+-    <div class="relative z-10 max-w-3xl w-full text-center">
+-      <NuxtLink to="/" class="font-body font-bold text-[1.2rem] text-primary no-underline mb-10 block transition-colors hover:text-accent">
++    <div class="relative z-10 w-full text-center" style="max-width: 1080px;">
++      <NuxtLink to="/" class="font-body font-bold text-[1.1rem] text-primary no-underline mb-6 block transition-colors hover:text-accent">
+@@ -22 +20 @@ useHead({
+-      <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-6">
++      <span class="inline-block font-body font-bold text-[0.62rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-4">
+@@ -26 +24 @@ useHead({
+-      <h1 class="font-heading text-primary mb-3 leading-[1.25]" style="font-size: clamp(1.4rem, 3.5vw, 2.5rem);">
++      <h1 class="font-heading text-primary mb-2 leading-[1.25]" style="font-size: clamp(1.3rem, 3.5vw, 2.2rem);">
+@@ -29 +27 @@ useHead({
+-      <p class="font-body font-light text-primary-light text-[0.92rem] leading-relaxed max-w-md mx-auto mb-12">
++      <p class="font-body font-light text-primary-light text-[0.85rem] leading-relaxed max-w-md mx-auto mb-8">
+@@ -33 +31 @@ useHead({
+-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-2xl mx-auto">
++      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+@@ -37 +35 @@ useHead({
+-          class="group flex flex-col items-center gap-4 p-8 bg-cream/40 border border-cream/50 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/30 hover:bg-cream/60"
++          class="group flex flex-col items-center gap-3 p-6 bg-white/40 border border-white/50 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-accent/30 hover:bg-white/60"
+@@ -46,2 +44,2 @@ useHead({
+-          <h2 class="font-heading text-primary text-[1rem]">✨ Свайп</h2>
+-          <p class="font-body font-light text-primary-light text-[0.78rem] leading-relaxed">
++          <h2 class="font-heading text-primary text-[0.92rem]">✨ Свайп</h2>
++          <p class="font-body font-light text-primary-light text-[0.75rem] leading-relaxed">
+@@ -55 +53 @@ useHead({
+-          class="group flex flex-col items-center gap-4 p-8 bg-cream/40 border border-cream/50 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-accent/30 hover:bg-cream/60"
++          class="group flex flex-col items-center gap-3 p-6 bg-white/40 border border-white/50 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-accent/30 hover:bg-white/60"
+@@ -60,2 +58,2 @@ useHead({
+-          <h2 class="font-heading text-primary text-[1rem]">🎤 Голос</h2>
+-          <p class="font-body font-light text-primary-light text-[0.78rem] leading-relaxed">
++          <h2 class="font-heading text-primary text-[0.92rem]">🎤 Голос</h2>
++          <p class="font-body font-light text-primary-light text-[0.75rem] leading-relaxed">
+@@ -68,2 +66,2 @@ useHead({
+-          to="/dashboard/map"
+-          class="group flex flex-col items-center gap-4 p-8 bg-cream/40 border border-cream/50 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/20 hover:bg-cream/60"
++          to="/map"
++          class="group flex flex-col items-center gap-3 p-6 bg-white/40 border border-white/50 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/20 hover:bg-white/60"
+@@ -74,2 +72,2 @@ useHead({
+-          <h2 class="font-heading text-primary text-[1rem]">🗺 Карта</h2>
+-          <p class="font-body font-light text-primary-light text-[0.78rem] leading-relaxed">
++          <h2 class="font-heading text-primary text-[0.92rem]">🗺 Карта</h2>
++          <p class="font-body font-light text-primary-light text-[0.75rem] leading-relaxed">
+diff --git a/app/pages/trip/[id]/join.vue b/app/pages/trip/[id]/join.vue
+index 09329a4..3a7e73a 100644
+--- a/app/pages/trip/[id]/join.vue
++++ b/app/pages/trip/[id]/join.vue
+@@ -72 +72 @@ onMounted(() => {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-5 pt-8 pb-16">
+@@ -81 +81 @@ onMounted(() => {
+-      <div v-if="joined" class="flex flex-col items-center gap-4 py-10 bg-cream/50 border border-cream/60 rounded-3xl px-8 w-full">
++      <div v-if="joined" class="flex flex-col items-center gap-4 py-10 bg-white/50 border border-white/60 rounded-3xl px-8 w-full">
+@@ -96 +96 @@ onMounted(() => {
+-      <div v-else class="flex flex-col items-center gap-4 w-full bg-cream/50 border border-cream/60 rounded-3xl px-8 py-10">
++      <div v-else class="flex flex-col items-center gap-4 w-full bg-white/50 border border-white/60 rounded-3xl px-8 py-10">
+@@ -109 +109 @@ onMounted(() => {
+-            class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent text-center"
++            class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent text-center"
+diff --git a/app/pages/trip/new.vue b/app/pages/trip/new.vue
+index a7bdb37..d9bcaa8 100644
+--- a/app/pages/trip/new.vue
++++ b/app/pages/trip/new.vue
+@@ -17,0 +18 @@ const transport = ref("car");
++const format = ref("weekend");
+@@ -24,0 +26,6 @@ const copied = ref(false);
++const formatOptions = [
++  { label: "☀️ Одним днём", value: "day_trip" },
++  { label: "🌙 Выходные", value: "weekend" },
++  { label: "🗓 Многодневный", value: "multi_day" },
++];
++
+@@ -92 +99 @@ async function handleCreate() {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-5 pt-8 pb-16">
+@@ -117 +124 @@ async function handleCreate() {
+-        <div class="w-full bg-cream/50 border border-cream/60 rounded-[24px] p-5">
++        <div class="w-full bg-white/50 border border-white/60 rounded-[24px] p-5">
+@@ -126 +133 @@ async function handleCreate() {
+-              class="flex-1 font-mono text-[0.72rem] text-primary bg-cream-light/60 border border-primary/10 rounded-xl px-3 py-2.5 truncate"
++              class="flex-1 font-mono text-[0.72rem] text-primary bg-white/60 border border-primary/10 rounded-xl px-3 py-2.5 truncate"
+@@ -146,2 +153,2 @@ async function handleCreate() {
+-            to="/dashboard/map"
+-            class="flex-1 flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-cream"
++            to="/map"
++            class="flex-1 flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
+@@ -174 +181 @@ async function handleCreate() {
+-                class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full"
++                class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent w-full"
+@@ -182 +189 @@ async function handleCreate() {
+-                class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full"
++                class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent w-full"
+@@ -213 +220 @@ async function handleCreate() {
+-              class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent max-w-[200px]"
++              class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-white/25 focus-visible:ring-accent max-w-[200px]"
+@@ -233,0 +241,15 @@ async function handleCreate() {
++          <div class="flex flex-col gap-1.5">
++            <label class="font-body text-[0.78rem] font-bold text-primary">Формат поездки</label>
++            <UiToggleGroup type="single" :model-value="format" @update:model-value="(v: unknown) => { if (v) format = String(v) }" class="justify-start flex-wrap">
++              <UiToggleGroupItem
++                v-for="opt in formatOptions"
++                :key="opt.value"
++                :value="opt.value"
++                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-primary/15 transition-all duration-200"
++              >
++                {{ opt.label }}
++              </UiToggleGroupItem>
++            </UiToggleGroup>
++          </div>
++
++
+@@ -240 +262 @@ async function handleCreate() {
+-            <div class="bg-cream/30 border border-cream/50 rounded-2xl p-5 flex flex-col gap-4">
++            <div class="bg-white/30 border border-white/50 rounded-2xl p-5 flex flex-col gap-4">
+@@ -288 +310 @@ async function handleCreate() {
+-                    class="rounded-xl px-3 py-2 font-body text-[0.82rem] border-primary/15 bg-cream/25 focus-visible:ring-accent w-20"
++                    class="rounded-xl px-3 py-2 font-body text-[0.82rem] border-primary/15 bg-white/25 focus-visible:ring-accent w-20"
+diff --git a/app/pages/vibe/choice.vue b/app/pages/vibe/choice.vue
+index 9314699..da7c85e 100644
+--- a/app/pages/vibe/choice.vue
++++ b/app/pages/vibe/choice.vue
+@@ -2,7 +2,2 @@
+-import { Mic, Sparkles, ArrowRight } from "lucide-vue-next";
+-
+-useHead({
+-  title: "Создаём ваш профиль - КудыТуды",
+-  meta: [
+-    { name: "description", content: "Выберите способ профилирования: свайп-карточки или голосовой ввод" },
+-  ],
++definePageMeta({
++  middleware: [() => navigateTo("/start", { redirectCode: 301 })],
+@@ -10,9 +4,0 @@ useHead({
+-
+-const selectedMethod = ref<"swipe" | "voice" | null>(null);
+-
+-function go(method: "swipe" | "voice") {
+-  selectedMethod.value = method;
+-  setTimeout(() => {
+-    navigateTo(method === "swipe" ? "/vibe/swipe" : "/vibe/voice");
+-  }, 400);
+-}
+@@ -22,92 +8 @@ function go(method: "swipe" | "voice") {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
+-
+-    <div class="absolute w-[600px] h-[600px] rounded-full bg-accent/10 -top-32 right-[-5%] blur-[140px] pointer-events-none animate-pulse"></div>
+-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 -bottom-20 left-[5%] blur-[100px] pointer-events-none"></div>
+-    <div class="absolute w-[200px] h-[200px] rounded-full bg-accent/6 top-1/2 left-1/3 blur-[80px] pointer-events-none"></div>
+-
+-    <div class="relative z-10 max-w-xl w-full text-center flex flex-col items-center">
+-
+-      <div class="w-20 h-20 rounded-full bg-accent/15 flex items-center justify-center mb-6 choice-float">
+-        <Sparkles class="w-9 h-9 text-accent-dark" />
+-      </div>
+-
+-      <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-5">
+-        Добро пожаловать
+-      </span>
+-
+-      <h1 class="font-heading text-primary mb-3 leading-[1.2]" style="font-size: clamp(1.3rem, 4vw, 2.2rem);">
+-        Давай <span class="text-accent">узнаем тебя</span>
+-      </h1>
+-      <p class="font-body font-light text-primary-light text-[0.88rem] leading-relaxed max-w-sm mx-auto mb-10">
+-        Выбери способ — и ИИ подберёт идеальные места по твоему настроению. Это займёт меньше минуты.
+-      </p>
+-
+-
+-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-lg">
+-
+-        <button
+-          class="group relative flex flex-col items-center gap-5 p-8 bg-cream/40 border rounded-3xl cursor-pointer transition-all duration-400 text-left overflow-hidden"
+-          :class="selectedMethod === 'swipe'
+-            ? 'border-accent bg-accent/10 scale-[0.97] shadow-[0_8px_40px_rgba(164,190,79,0.2)]'
+-            : 'border-cream/50 hover:-translate-y-2 hover:shadow-xl hover:border-accent/30 hover:bg-cream/60'"
+-          @click="go('swipe')"
+-        >
+-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+-
+-
+-          <div class="relative w-16 h-16">
+-
+-            <div class="absolute w-12 h-16 rounded-2xl bg-primary/8 transform rotate-[-8deg] translate-x-1 top-0"></div>
+-            <div class="absolute w-12 h-16 rounded-2xl bg-accent/15 transform rotate-[4deg] translate-x-3 top-0"></div>
+-            <div class="absolute w-12 h-16 rounded-2xl bg-accent/30 border border-accent/40 flex items-center justify-center translate-x-2 top-0 group-hover:rotate-[8deg] transition-transform duration-300">
+-              <span class="text-xl">✨</span>
+-            </div>
+-          </div>
+-
+-          <div class="text-center">
+-            <h2 class="font-heading text-primary text-[1.05rem] mb-1.5">Свайп-карточки</h2>
+-            <p class="font-body font-light text-primary-light text-[0.78rem] leading-relaxed">
+-              Как в Тиндере — свайпай вправо если нравится, влево если нет. Быстро и весело!
+-            </p>
+-          </div>
+-
+-          <span class="inline-flex items-center gap-1 font-body font-bold text-[0.72rem] text-accent-dark bg-accent/10 rounded-full px-3 py-1.5 group-hover:bg-accent/20 transition-colors">
+-            6 карточек · ~30 сек
+-            <ArrowRight class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+-          </span>
+-        </button>
+-
+-
+-        <button
+-          class="group relative flex flex-col items-center gap-5 p-8 bg-cream/40 border rounded-3xl cursor-pointer transition-all duration-400 text-left overflow-hidden"
+-          :class="selectedMethod === 'voice'
+-            ? 'border-accent bg-accent/10 scale-[0.97] shadow-[0_8px_40px_rgba(164,190,79,0.2)]'
+-            : 'border-cream/50 hover:-translate-y-2 hover:shadow-xl hover:border-accent/30 hover:bg-cream/60'"
+-          @click="go('voice')"
+-        >
+-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent/0 via-accent to-accent/0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-right"></div>
+-
+-          <div class="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center group-hover:bg-accent/25 transition-colors group-hover:scale-110 duration-300">
+-            <Mic class="w-7 h-7 text-accent-dark" />
+-          </div>
+-
+-          <div class="text-center">
+-            <h2 class="font-heading text-primary text-[1.05rem] mb-1.5">Голосовой ввод</h2>
+-            <p class="font-body font-light text-primary-light text-[0.78rem] leading-relaxed">
+-              Расскажи, чего хочешь — ИИ поймёт настроение и подберёт идеальные места.
+-            </p>
+-          </div>
+-
+-          <span class="inline-flex items-center gap-1 font-body font-bold text-[0.72rem] text-accent-dark bg-accent/10 rounded-full px-3 py-1.5 group-hover:bg-accent/20 transition-colors">
+-            Свободный рассказ · ~1 мин
+-            <ArrowRight class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+-          </span>
+-        </button>
+-      </div>
+-
+-
+-      <NuxtLink to="/dashboard" class="font-body text-[0.75rem] text-primary-light no-underline mt-8 hover:text-primary transition-colors">
+-        Пропустить и перейти в дашборд →
+-      </NuxtLink>
+-    </div>
+-  </div>
++  <div></div>
+@@ -115,10 +9,0 @@ function go(method: "swipe" | "voice") {
+-
+-<style scoped>
+-@keyframes choice-float {
+-  0%, 100% { transform: translateY(0); }
+-  50% { transform: translateY(-8px); }
+-}
+-.choice-float {
+-  animation: choice-float 3s ease-in-out infinite;
+-}
+-</style>
+diff --git a/app/pages/vibe/result.vue b/app/pages/vibe/result.vue
+index 64342f1..ba095c5 100644
+--- a/app/pages/vibe/result.vue
++++ b/app/pages/vibe/result.vue
+@@ -2 +2 @@
+-import { Sparkles, ArrowRight, ArrowLeft, Loader2, MapPin, Star, Baby, Tag } from "lucide-vue-next";
++import { Sparkles, ArrowRight, ArrowLeft, Loader2, MapPin, Star, Baby, Tag, Fingerprint, Mic } from "lucide-vue-next";
+@@ -72 +72 @@ async function handleShowRecommendations() {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-5 pt-4 pb-16">
+@@ -74 +73,0 @@ async function handleShowRecommendations() {
+-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 -bottom-16 left-[8%] blur-[100px] pointer-events-none"></div>
+@@ -76 +75 @@ async function handleShowRecommendations() {
+-    <div class="relative z-10 w-full" :class="showRecs ? 'max-w-4xl' : 'max-w-xl'">
++    <div class="relative z-10 w-full" :style="{ maxWidth: showRecs ? '1140px' : '36rem' }">
+@@ -78 +77 @@ async function handleShowRecommendations() {
+-        <NuxtLink to="/vibe/voice" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
++        <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
+@@ -95 +94,5 @@ async function handleShowRecommendations() {
+-      <div class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10 mb-6">
++      <div class="bg-white/50 border border-white/60 rounded-3xl p-8 md:p-10 mb-6 relative">
++        <div v-if="vibeStore.profile?.vector_id" class="absolute top-4 right-5 sm:top-6 sm:right-6 flex items-center justify-end gap-1.5 opacity-30 select-none pointer-events-none">
++          <Fingerprint class="w-3 h-3 text-primary-dark" />
++          <span class="font-mono text-[0.55rem] text-primary-dark uppercase tracking-[0.2em]">{{ vibeStore.profile.vector_id.split('-').slice(0,2).join('-') }}</span>
++        </div>
+@@ -113 +116 @@ async function handleShowRecommendations() {
+-        <div class="bg-cream-light/60 rounded-2xl p-5 mb-6">
++        <div class="bg-white/60 rounded-2xl p-5 mb-6">
+@@ -118,0 +122,9 @@ async function handleShowRecommendations() {
++        <div v-if="vibeStore.profile?.transcription" class="bg-primary/5 rounded-2xl p-5 mb-6 border border-primary/10">
++          <div class="flex items-center gap-1.5 mb-2 opacity-60">
++            <Mic class="w-3.5 h-3.5 text-primary" />
++            <span class="font-body text-[0.65rem] font-bold text-primary uppercase tracking-wider">Распознанный запрос</span>
++          </div>
++          <p class="font-body text-[0.8rem] text-primary leading-relaxed">
++            «{{ vibeStore.profile.transcription }}»
++          </p>
++        </div>
+@@ -137 +149 @@ async function handleShowRecommendations() {
+-      <div v-if="!showRecs" class="flex flex-col sm:flex-row gap-3 mb-6">
++      <div v-if="!showRecs" class="flex flex-col gap-3 mb-6">
+@@ -139 +151 @@ async function handleShowRecommendations() {
+-          class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.88rem] text-white bg-accent rounded-2xl px-6 py-3.5 border-none cursor-pointer transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
++          class="flex items-center justify-center gap-2 font-body font-bold text-[0.88rem] text-white bg-accent rounded-2xl px-6 py-3.5 border-none cursor-pointer transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+@@ -149,6 +161,14 @@ async function handleShowRecommendations() {
+-        <NuxtLink
+-          to="/vibe/swipe"
+-          class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-cream"
+-        >
+-          Уточнить свайпами
+-        </NuxtLink>
++        <div class="flex flex-col sm:flex-row gap-3">
++          <NuxtLink
++            to="/trip/new"
++            class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-primary-dark bg-primary rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg"
++          >
++            🗺 Перейти к деталям поездки
++          </NuxtLink>
++          <NuxtLink
++            to="/vibe/swipe"
++            class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
++          >
++            Уточнить свайпами
++          </NuxtLink>
++        </div>
+@@ -174 +194 @@ async function handleShowRecommendations() {
+-            class="group flex flex-col bg-cream/50 border border-cream/60 rounded-[24px] overflow-hidden no-underline transition-all duration-250 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(40,90,113,0.08)]"
++            class="group flex flex-col bg-white/50 border border-white/60 rounded-[24px] overflow-hidden no-underline transition-all duration-250 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(40,90,113,0.08)]"
+@@ -249,2 +269,2 @@ async function handleShowRecommendations() {
+-            to="/dashboard/map"
+-            class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-cream"
++            to="/map"
++            class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
+diff --git a/app/pages/vibe/swipe.vue b/app/pages/vibe/swipe.vue
+index 98949ef..5e26f12 100644
+--- a/app/pages/vibe/swipe.vue
++++ b/app/pages/vibe/swipe.vue
+@@ -14,0 +15 @@ const isFinishing = ref(false);
++const isAnimating = ref(false);
+@@ -21 +21,0 @@ const dragStartY = ref(0);
+-const flyDirection = ref<"left" | "right" | null>(null);
+@@ -52,2 +51,0 @@ const scenes = computed(() => {
+-const currentScene = computed(() => scenes.value[currentIndex.value]);
+-const nextScene = computed(() => scenes.value[currentIndex.value + 1]);
+@@ -57,0 +56,12 @@ const progress = computed(() => swipedCount.value / totalRequired.value);
++// Visible stack: up to 3 cards from currentIndex
++const visibleCards = computed(() => {
++  const cards = [];
++  for (let i = 0; i < 3; i++) {
++    const idx = currentIndex.value + i;
++    if (idx < scenes.value.length) {
++      cards.push({ scene: scenes.value[idx], stackPosition: i, index: idx });
++    }
++  }
++  return cards;
++});
++
+@@ -66,11 +76,24 @@ function getEmoji(scene: { title: string }) {
+-const cardStyle = computed(() => {
+-  if (flyDirection.value) {
+-    const flyX = flyDirection.value === "right" ? 600 : -600;
+-    const flyRotate = flyDirection.value === "right" ? 30 : -30;
+-    return {
+-      transform: `translate(${flyX}px, -80px) rotate(${flyRotate}deg)`,
+-      transition: "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease",
+-      opacity: "0",
+-    };
+-  }
+-  if (!isDragging.value && dragX.value === 0) {
++function getCardStyle(stackPosition: number) {
++  // Top card (position 0) — draggable
++  if (stackPosition === 0) {
++    if (isAnimating.value) {
++      // Flying out
++      const flyX = flyDir.value === "right" ? 600 : -600;
++      const flyRotate = flyDir.value === "right" ? 30 : -30;
++      return {
++        transform: `translate(${flyX}px, -80px) rotate(${flyRotate}deg)`,
++        opacity: 0,
++        zIndex: 30,
++        transition: "transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease",
++      };
++    }
++    if (isDragging.value || dragX.value !== 0) {
++      const rotation = dragX.value * 0.06;
++      return {
++        transform: `translate(${dragX.value}px, ${dragY.value * 0.3}px) rotate(${rotation}deg)`,
++        opacity: 1,
++        zIndex: 30,
++        transition: isDragging.value ? "none" : "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
++        cursor: isDragging.value ? "grabbing" : "grab",
++      };
++    }
+@@ -79 +102,3 @@ const cardStyle = computed(() => {
+-      transition: "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
++      opacity: 1,
++      zIndex: 30,
++      transition: "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease",
+@@ -82 +107,12 @@ const cardStyle = computed(() => {
+-  const rotation = dragX.value * 0.08;
++
++  // Cards behind: scale down, shift down, lower z-index, dimmer
++  const dragProgress = Math.min(Math.abs(dragX.value) / 150, 1);
++  const baseScale = 1 - stackPosition * 0.06;
++  const baseY = stackPosition * 14;
++  const baseOpacity = 1 - stackPosition * 0.25;
++
++  // When dragging, the next card "comes forward"
++  const scale = baseScale + (isAnimating.value || isDragging.value ? dragProgress * 0.06 : 0);
++  const y = baseY - (isAnimating.value || isDragging.value ? dragProgress * 14 : 0);
++  const opacity = baseOpacity + (isAnimating.value || isDragging.value ? dragProgress * 0.25 : 0);
++
+@@ -84,3 +120,4 @@ const cardStyle = computed(() => {
+-    transform: `translate(${dragX.value}px, ${dragY.value * 0.3}px) rotate(${rotation}deg)`,
+-    transition: isDragging.value ? "none" : "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)",
+-    cursor: isDragging.value ? "grabbing" : "grab",
++    transform: `translate(0, ${y}px) scale(${scale})`,
++    opacity: Math.min(opacity, 1),
++    zIndex: 20 - stackPosition,
++    transition: isDragging.value ? "none" : "all 0.45s cubic-bezier(0.2, 0.8, 0.2, 1)",
+@@ -88 +125 @@ const cardStyle = computed(() => {
+-});
++}
+@@ -93,10 +130 @@ const nopeOpacity = computed(() => Math.min(Math.max(-dragX.value / 100, 0), 1))
+-const nextCardStyle = computed(() => {
+-  const absX = Math.abs(dragX.value);
+-  const scale = 0.92 + Math.min(absX / 300, 0.08);
+-  const opacity = 0.5 + Math.min(absX / 300, 0.5);
+-  return {
+-    transform: `scale(${scale})`,
+-    opacity: String(opacity),
+-    transition: isDragging.value ? "none" : "all 0.4s ease",
+-  };
+-});
++const flyDir = ref<"left" | "right">("right");
+@@ -105 +133 @@ function onPointerDown(e: PointerEvent) {
+-  if (flyDirection.value) return;
++  if (isAnimating.value) return;
+@@ -128 +155,0 @@ function onPointerUp() {
+-    // Spring back
+@@ -135,3 +162,8 @@ async function executeSwipe(direction: "left" | "right") {
+-  const scene = currentScene.value;
+-  if (!scene) return;
+-  flyDirection.value = direction;
++  const scene = scenes.value[currentIndex.value];
++  if (!scene || isAnimating.value) return;
++
++  flyDir.value = direction;
++  isAnimating.value = true;
++
++  // Force drag to max so behind cards animate to full position
++  dragX.value = direction === "right" ? 300 : -300;
+@@ -141 +173,2 @@ async function executeSwipe(direction: "left" | "right") {
+-  await new Promise(resolve => setTimeout(resolve, 400));
++  // Wait for fly-out animation
++  await new Promise(resolve => setTimeout(resolve, 450));
+@@ -143 +176,2 @@ async function executeSwipe(direction: "left" | "right") {
+-  flyDirection.value = null;
++  // Reset state and advance
++  isAnimating.value = false;
+@@ -155 +189 @@ function handleButtonSwipe(direction: "left" | "right") {
+-  if (flyDirection.value) return;
++  if (isAnimating.value) return;
+@@ -171 +204,0 @@ onMounted(async () => {
+-
+@@ -173 +206 @@ onMounted(async () => {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5">
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-5 pt-4 pb-16">
+@@ -175 +207,0 @@ onMounted(async () => {
+-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 bottom-[-80px] right-[5%] blur-[100px] pointer-events-none"></div>
+@@ -178 +210 @@ onMounted(async () => {
+-      <NuxtLink to="/vibe/choice" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 hover:text-primary transition-colors inline-flex items-center gap-1.5 self-start">
++      <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 hover:text-primary transition-colors inline-flex items-center gap-1.5 self-start">
+@@ -222,2 +254,2 @@ onMounted(async () => {
+-      <div v-else-if="currentScene && !isFinished" class="relative w-full h-[420px] mb-6">
+-
++      <div v-else-if="visibleCards.length > 0 && !isFinished" class="relative w-full h-[420px] mb-6">
++        <!-- Card stack: rendered bottom-to-top, each card keyed by scene ID -->
+@@ -225,3 +257,11 @@ onMounted(async () => {
+-          v-if="nextScene"
+-          class="absolute inset-x-0 top-4 mx-auto w-[90%] h-[360px] bg-cream/40 border border-cream/50 rounded-[28px] flex flex-col items-center justify-center"
+-          :style="nextCardStyle"
++          v-for="card in [...visibleCards].reverse()"
++          :key="card.scene.id"
++          class="swipe-card absolute inset-0 mx-auto w-full bg-white border border-white/80 rounded-3xl flex flex-col items-center justify-center gap-5 p-10 will-change-transform"
++          :class="card.stackPosition === 0 ? 'touch-none select-none' : 'pointer-events-none'"
++          :style="getCardStyle(card.stackPosition)"
++          v-bind="card.stackPosition === 0 ? {
++            onPointerdown: onPointerDown,
++            onPointermove: onPointerMove,
++            onPointerup: onPointerUp,
++            onPointerleave: onPointerUp,
++          } : {}"
+@@ -229,13 +269 @@ onMounted(async () => {
+-          <span class="text-4xl opacity-60">{{ getEmoji(nextScene) }}</span>
+-        </div>
+-
+-
+-        <div
+-          class="absolute inset-0 mx-auto w-full bg-cream/60 border border-cream/60 rounded-3xl flex flex-col items-center justify-center gap-5 p-10 touch-none select-none"
+-          :style="cardStyle"
+-          @pointerdown="onPointerDown"
+-          @pointermove="onPointerMove"
+-          @pointerup="onPointerUp"
+-          @pointerleave="onPointerUp"
+-        >
+-
++          <!-- LIKE overlay (only on top card) -->
+@@ -242,0 +271 @@ onMounted(async () => {
++            v-if="card.stackPosition === 0"
+@@ -251 +280 @@ onMounted(async () => {
+-
++          <!-- NOPE overlay (only on top card) -->
+@@ -252,0 +282 @@ onMounted(async () => {
++            v-if="card.stackPosition === 0"
+@@ -261 +291 @@ onMounted(async () => {
+-
++          <!-- Card content -->
+@@ -263,2 +293,2 @@ onMounted(async () => {
+-            <div v-if="currentScene.image_url" class="w-24 h-24 rounded-2xl overflow-hidden bg-primary/5">
+-              <img :src="currentScene.image_url" :alt="currentScene.title" class="w-full h-full object-cover" />
++            <div v-if="card.scene.image_url" class="w-24 h-24 rounded-2xl overflow-hidden bg-primary/5">
++              <img :src="card.scene.image_url" :alt="card.scene.title" class="w-full h-full object-cover" />
+@@ -266 +296 @@ onMounted(async () => {
+-            <span v-else class="text-6xl block drop-shadow-lg">{{ getEmoji(currentScene) }}</span>
++            <span v-else class="text-6xl block drop-shadow-lg">{{ getEmoji(card.scene) }}</span>
+@@ -268,2 +298,2 @@ onMounted(async () => {
+-            <h2 class="font-heading text-primary text-[1.25rem] leading-snug">{{ currentScene.title }}</h2>
+-            <p class="font-body font-light text-primary-light text-[0.88rem] leading-relaxed max-w-[260px]">{{ currentScene.description }}</p>
++            <h2 class="font-heading text-primary text-[1.25rem] leading-snug">{{ card.scene.title }}</h2>
++            <p class="font-body font-light text-primary-light text-[0.88rem] leading-relaxed max-w-[260px]">{{ card.scene.description }}</p>
+@@ -288 +318 @@ onMounted(async () => {
+-      <div v-if="currentScene && !isFinished && !isFinishing" class="flex items-center justify-center gap-8">
++      <div v-if="visibleCards.length > 0 && !isFinished && !isFinishing" class="flex items-center justify-center gap-8">
+@@ -290,0 +321 @@ onMounted(async () => {
++          :disabled="isAnimating"
+@@ -297,0 +329 @@ onMounted(async () => {
++          :disabled="isAnimating"
+@@ -305 +337 @@ onMounted(async () => {
+-      <p v-if="currentScene && !isFinished && !isFinishing" class="font-body font-light text-primary-light text-[0.72rem] mt-5">
++      <p v-if="visibleCards.length > 0 && !isFinished && !isFinishing" class="font-body font-light text-primary-light text-[0.72rem] mt-5">
+@@ -317,0 +350,4 @@ onMounted(async () => {
++.swipe-card {
++  transform-origin: center bottom;
++  backface-visibility: hidden;
++}
+diff --git a/app/pages/vibe/voice.vue b/app/pages/vibe/voice.vue
+index 7ebd7fa..d09390e 100644
+--- a/app/pages/vibe/voice.vue
++++ b/app/pages/vibe/voice.vue
+@@ -23,0 +24,2 @@ let animationFrame: number | null = null;
++let isUnmountedComponent = false;
++
+@@ -25,0 +28 @@ onMounted(() => {
++  isUnmountedComponent = false;
+@@ -27,0 +31,2 @@ onMounted(() => {
++let recordingStartTime = 0;
++
+@@ -59,0 +65,8 @@ async function startRecording() {
++      if (isUnmountedComponent) return;
++      
++      const duration = Date.now() - recordingStartTime;
++      if (duration < 3000) {
++        vibeStore.error = "Запись слишком короткая. Пожалуйста, расскажите подробнее (минимум 3 секунды).";
++        return;
++      }
++
+@@ -64,0 +78,3 @@ async function startRecording() {
++      
++      if (isUnmountedComponent) return;
++      
+@@ -72,0 +89 @@ async function startRecording() {
++    recordingStartTime = Date.now();
+@@ -100,0 +118 @@ onUnmounted(() => {
++  isUnmountedComponent = true;
+@@ -108 +125,0 @@ onUnmounted(() => {
+-
+@@ -110,3 +127,2 @@ onUnmounted(() => {
+-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5">
+-    <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] right-[10%] blur-[120px] pointer-events-none"></div>
+-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 bottom-[-80px] left-[5%] blur-[100px] pointer-events-none"></div>
++  <div class="min-h-screen bg-white flex flex-col items-center justify-start relative overflow-hidden px-4 pt-4 pb-16">
++    <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/8 top-[-100px] right-[10%] blur-[100px] pointer-events-none"></div>
+@@ -115 +131 @@ onUnmounted(() => {
+-      <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-12 hover:text-primary transition-colors inline-flex items-center gap-1.5">
++      <NuxtLink to="/start" class="font-body text-[0.75rem] text-primary-light no-underline mb-4 hover:text-primary transition-colors inline-flex items-center gap-1">
+@@ -121,2 +137,2 @@ onUnmounted(() => {
+-      <div v-if="isProcessing" class="flex flex-col items-center gap-6">
+-        <div class="relative w-32 h-32 flex items-center justify-center">
++      <div v-if="isProcessing" class="flex flex-col items-center gap-4">
++        <div class="relative w-28 h-28 flex items-center justify-center">
+@@ -138,2 +154,2 @@ onUnmounted(() => {
+-        <h2 class="font-heading text-primary text-[1.2rem]">ИИ создаёт ваш профиль…</h2>
+-        <p class="font-body font-light text-primary-light text-[0.85rem]">Анализируем настроение и предпочтения</p>
++        <h2 class="font-heading text-primary text-[1.05rem]">ИИ создаёт ваш профиль…</h2>
++        <p class="font-body font-light text-primary-light text-[0.8rem]">Анализируем настроение и предпочтения</p>
+@@ -148 +164 @@ onUnmounted(() => {
+-      <div v-else-if="vibeStore.error" class="flex flex-col items-center gap-4">
++      <div v-else-if="vibeStore.error" class="flex flex-col items-center gap-3">
+@@ -162,2 +178,2 @@ onUnmounted(() => {
+-      <div v-else class="flex flex-col items-center gap-6">
+-        <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full">
++      <div v-else class="flex flex-col items-center gap-3">
++        <span class="inline-block font-body font-bold text-[0.6rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full">
+@@ -167 +183 @@ onUnmounted(() => {
+-        <h1 class="font-heading text-primary leading-[1.25]" style="font-size: clamp(1.2rem, 3vw, 1.8rem);">
++        <h1 class="font-heading text-primary leading-[1.25]" style="font-size: clamp(1.1rem, 3vw, 1.6rem);">
+@@ -170 +186 @@ onUnmounted(() => {
+-        <p class="font-body font-light text-primary-light text-[0.85rem] leading-relaxed max-w-sm">
++        <p class="font-body font-light text-primary-light text-[0.8rem] leading-relaxed max-w-sm">
+@@ -176 +192 @@ onUnmounted(() => {
+-          class="relative w-32 h-32 rounded-full border-none cursor-pointer transition-all duration-300 mt-4"
++          class="relative w-28 h-28 rounded-full border-none cursor-pointer transition-all duration-300 mt-2"
+@@ -187 +203 @@ onUnmounted(() => {
+-          <Mic class="w-10 h-10 text-white mx-auto" />
++          <Mic class="w-9 h-9 text-white mx-auto" />
+diff --git a/docs/api.json b/docs/api.json
+index 59ff88d..6b1c836 100644
+--- a/docs/api.json
++++ b/docs/api.json
+@@ -429 +429 @@
+-            "description": "UUID владельца (хоста).",
++            "description": "UUID владельца (Бизнесмена).",
+@@ -671 +671 @@
+-            "description": "Роль пользователя. tourist — турист (по умолчанию), host — хост (владелец локаций).",
++            "description": "Роль пользователя. tourist — турист (по умолчанию), host — Бизнесмен (владелец локаций).",
+diff --git a/store/auth.ts b/store/auth.ts
+index aa965a8..b36012f 100644
+--- a/store/auth.ts
++++ b/store/auth.ts
+@@ -159,2 +159,2 @@ export const useAuthStore = defineStore("auth", {
+-        const profile = await request<UserProfile>("/api/v1/profile/me");
+-        this.user = profile;
++        const response = await request<{ success: boolean; data: UserProfile }>("/api/v1/profile/me");
++        this.user = response.data;
+@@ -172 +172 @@ export const useAuthStore = defineStore("auth", {
+-        const profile = await request<UserProfile>("/api/v1/profile/me", {
++        const response = await request<{ success: boolean; data: UserProfile }>("/api/v1/profile/me", {
+@@ -176 +176 @@ export const useAuthStore = defineStore("auth", {
+-        this.user = profile;
++        this.user = response.data;
+diff --git a/store/vibe.ts b/store/vibe.ts
+index 18e39c3..8b40f66 100644
+--- a/store/vibe.ts
++++ b/store/vibe.ts
+@@ -76,0 +77,7 @@ export const useVibeStore = defineStore("vibe", {
++      
++      const normalize = (val: number | undefined) => {
++        if (typeof val !== 'number') return 0.5;
++        // The API returns -1.0 to 1.0, but progress bar needs 0.0 to 1.0.
++        return (Math.max(-1, Math.min(1, val)) + 1) / 2;
++      };
++
+@@ -78,4 +85,5 @@ export const useVibeStore = defineStore("vibe", {
+-        { label: "🔇 Уединение", opposite: "Компания 🎉", value: (a.solitude_vs_social + 1) / 2 },
+-        { label: "🧘 Релакс", opposite: "Адреналин ⚡", value: (a.relax_vs_adrenaline + 1) / 2 },
+-        { label: "🍷 Гастрономия", opposite: "Природа 🌿", value: (a.gastro_vs_nature + 1) / 2 },
+-        { label: "🏛 Культура", opposite: "Приключения 🗺", value: (a.culture_vs_adventure + 1) / 2 },
++        { label: "😌 Спокойствие", opposite: "Стресс 🤯", value: a.stress_level ?? 0.5 }, // already 0 to 1
++        { label: "🔇 Уединение", opposite: "Компания 🎉", value: normalize(a.solitude_vs_social) },
++        { label: "🧘 Релакс", opposite: "Адреналин ⚡", value: normalize(a.relax_vs_adrenaline) },
++        { label: "🍷 Гастрономия", opposite: "Природа 🌿", value: normalize(a.gastro_vs_nature) },
++        { label: "🏛 Культура", opposite: "Приключения 🗺", value: normalize(a.culture_vs_adventure) },
+@@ -93,0 +102 @@ export const useVibeStore = defineStore("vibe", {
++        
+@@ -97,0 +107 @@ export const useVibeStore = defineStore("vibe", {
++        

@@ -426,7 +426,7 @@
             "type": "string"
           },
           "owner_id": {
-            "description": "UUID владельца (хоста).",
+            "description": "UUID владельца (Бизнесмена).",
             "format": "uuid",
             "type": "string"
           },
@@ -668,7 +668,7 @@
           },
           "role": {
             "default": "tourist",
-            "description": "Роль пользователя. tourist — турист (по умолчанию), host — хост (владелец локаций).",
+            "description": "Роль пользователя. tourist — турист (по умолчанию), host — Бизнесмен (владелец локаций).",
             "enum": [
               "tourist",
               "host"

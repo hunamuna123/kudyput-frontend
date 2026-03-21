@@ -32,7 +32,7 @@ const locations: Location[] = [
 <template>
   <section id="locations" class="py-24 md:py-32">
     <div class="container">
-      <div class="text-center mb-14">
+      <div class="text-left mb-14">
         <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-4">
           Локации
         </span>
@@ -63,10 +63,10 @@ const locations: Location[] = [
         </div>
       </div>
 
-      <div class="text-center mt-10">
+      <div class="text-left mt-10">
         <NuxtLink
           to="/dashboard/locations"
-          class="inline-block font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5 no-underline"
+          class="inline-block font-body font-bold text-[0.82rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 no-underline"
         >
           Смотреть все локации
         </NuxtLink>

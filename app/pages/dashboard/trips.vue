@@ -114,17 +114,17 @@ async function handleCreate() {
 
 
     <Transition name="slide">
-      <div v-if="showForm" class="bg-cream/35 border border-cream/50 rounded-3xl p-8 mb-6">
+      <div v-if="showForm" class="bg-white/35 border border-accent/40 rounded-3xl p-8 mb-6">
         <h3 class="font-heading text-[1.1rem] text-primary mb-6">Новая поездка</h3>
         <form class="flex flex-col gap-[18px]" @submit.prevent="handleCreate">
           <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3.5">
             <div class="flex flex-col gap-1.5">
               <label class="font-body text-[0.78rem] font-bold text-primary">Дата начала</label>
-              <UiInput v-model="dateFrom" type="date" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full" />
+              <UiInput v-model="dateFrom" type="date" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent w-full" />
             </div>
             <div class="flex flex-col gap-1.5">
               <label class="font-body text-[0.78rem] font-bold text-primary">Дата окончания</label>
-              <UiInput v-model="dateTo" type="date" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent w-full" />
+              <UiInput v-model="dateTo" type="date" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent w-full" />
             </div>
           </div>
 
@@ -132,7 +132,7 @@ async function handleCreate() {
             <div class="flex flex-col gap-1.5">
               <label class="font-body text-[0.78rem] font-bold text-primary">Бюджет</label>
               <UiSelect v-model="budgetTier">
-                <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
+                <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
                   <UiSelectValue placeholder="Комфорт" />
                 </UiSelectTrigger>
                 <UiSelectContent class="rounded-2xl">
@@ -145,7 +145,7 @@ async function handleCreate() {
             <div class="flex flex-col gap-1.5">
               <label class="font-body text-[0.78rem] font-bold text-primary">Транспорт</label>
               <UiSelect v-model="transport">
-                <UiSelectTrigger class="rounded-2xl font-body border-primary/15 bg-cream/25">
+                <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
                   <UiSelectValue placeholder="Авто" />
                 </UiSelectTrigger>
                 <UiSelectContent class="rounded-2xl">
@@ -159,7 +159,7 @@ async function handleCreate() {
 
           <div class="flex flex-col gap-1.5">
             <label class="font-body text-[0.78rem] font-bold text-primary">Размер группы</label>
-            <UiInput v-model.number="groupSize" type="number" min="1" max="50" class="rounded-2xl px-4 py-3.5 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent max-w-[140px]" />
+            <UiInput v-model.number="groupSize" type="number" min="1" max="50" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent max-w-[140px]" />
           </div>
 
           <UiAlert v-if="tripsStore.error" variant="destructive" class="rounded-2xl">
@@ -192,7 +192,7 @@ async function handleCreate() {
       <div
         v-for="trip in tripsStore.trips"
         :key="trip.id"
-        class="flex flex-col bg-cream/35 border border-cream/50 rounded-3xl transition-all duration-200 hover:border-accent/30 overflow-hidden"
+        class="flex flex-col bg-white/35 border border-accent/40 rounded-3xl transition-all duration-200 hover:border-accent/30 overflow-hidden"
       >
   
         <div class="flex flex-col gap-3 p-6">
@@ -227,7 +227,7 @@ async function handleCreate() {
             <input
               :value="getInviteUrl(trip)"
               readonly
-              class="font-mono text-[0.65rem] text-primary bg-cream-light/60 border border-primary/8 rounded-lg px-2.5 py-1.5 flex-1 min-w-0 truncate"
+              class="font-mono text-[0.65rem] text-primary bg-white/60 border border-accent/40 rounded-lg px-2.5 py-1.5 flex-1 min-w-0 truncate"
             />
             <button
               class="font-body font-bold text-[0.68rem] text-accent-dark bg-accent/10 hover:bg-accent/20 border-none rounded-lg px-2.5 py-1.5 cursor-pointer transition-colors shrink-0"
@@ -250,7 +250,7 @@ async function handleCreate() {
 
 
         <Transition name="slide">
-          <div v-if="expandedTripId === trip.id" class="border-t border-primary/8 px-6 py-4 bg-cream-light/30">
+          <div v-if="expandedTripId === trip.id" class="border-t px-6 py-4 bg-white/30 border border-accent/40">
             <div v-if="tripsStore.loading" class="flex items-center gap-2 py-3">
               <span class="inline-block w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></span>
               <span class="font-body text-[0.78rem] text-primary-light">Загрузка...</span>

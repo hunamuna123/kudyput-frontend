@@ -14,6 +14,10 @@ useHead({
 
 const authStore = useAuthStore();
 const vibeStore = useVibeStore();
+onMounted(() => {
+  authStore.fetchProfile();
+});
+
 const editing = ref(false);
 const editName = ref("");
 
@@ -32,7 +36,7 @@ async function saveProfile() {
 
 const roleLabels: Record<string, string> = {
   tourist: "Турист",
-  host: "Хост",
+  host: "Бизнесмен",
   b2g_admin: "Администратор",
 };
 
@@ -81,7 +85,7 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
 <template>
   <div class="w-full max-w-[720px] flex flex-col gap-5">
 
-    <div class="flex items-center gap-6 p-8 bg-cream/35 border border-cream/50 rounded-3xl max-sm:flex-col max-sm:text-center">
+    <div class="flex items-center gap-6 p-8 bg-white/35 border border-accent/40 rounded-3xl max-sm:flex-col max-sm:text-center">
       <div class="w-[72px] h-[72px] rounded-full bg-accent/20 flex items-center justify-center shrink-0">
         <User class="w-8 h-8 text-accent-dark" />
       </div>
@@ -102,7 +106,7 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
             <UiInput
               v-model="editName"
               placeholder="Введите имя"
-              class="rounded-2xl px-4 py-3 font-body border-primary/15 bg-cream/25 focus-visible:ring-accent flex-1"
+              class="rounded-2xl px-4 py-3 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent flex-1"
             />
             <UiButton
               size="icon"
@@ -130,7 +134,7 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
     </div>
 
 
-    <div class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
+    <div class="bg-white/35 border border-accent/40 rounded-3xl p-6">
       <div class="flex items-center justify-between mb-3">
         <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Карма</span>
         <span class="font-body text-[0.72rem] font-bold rounded-full px-2.5 py-1" :class="karmaLevel.color">
@@ -156,7 +160,7 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
     </div>
 
 
-    <div v-if="hasVibe && vibeAxes.length > 0" class="bg-cream/35 border border-cream/50 rounded-3xl p-6">
+    <div v-if="hasVibe && vibeAxes.length > 0" class="bg-white/35 border border-accent/40 rounded-3xl p-6">
       <div class="flex items-center gap-2 mb-5">
         <Sparkles class="w-4 h-4 text-accent-dark" />
         <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Вайб-паспорт</span>
@@ -206,14 +210,14 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
 
 
     <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3">
-      <div class="flex flex-col gap-2 py-5 px-6 bg-cream/35 border border-cream/50 rounded-3xl">
+      <div class="flex flex-col gap-2 py-5 px-6 bg-white/35 border border-accent/40 rounded-3xl">
         <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Роль</span>
         <UiBadge variant="secondary" class="self-start rounded-lg bg-primary/10 text-primary font-body text-[0.78rem]">
           {{ roleLabels[authStore.user?.role || 'tourist'] || 'Турист' }}
         </UiBadge>
       </div>
 
-      <div class="flex flex-col gap-2 py-5 px-6 bg-cream/35 border border-cream/50 rounded-3xl">
+      <div class="flex flex-col gap-2 py-5 px-6 bg-white/35 border border-accent/40 rounded-3xl">
         <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Дата регистрации</span>
         <span class="font-body text-[0.92rem] text-primary">{{ formatDateTime(authStore.user?.created_at) }}</span>
       </div>

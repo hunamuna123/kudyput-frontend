@@ -156,8 +156,8 @@ export const useAuthStore = defineStore("auth", {
       if (!this.accessToken) return;
       try {
         const { request } = useApiClient();
-        const profile = await request<UserProfile>("/api/v1/profile/me");
-        this.user = profile;
+        const response = await request<{ success: boolean; data: UserProfile }>("/api/v1/profile/me");
+        this.user = response.data;
         if (import.meta.client) localStorage.setItem("auth_user", JSON.stringify(this.user));
       } catch {
         this.user = null;
@@ -169,11 +169,11 @@ export const useAuthStore = defineStore("auth", {
       this.error = null;
       try {
         const { request } = useApiClient();
-        const profile = await request<UserProfile>("/api/v1/profile/me", {
+        const response = await request<{ success: boolean; data: UserProfile }>("/api/v1/profile/me", {
           method: "PUT",
           body: { display_name: displayName },
         });
-        this.user = profile;
+        this.user = response.data;
         return true;
       } catch (err: unknown) {
         const apiErr = err as { message?: string };

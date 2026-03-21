@@ -1,5 +1,5 @@
 <template>
-  <section class="relative min-h-screen flex flex-col justify-center overflow-hidden">
+  <section class="relative min-h-screen flex flex-col justify-center overflow-hidden -mt-20 pt-20">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/10 -top-20 right-[5%] blur-[120px] pointer-events-none animate-pulse"></div>
     <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 -bottom-16 left-[8%] blur-[100px] pointer-events-none"></div>
 
@@ -11,7 +11,7 @@
 
     <div class="container relative z-10 pt-28 pb-16">
       <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-        <div class="flex-1 min-w-0 text-center lg:text-left">
+        <div class="flex-1 min-w-0 text-left">
           <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-5">
             Краснодарский край
           </span>
@@ -21,17 +21,17 @@
             <span class="text-accent">почувствовать</span> тебя
           </h1>
 
-          <p class="font-body font-light text-primary-light text-[0.92rem] leading-relaxed max-w-md mx-auto lg:mx-0 mb-8">
+          <p class="font-body font-light text-primary-light text-[0.92rem] leading-relaxed max-w-md mx-0 mb-8">
             Персональные маршруты по скрытым местам Кубани — винодельни, горные тропы, фермы, — подобранные ИИ под ваш настрой.
           </p>
 
-          <div class="flex gap-3 flex-wrap justify-center lg:justify-start">
+          <div class="flex gap-3 flex-wrap justify-start">
             <NuxtLink to="/start" class="font-body font-bold text-[0.85rem] text-white bg-accent border-2 border-accent rounded-full px-7 py-3 cursor-pointer transition-all duration-300 shadow-[0_6px_28px_rgba(164,190,79,0.3)] hover:bg-accent-dark hover:border-accent-dark hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(164,190,79,0.4)] no-underline">
-              Начать путешествие
+              ✨ ИИ подберёт
             </NuxtLink>
-            <a href="#about" class="font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-cream hover:-translate-y-0.5 no-underline">
-              Узнать больше
-            </a>
+            <NuxtLink to="/trip/new" class="font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-full px-7 py-3 cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 no-underline">
+              🗺 Выберу сам
+            </NuxtLink>
           </div>
         </div>
 

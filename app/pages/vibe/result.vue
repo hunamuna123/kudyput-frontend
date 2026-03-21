@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Sparkles, ArrowRight, ArrowLeft, Loader2, MapPin, Star, Baby, Tag } from "lucide-vue-next";
+import { Sparkles, ArrowRight, ArrowLeft, Loader2, MapPin, Star, Baby, Tag, Fingerprint, Mic } from "lucide-vue-next";
 import { useVibeStore } from "~~/store/vibe";
 import { useAuthStore } from "~~/store/auth";
 
@@ -69,13 +69,12 @@ async function handleShowRecommendations() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cream-light flex flex-col items-center justify-center relative overflow-hidden px-5 py-12">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-4 pb-16">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/10 -top-20 right-[5%] blur-[120px] pointer-events-none"></div>
-    <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 -bottom-16 left-[8%] blur-[100px] pointer-events-none"></div>
 
-    <div class="relative z-10 w-full" :class="showRecs ? 'max-w-4xl' : 'max-w-xl'">
+    <div class="relative z-10 w-full" :style="{ maxWidth: showRecs ? '1140px' : '36rem' }">
       <div class="text-center mb-8">
-        <NuxtLink to="/vibe/voice" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
+        <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
           <ArrowLeft class="w-3.5 h-3.5" />
           Назад
         </NuxtLink>
@@ -92,7 +91,11 @@ async function handleShowRecommendations() {
       </div>
 
 
-      <div class="bg-cream/50 border border-cream/60 rounded-3xl p-8 md:p-10 mb-6">
+      <div class="bg-white/50 border border-accent/40 rounded-3xl p-8 md:p-10 mb-6 relative">
+        <div v-if="vibeStore.profile?.vector_id" class="absolute top-4 right-5 sm:top-6 sm:right-6 flex items-center justify-end gap-1.5 opacity-30 select-none pointer-events-none">
+          <Fingerprint class="w-3 h-3 text-primary-dark" />
+          <span class="font-mono text-[0.55rem] text-primary-dark uppercase tracking-[0.2em]">{{ vibeStore.profile.vector_id.split('-').slice(0,2).join('-') }}</span>
+        </div>
 
         <div class="flex flex-col gap-5 mb-8">
           <div v-for="axis in axes" :key="axis.label" class="flex flex-col gap-1.5">
@@ -110,12 +113,21 @@ async function handleShowRecommendations() {
         </div>
 
 
-        <div class="bg-cream-light/60 rounded-2xl p-5 mb-6">
+        <div class="bg-white/60 border border-accent/40 rounded-2xl p-5 mb-6">
           <p class="font-body text-[0.85rem] text-primary leading-relaxed italic">
             «{{ summary }}»
           </p>
         </div>
 
+        <div v-if="vibeStore.profile?.transcription" class="bg-primary/5 rounded-2xl p-5 mb-6 border border-primary/10">
+          <div class="flex items-center gap-1.5 mb-2 opacity-60">
+            <Mic class="w-3.5 h-3.5 text-primary" />
+            <span class="font-body text-[0.65rem] font-bold text-primary uppercase tracking-wider">Распознанный запрос</span>
+          </div>
+          <p class="font-body text-[0.8rem] text-primary leading-relaxed">
+            «{{ vibeStore.profile.transcription }}»
+          </p>
+        </div>
 
         <div class="flex flex-wrap gap-2">
           <span
@@ -134,9 +146,9 @@ async function handleShowRecommendations() {
       </p>
 
 
-      <div v-if="!showRecs" class="flex flex-col sm:flex-row gap-3 mb-6">
+      <div v-if="!showRecs" class="flex flex-col gap-3 mb-6">
         <button
-          class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.88rem] text-white bg-accent rounded-2xl px-6 py-3.5 border-none cursor-pointer transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          class="flex items-center justify-center gap-2 font-body font-bold text-[0.88rem] text-white bg-accent rounded-2xl px-6 py-3.5 border-none cursor-pointer transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           :disabled="isLoadingRecs"
           @click="handleShowRecommendations"
         >
@@ -146,12 +158,20 @@ async function handleShowRecommendations() {
             Показать рекомендации
           </template>
         </button>
-        <NuxtLink
-          to="/vibe/swipe"
-          class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-cream"
-        >
-          Уточнить свайпами
-        </NuxtLink>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <NuxtLink
+            to="/trip/new"
+            class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-primary-dark bg-primary rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg"
+          >
+            🗺 Перейти к деталям поездки
+          </NuxtLink>
+          <NuxtLink
+            to="/vibe/swipe"
+            class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
+          >
+            Уточнить свайпами
+          </NuxtLink>
+        </div>
       </div>
 
 
@@ -171,7 +191,7 @@ async function handleShowRecommendations() {
             v-for="rec in vibeStore.recommendations"
             :key="rec.location_id"
             :to="`/location/${rec.location_id}`"
-            class="group flex flex-col bg-cream/50 border border-cream/60 rounded-[24px] overflow-hidden no-underline transition-all duration-250 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(40,90,113,0.08)]"
+            class="group flex flex-col bg-white/50 border border-accent/40 rounded-[24px] overflow-hidden no-underline transition-all duration-250 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(40,90,113,0.08)]"
           >
 
             <div v-if="rec.preview_image_url" class="h-36 overflow-hidden bg-primary/5">
@@ -246,8 +266,8 @@ async function handleShowRecommendations() {
             <ArrowRight class="w-4 h-4" />
           </NuxtLink>
           <NuxtLink
-            to="/dashboard/map"
-            class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-cream"
+            to="/map"
+            class="flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
           >
             Смотреть на карте
           </NuxtLink>
