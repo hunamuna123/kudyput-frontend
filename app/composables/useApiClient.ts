@@ -12,6 +12,32 @@ interface ApiError {
   error?: string;
 }
 
+/**
+ * Recursively rewrite plain-HTTP media URLs to go through the HTTPS nginx proxy.
+ * http://141.98.7.225:9102/deepkrai-media/… → /media/deepkrai-media/…
+ * This fixes mixed-content issues on the HTTPS frontend.
+ */
+function sanitizeUrls<T>(data: T): T {
+  if (data === null || data === undefined) return data;
+  if (typeof data === "string") {
+    return data.replace(
+      /https?:\/\/141\.98\.7\.225:9102\//g,
+      "/media/",
+    ) as unknown as T;
+  }
+  if (Array.isArray(data)) {
+    return data.map(sanitizeUrls) as unknown as T;
+  }
+  if (typeof data === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(data as Record<string, unknown>)) {
+      out[key] = sanitizeUrls(val);
+    }
+    return out as T;
+  }
+  return data;
+}
+
 export function useApiClient() {
   const config = useRuntimeConfig();
   const baseUrl = config.public.apiBase as string;
@@ -111,7 +137,8 @@ export function useApiClient() {
     }
 
     try {
-      return await $fetch<T>(`${baseUrl}${endpoint}`, fetchOptions);
+      const result = await $fetch<T>(`${baseUrl}${endpoint}`, fetchOptions);
+      return sanitizeUrls(result);
     } catch (err: unknown) {
       const fetchErr = err as { status?: number; data?: { message?: string; error?: string } };
 
@@ -122,7 +149,8 @@ export function useApiClient() {
           if (newToken) {
             headers["Authorization"] = `Bearer ${newToken}`;
           }
-          return await $fetch<T>(`${baseUrl}${endpoint}`, fetchOptions);
+          const retryResult = await $fetch<T>(`${baseUrl}${endpoint}`, fetchOptions);
+          return sanitizeUrls(retryResult);
         } else {
           clearTokens();
           if (import.meta.client) {
