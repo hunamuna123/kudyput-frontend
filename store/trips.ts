@@ -200,6 +200,33 @@ export const useTripsStore = defineStore("trips", {
       }
     },
 
+    async updateTrip(id: string, data: Partial<Omit<Trip, 'id' | 'creator_id' | 'created_at' | 'updated_at' | 'invite_token' | 'status' | 'merged_vibe_vector_id'>>) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const { request } = useApiClient();
+        const response = await request<{ success: boolean; data: Trip }>(
+          `/api/v1/trips/${id}`,
+          {
+            method: "PUT",
+            body: data as Record<string, unknown>,
+          },
+        );
+        if (response.data) {
+          this.currentTrip = response.data;
+          const idx = this.trips.findIndex((t) => t.id === id);
+          if (idx !== -1) this.trips[idx] = response.data;
+        }
+        return response.data;
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string };
+        this.error = apiErr.message || "Ошибка обновления поездки";
+        return null;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async buildTripRoute(tripId: string, params: BuildTripRouteRequest = {}) {
       this.routeLoading = true;
       this.error = null;

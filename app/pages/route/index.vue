@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import {
   Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle,
-  Plus, X, Sparkles, Banknote, CalendarDays, ChevronRight, TrendingUp,
+  Plus, X, Sparkles, Banknote, CalendarDays, ChevronRight, TrendingUp, Headphones,
 } from "lucide-vue-next";
 import { useRoutesStore } from "~~/store/routes";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 import { useTripsStore, type TripRoute } from "~~/store/trips";
+import StoryPlayer from "~~/app/components/modules/StoryPlayer.vue";
 
 definePageMeta({
   layout: "dashboard",
@@ -21,6 +22,12 @@ const routesStore = useRoutesStore();
 const locationsStore = useLocationsStore();
 const authStore = useAuthStore();
 const tripsStore = useTripsStore();
+
+const effectiveRouteId = computed(() => {
+  const storeId = routesStore.currentRoute?.id;
+  if (storeId) return storeId;
+  return null;
+});
 
 // Tabs
 const activeTab = ref<"build" | "trips" | "saved">("build");
@@ -345,6 +352,19 @@ onMounted(async () => {
               </div>
             </div>
           </div>
+
+          <!-- Audio Guide (StoryPlayer) -->
+          <StoryPlayer v-if="effectiveRouteId" :route-id="effectiveRouteId" />
+
+          <!-- Link to full route page -->
+          <NuxtLink
+            v-if="effectiveRouteId"
+            :to="`/route/${effectiveRouteId}`"
+            class="flex items-center justify-center gap-2 font-body font-bold text-base text-accent-dark bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-2xl px-4 py-3.5 no-underline transition-all cursor-pointer"
+          >
+            <Headphones class="w-4 h-4" />
+            Открыть полный маршрут с аудиогидом
+          </NuxtLink>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MapPin, Filter, Loader2, AlertCircle, ExternalLink, Sparkles, Navigation, X, Clock, Ruler } from "lucide-vue-next";
+import { MapPin, Filter, Loader2, AlertCircle, ExternalLink, Sparkles, Navigation, X, Clock, Ruler, Headphones } from "lucide-vue-next";
 import { useMapStore } from "~~/store/map";
 import { useVibeStore } from "~~/store/vibe";
 import { useAuthStore } from "~~/store/auth";
@@ -54,7 +54,6 @@ function getPointName(id: string): string {
 async function handleBuildRoute() {
   if (routeLocationIds.value.length < 2) return;
 
-  // Build locations array with coordinates for OSRM
   const locations = routeLocationIds.value
     .map((id) => {
       const point = mapStore.points.find((p) => p.id === id);
@@ -65,22 +64,29 @@ async function handleBuildRoute() {
 
   if (locations.length < 2) return;
 
-  // Try OSRM first for real road geometry
-  const result = await routesStore.fetchRoadRoute(locations, routeTransport.value);
-  if (!result) {
-    // Fallback to backend API
-    await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+  // Build via backend API first to get a saved route with ID (for audio guide)
+  let backendResult: { id?: string } | null = null;
+  try {
+    backendResult = await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+  } catch {
+    // Backend unavailable — continue with OSRM only
+  }
+
+  // Then fetch OSRM geometry for actual road lines on map
+  await routesStore.fetchRoadRoute(locations, routeTransport.value);
+
+  // Keep backend route ID if available
+  if (backendResult?.id && routesStore.currentRoute) {
+    routesStore.currentRoute.id = backendResult.id;
   }
 }
 
 async function handleWeatherRebuild() {
   if (!routesStore.currentRoute) return;
-  // Use a placeholder route ID; in production this comes from the backend
-  const routeId = (routesStore.currentRoute as unknown as { id?: string }).id;
+  const routeId = routesStore.currentRoute.id;
   if (routeId) {
     await routesStore.rebuildRoute(routeId);
   } else {
-    // Fallback: rebuild with OSRM using existing locations
     await handleBuildRoute();
   }
 }
@@ -371,6 +377,24 @@ onMounted(async () => {
                     <span v-if="point.distance_km > 0" class="font-body text-xs text-primary-light">{{ formatDist(point.distance_km) }}</span>
                   </div>
                 </div>
+
+                <!-- Audio guide link -->
+                <NuxtLink
+                  v-if="routesStore.currentRoute?.id"
+                  :to="`/route/${routesStore.currentRoute.id}`"
+                  class="flex items-center justify-center gap-1.5 font-body font-bold text-sm text-accent-dark bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-xl px-3 py-2 no-underline transition-all mt-1 cursor-pointer"
+                >
+                  <Headphones class="w-3.5 h-3.5" />
+                  Аудиогид маршрута 🎙
+                </NuxtLink>
+                <NuxtLink
+                  v-else
+                  to="/route"
+                  class="flex items-center justify-center gap-1.5 font-body font-bold text-sm text-accent-dark bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-xl px-3 py-2 no-underline transition-all mt-1 cursor-pointer"
+                >
+                  <Headphones class="w-3.5 h-3.5" />
+                  Подробнее о маршруте
+                </NuxtLink>
               </div>
             </div>
           </Transition>

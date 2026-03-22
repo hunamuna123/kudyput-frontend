@@ -8,13 +8,28 @@ export interface RoutePoint {
   order: number;
   distance_km: number;
   travel_time_min: number;
+  distance_from_prev_km?: number;
+  duration_from_prev_min?: number;
+  audio_story_url?: string;
+  story_text?: string;
+  category?: string;
+  preview_image_url?: string;
 }
 
 export interface RoutePreview {
+  id?: string;
+  name?: string;
+  summary?: string;
   points: RoutePoint[];
   total_distance_km: number;
   total_time_min: number;
   transport: string;
+  days_count?: number;
+  estimated_cost_rub?: number;
+  status?: string;
+  trip_id?: string;
+  points_count?: number;
+  created_at?: string;
 }
 
 interface RebuildOverridePoint {
@@ -149,7 +164,10 @@ export const useRoutesStore = defineStore("routes", {
           travel_time_min: idx === 0 ? 0 : (osrmRoute.legs[idx - 1]?.duration || 0) / 60,
         }));
 
+        // Preserve existing route ID (from backend buildRoute call) 
+        const existingId = this.currentRoute?.id;
         this.currentRoute = {
+          id: existingId,
           points: routePoints,
           total_distance_km: osrmRoute.distance / 1000,
           total_time_min: osrmRoute.duration / 60,

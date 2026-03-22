@@ -26,6 +26,158 @@
         },
         "type": "object"
       },
+      "Booking": {
+        "description": "Базовая запись бронирования.",
+        "properties": {
+          "cancelled_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "cancelled_by": {
+            "nullable": true,
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "confirmed_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "contact_name": {
+            "type": "string"
+          },
+          "contact_phone": {
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "date_from": {
+            "format": "date",
+            "type": "string"
+          },
+          "date_to": {
+            "format": "date",
+            "type": "string"
+          },
+          "guests_count": {
+            "type": "integer"
+          },
+          "host_comment": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "confirmed",
+              "rejected",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "total_price": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "BookingActionRequest": {
+        "description": "Действие хоста над бронью.",
+        "properties": {
+          "action": {
+            "enum": [
+              "confirm",
+              "reject"
+            ],
+            "type": "string"
+          },
+          "host_comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "BookingResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Booking"
+          },
+          {
+            "properties": {
+              "location_name": {
+                "type": "string"
+              },
+              "location_preview_image_url": {
+                "type": "string"
+              },
+              "location_slug": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "description": "Бронирование с данными локации для экранов пользователя и хоста.",
+        "type": "object"
+      },
+      "BookingSlot": {
+        "description": "Дневной слот доступности локации.",
+        "properties": {
+          "available_capacity": {
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "is_closed": {
+            "type": "boolean"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "slot_date": {
+            "format": "date",
+            "type": "string"
+          },
+          "total_capacity": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "BuildRouteRequest": {
         "description": "Запрос на построение маршрута.",
         "properties": {
@@ -57,6 +209,74 @@
         },
         "required": [
           "location_ids"
+        ],
+        "type": "object"
+      },
+      "BuildTripRouteRequest": {
+        "description": "Запрос на построение trip-aware маршрута. Все поля опциональны.",
+        "properties": {
+          "location_ids": {
+            "description": "UUID локаций (опционально; если пуст — автоподбор).",
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "max_points": {
+            "default": 0,
+            "description": "Максимум точек (0 = по формату).",
+            "type": "integer"
+          },
+          "optimize": {
+            "default": false,
+            "description": "Оптимизировать порядок точек.",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "CreateBookingRequest": {
+        "description": "Создание брони на диапазон ночей `[date_from, date_to)`.",
+        "properties": {
+          "comment": {
+            "example": "Приедем поздно вечером",
+            "type": "string"
+          },
+          "contact_name": {
+            "example": "Иван Петров",
+            "type": "string"
+          },
+          "contact_phone": {
+            "example": "+79991234567",
+            "type": "string"
+          },
+          "date_from": {
+            "example": "2026-04-10",
+            "format": "date",
+            "type": "string"
+          },
+          "date_to": {
+            "example": "2026-04-13",
+            "format": "date",
+            "type": "string"
+          },
+          "guests_count": {
+            "example": 2,
+            "type": "integer"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "location_id",
+          "date_from",
+          "date_to",
+          "guests_count",
+          "contact_name",
+          "contact_phone"
         ],
         "type": "object"
       },
@@ -107,6 +327,13 @@
             "description": "Краткое описание.",
             "type": "string"
           },
+          "gallery_urls": {
+            "description": "URL дополнительных фотографий для галереи.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "is_published": {
             "default": false,
             "type": "boolean"
@@ -126,6 +353,11 @@
           "name": {
             "description": "Название локации.",
             "example": "Козья ферма дяди Вани",
+            "type": "string"
+          },
+          "preview_image_url": {
+            "description": "URL hero-изображения локации.",
+            "example": "http://141.98.7.225:9102/deepkrai-media/locations/preview/my-farm.jpg",
             "type": "string"
           },
           "price_per_night": {
@@ -181,6 +413,16 @@
             "format": "date",
             "type": "string"
           },
+          "format": {
+            "default": "multi_day",
+            "description": "Формат поездки.",
+            "enum": [
+              "day_trip",
+              "weekend",
+              "multi_day"
+            ],
+            "type": "string"
+          },
           "group_composition": {
             "description": "Состав группы.",
             "example": {
@@ -210,6 +452,11 @@
               "walk",
               "bike"
             ],
+            "type": "string"
+          },
+          "vibe_vector_id": {
+            "description": "ID vibe-вектора создателя из Qdrant (опционально).",
+            "format": "uuid",
             "type": "string"
           }
         },
@@ -273,6 +520,22 @@
           "total_found": {
             "description": "Количество найденных совпадений.",
             "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "GenerateStoriesResponse": {
+        "description": "Результат генерации историй маршрута.",
+        "properties": {
+          "generated": {
+            "type": "integer"
+          },
+          "points_count": {
+            "type": "integer"
+          },
+          "route_id": {
+            "format": "uuid",
+            "type": "string"
           }
         },
         "type": "object"
@@ -708,11 +971,27 @@
         "type": "object"
       },
       "RoutePoint": {
-        "description": "Точка маршрута.",
+        "description": "Точка маршрута с расчётными данными и метаданными.",
         "properties": {
-          "distance_km": {
-            "description": "Расстояние до следующей точки в км.",
+          "audio_story_url": {
+            "description": "URL story asset для точки.",
+            "type": "string"
+          },
+          "category": {
+            "description": "Категория локации.",
+            "type": "string"
+          },
+          "day_number": {
+            "description": "Номер дня поездки.",
+            "type": "integer"
+          },
+          "distance_from_prev_km": {
+            "description": "Расстояние от предыдущей точки в км.",
             "type": "number"
+          },
+          "duration_from_prev_min": {
+            "description": "Время от предыдущей точки в минутах.",
+            "type": "integer"
           },
           "latitude": {
             "type": "number"
@@ -728,19 +1007,80 @@
             "type": "string"
           },
           "order": {
-            "description": "Порядковый номер в маршруте.",
+            "description": "Порядковый номер.",
             "type": "integer"
           },
-          "travel_time_min": {
-            "description": "Время до следующей точки в минутах.",
+          "preview_image_url": {
+            "description": "URL hero-изображения.",
+            "type": "string"
+          },
+          "stay_duration_min": {
+            "description": "Рекомендуемое время пребывания в минутах.",
+            "type": "integer"
+          },
+          "story_text": {
+            "description": "Текст истории точки.",
+            "type": "string"
+          },
+          "target_audience": {
+            "description": "Целевая аудитория.",
+            "enum": [
+              "all",
+              "adults",
+              "children"
+            ],
+            "type": "string"
+          },
+          "time_slot": {
+            "description": "Тайм-слот.",
+            "enum": [
+              "morning",
+              "afternoon",
+              "evening"
+            ],
+            "type": "string"
+          },
+          "vibe_score": {
+            "description": "Vibe-score (0.0-1.0).",
+            "format": "float",
             "type": "number"
+          },
+          "weather_condition": {
+            "description": "Погодное состояние для точки.",
+            "type": "string"
+          },
+          "weather_temp_c": {
+            "description": "Температура в градусах Цельсия.",
+            "type": "integer"
           }
         },
         "type": "object"
       },
       "RoutePreview": {
-        "description": "Предварительный просмотр маршрута.",
+        "description": "Полный ответ построенного маршрута с расчётами.",
         "properties": {
+          "created_at": {
+            "description": "Время создания.",
+            "format": "date-time",
+            "type": "string"
+          },
+          "days_count": {
+            "description": "Количество дней.",
+            "type": "integer"
+          },
+          "estimated_cost_rub": {
+            "description": "Расчётная стоимость в рублях.",
+            "type": "integer"
+          },
+          "id": {
+            "description": "UUID маршрута (заполняется после сохранения в БД).",
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "description": "Название маршрута.",
+            "type": "string"
+          },
           "points": {
             "description": "Точки маршрута в порядке следования.",
             "items": {
@@ -748,16 +1088,67 @@
             },
             "type": "array"
           },
+          "points_count": {
+            "description": "Количество точек.",
+            "type": "integer"
+          },
+          "status": {
+            "description": "Статус маршрута.",
+            "enum": [
+              "draft",
+              "active",
+              "completed"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "description": "Текстовое описание маршрута.",
+            "type": "string"
+          },
           "total_distance_km": {
-            "description": "Общая дистанция маршрута в км.",
+            "description": "Общая дистанция в км.",
             "type": "number"
           },
-          "total_time_min": {
-            "description": "Общее время в пути в минутах.",
-            "type": "number"
+          "total_duration_min": {
+            "description": "Общее время (включая пребывание) в минутах.",
+            "type": "integer"
           },
           "transport": {
             "description": "Тип транспорта.",
+            "type": "string"
+          },
+          "trip_id": {
+            "description": "UUID поездки.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RouteStory": {
+        "description": "Storytelling asset для точки маршрута.",
+        "properties": {
+          "audio_url": {
+            "type": "string"
+          },
+          "duration_sec": {
+            "type": "integer"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "location_name": {
+            "type": "string"
+          },
+          "point_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "story_text": {
+            "type": "string"
+          },
+          "weather_hint": {
             "type": "string"
           }
         },
@@ -931,6 +1322,16 @@
             "format": "date",
             "type": "string"
           },
+          "format": {
+            "description": "Формат поездки.",
+            "enum": [
+              "day_trip",
+              "weekend",
+              "multi_day"
+            ],
+            "example": "multi_day",
+            "type": "string"
+          },
           "group_composition": {
             "description": "Состав группы (JSONB).",
             "type": "object"
@@ -978,6 +1379,12 @@
           },
           "updated_at": {
             "format": "date-time",
+            "type": "string"
+          },
+          "vibe_vector_id": {
+            "description": "ID vibe-вектора создателя в Qdrant.",
+            "format": "uuid",
+            "nullable": true,
             "type": "string"
           }
         },
@@ -1040,6 +1447,27 @@
         },
         "type": "object"
       },
+      "TripWithMembers": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Trip"
+          },
+          {
+            "properties": {
+              "members": {
+                "description": "Список участников поездки.",
+                "items": {
+                  "$ref": "#/components/schemas/TripMember"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        ],
+        "description": "Поездка со списком участников.",
+        "type": "object"
+      },
       "UpdateLocationRequest": {
         "description": "Запрос на обновление локации. Все поля опциональны — обновляются только переданные.",
         "properties": {
@@ -1077,6 +1505,13 @@
           "description_short": {
             "type": "string"
           },
+          "gallery_urls": {
+            "description": "URL дополнительных фотографий.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "is_published": {
             "type": "boolean"
           },
@@ -1091,6 +1526,10 @@
           "name": {
             "type": "string"
           },
+          "preview_image_url": {
+            "description": "URL hero-изображения локации.",
+            "type": "string"
+          },
           "price_per_night": {
             "type": "integer"
           },
@@ -1099,6 +1538,61 @@
               "type": "string"
             },
             "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateTripRequest": {
+        "description": "Запрос частичного обновления поездки. Все поля опциональны — обновляются только переданные.",
+        "properties": {
+          "budget_rub": {
+            "description": "Новый бюджет.",
+            "type": "integer"
+          },
+          "budget_tier": {
+            "enum": [
+              "economy",
+              "comfort",
+              "premium"
+            ],
+            "type": "string"
+          },
+          "date_from": {
+            "description": "Новая дата начала.",
+            "format": "date",
+            "type": "string"
+          },
+          "date_to": {
+            "description": "Новая дата окончания.",
+            "format": "date",
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "day_trip",
+              "weekend",
+              "multi_day"
+            ],
+            "type": "string"
+          },
+          "group_composition": {
+            "type": "object"
+          },
+          "group_size": {
+            "type": "integer"
+          },
+          "transport": {
+            "enum": [
+              "car",
+              "public",
+              "walk",
+              "bike"
+            ],
+            "type": "string"
+          },
+          "vibe_vector_id": {
+            "format": "uuid",
+            "type": "string"
           }
         },
         "type": "object"
@@ -1281,6 +1775,41 @@
           }
         },
         "type": "object"
+      },
+      "WeatherPoint": {
+        "description": "Погодная точка региона.",
+        "properties": {
+          "condition": {
+            "example": "rain",
+            "type": "string"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number"
+          },
+          "needs_rebuild": {
+            "type": "boolean"
+          },
+          "point": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "temp": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "wind_speed": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -1430,6 +1959,235 @@
         "summary": "Регистрация нового пользователя",
         "tags": [
           "Аутентификация"
+        ]
+      }
+    },
+    "/api/v1/bookings": {
+      "post": {
+        "description": "Создаёт бронь со статусом `pending`, атомарно резервируя capacity во всех дневных слотах диапазона `[date_from, date_to)`.",
+        "operationId": "createBooking",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BookingResponse"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Бронь создана."
+          },
+          "400": {
+            "description": "Некорректное тело запроса."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "404": {
+            "description": "Локация не найдена."
+          },
+          "409": {
+            "description": "Выбранные даты недоступны."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Создать бронь",
+        "tags": [
+          "Бронирования"
+        ]
+      }
+    },
+    "/api/v1/bookings/my": {
+      "get": {
+        "description": "Возвращает все бронирования текущего пользователя.",
+        "operationId": "getMyBookings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/BookingResponse"
+                      },
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список броней пользователя."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Мои бронирования",
+        "tags": [
+          "Бронирования"
+        ]
+      }
+    },
+    "/api/v1/bookings/{id}/cancel": {
+      "post": {
+        "description": "Турист отменяет свою бронь. Capacity возвращается во все слоты диапазона.",
+        "operationId": "cancelBooking",
+        "parameters": [
+          {
+            "description": "UUID брони.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BookingResponse"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Бронь отменена."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "403": {
+            "description": "Нет прав на бронь."
+          },
+          "404": {
+            "description": "Бронь не найдена."
+          },
+          "409": {
+            "description": "Статус брони не допускает отмену."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Отменить бронь",
+        "tags": [
+          "Бронирования"
+        ]
+      }
+    },
+    "/api/v1/bookings/{id}/confirm": {
+      "post": {
+        "description": "Доступно только владельцу локации или `b2g_admin`. `action=confirm` подтверждает бронь, `action=reject` отклоняет и возвращает capacity в слоты.",
+        "operationId": "confirmOrRejectBooking",
+        "parameters": [
+          {
+            "description": "UUID брони.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BookingResponse"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Статус брони обновлён."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "403": {
+            "description": "Нет прав на бронь."
+          },
+          "404": {
+            "description": "Бронь не найдена."
+          },
+          "409": {
+            "description": "Статус брони уже не допускает действие."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Подтвердить или отклонить бронь",
+        "tags": [
+          "Бронирования"
         ]
       }
     },
@@ -1588,6 +2346,308 @@
         "summary": "Readiness probe -- полная проверка всех БД",
         "tags": [
           "Мониторинг"
+        ]
+      }
+    },
+    "/api/v1/host/bookings": {
+      "get": {
+        "description": "Возвращает все брони по локациям текущего хоста.",
+        "operationId": "getHostBookings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/BookingResponse"
+                      },
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список броней хоста."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "403": {
+            "description": "Требуется роль host или b2g_admin."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Бронирования хоста",
+        "tags": [
+          "Бронирования"
+        ]
+      }
+    },
+    "/api/v1/host/locations": {
+      "get": {
+        "description": "Возвращает список локаций, принадлежащих текущему хосту (owner_id = user_id), отсортированных по дате создания.",
+        "operationId": "getHostLocations",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/Location"
+                      },
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список локаций хоста."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Недостаточно прав."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Локации текущего хоста",
+        "tags": [
+          "Онбординг хостов"
+        ]
+      }
+    },
+    "/api/v1/host/onboard": {
+      "post": {
+        "description": "Принимает голосовое описание локации (multipart audio) и запускает AI-pipeline:\n1. STT — распознавание речи\n2. LLM — извлечение структурированных данных (название, описание, теги, цена, удобства)\n3. Embedding — генерация vibe-вектора локации\n4. Создание черновика локации в PostgreSQL\n\nТребуется роль host или b2g_admin.",
+        "operationId": "hostOnboard",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "address": {
+                    "description": "Адрес локации.",
+                    "type": "string"
+                  },
+                  "audio": {
+                    "description": "Голосовое описание локации (webm/wav/mp3/ogg).",
+                    "format": "binary",
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "description": "Широта локации.",
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "description": "Долгота локации.",
+                    "type": "number"
+                  },
+                  "media_urls": {
+                    "description": "URL медиафайлов (фото/видео), предварительно загруженных через /media/upload.",
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "audio"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardResponse"
+                }
+              }
+            },
+            "description": "Онбординг завершён (или ошибка pipeline)."
+          },
+          "400": {
+            "description": "Отсутствует аудиофайл."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Недостаточно прав (требуется роль host или b2g_admin)."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Запуск Zero-UI онбординга хоста",
+        "tags": [
+          "Онбординг хостов"
+        ]
+      }
+    },
+    "/api/v1/host/splat": {
+      "post": {
+        "description": "Запускает mock pipeline генерации 3D-сцены из видеозаписи. Выбирает релевантный .splat по категории. Роль: host / b2g_admin.",
+        "operationId": "startSplatting",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "location_id": {
+                    "description": "UUID локации для привязки 3D-сцены",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "video": {
+                    "description": "Видеофайл обхода локации (mp4, webm)",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "location_id",
+                  "video"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "progress": {
+                          "type": "integer"
+                        },
+                        "splat_url": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "task_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "3D-сцена сгенерирована."
+          },
+          "400": {
+            "description": "Невалидный запрос."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Недостаточно прав."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Генерация 3D-сцены (Gaussian Splatting)",
+        "tags": [
+          "Локации"
+        ]
+      }
+    },
+    "/api/v1/host/tasks/{id}": {
+      "get": {
+        "description": "Возвращает текущий статус и прогресс задачи AI-обработки. Для polling-based UI.",
+        "operationId": "getTaskStatus",
+        "parameters": [
+          {
+            "description": "UUID задачи.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardResponse"
+                }
+              }
+            },
+            "description": "Статус задачи."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "404": {
+            "description": "Задача не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Статус задачи онбординга",
+        "tags": [
+          "Онбординг хостов"
         ]
       }
     },
@@ -1812,7 +2872,7 @@
     },
     "/api/v1/locations/{id}": {
       "delete": {
-        "description": "Удаляет локацию. Доступно только владельцу (owner_id).",
+        "description": "Удаляет локацию. Доступно только пользователям с ролью host или b2g_admin.",
         "operationId": "deleteLocation",
         "parameters": [
           {
@@ -1834,7 +2894,7 @@
             "description": "Отсутствует или невалидный токен."
           },
           "403": {
-            "description": "Нет прав на удаление этой локации (не владелец)."
+            "description": "Недостаточно прав (требуется роль host или b2g_admin)."
           },
           "404": {
             "description": "Локация не найдена."
@@ -1895,7 +2955,7 @@
         ]
       },
       "put": {
-        "description": "Обновляет данные локации. Доступно только владельцу (owner_id). Все поля опциональны — обновляются только переданные.",
+        "description": "Обновляет данные локации. Доступно только пользователям с ролью host или b2g_admin. Все поля опциональны — обновляются только переданные.",
         "operationId": "updateLocation",
         "parameters": [
           {
@@ -1942,7 +3002,7 @@
             "description": "Отсутствует или невалидный токен."
           },
           "403": {
-            "description": "Нет прав на изменение этой локации (не владелец)."
+            "description": "Недостаточно прав (требуется роль host или b2g_admin)."
           },
           "404": {
             "description": "Локация не найдена."
@@ -1956,6 +3016,82 @@
         "summary": "Обновление локации",
         "tags": [
           "Локации"
+        ]
+      }
+    },
+    "/api/v1/locations/{id}/slots": {
+      "get": {
+        "description": "Возвращает дневные booking slots для указанной локации и месяца. Если слоты ещё не созданы, API лениво создаёт их из `location.capacity`.",
+        "operationId": "getLocationSlots",
+        "parameters": [
+          {
+            "description": "UUID локации.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Месяц в формате YYYY-MM. По умолчанию текущий.",
+            "in": "query",
+            "name": "month",
+            "required": false,
+            "schema": {
+              "example": "2026-04",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "properties": {
+                        "count": {
+                          "type": "integer"
+                        },
+                        "location_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "month": {
+                          "type": "string"
+                        },
+                        "slots": {
+                          "items": {
+                            "$ref": "#/components/schemas/BookingSlot"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список слотов."
+          },
+          "400": {
+            "description": "Некорректный id или month."
+          },
+          "404": {
+            "description": "Локация не найдена."
+          }
+        },
+        "summary": "Слоты доступности локации",
+        "tags": [
+          "Бронирования"
         ]
       }
     },
@@ -2248,6 +3384,11 @@
             "description": "Внутренняя ошибка сервера при загрузке файла. Возможные причины: MinIO недоступен, ошибка записи, нехватка места."
           }
         },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "summary": "Загрузка медиафайла",
         "tags": [
           "Медиа"
@@ -2510,7 +3651,7 @@
     },
     "/api/v1/route/build": {
       "post": {
-        "description": "Строит маршрут через указанные локации с расчётом расстояния (Haversine) и предполагаемого времени в пути.\n\nDemo-режим: используются прямые расстояния и настраиваемые скорости по типу транспорта. Полная маршрутизация через Neo4j запланирована в будущих фазах.",
+        "description": "Строит маршрут через указанные локации с расчётом расстояния (Haversine) и предполагаемого времени в пути.\n\nDemo-режим: используются прямые расстояния и настраиваемые скорости по типу транспорта.",
         "operationId": "buildRoute",
         "requestBody": {
           "content": {
@@ -2523,7 +3664,7 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "content": {
               "application/json": {
                 "schema": {
@@ -2553,13 +3694,244 @@
             "BearerAuth": []
           }
         ],
-        "summary": "Построение маршрута",
+        "summary": "Построение маршрута (ручной)",
+        "tags": [
+          "Маршруты"
+        ]
+      }
+    },
+    "/api/v1/route/{id}/generate-stories": {
+      "post": {
+        "description": "Генерирует storytelling assets для всех точек маршрута и сохраняет их в route_points.",
+        "operationId": "generateRouteStories",
+        "parameters": [
+          {
+            "description": "UUID маршрута.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/GenerateStoriesResponse"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Истории сгенерированы."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "403": {
+            "description": "Нет доступа к маршруту."
+          },
+          "404": {
+            "description": "Маршрут не найден."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Сгенерировать stories для маршрута",
+        "tags": [
+          "Маршруты"
+        ]
+      }
+    },
+    "/api/v1/route/{id}/rebuild": {
+      "post": {
+        "description": "Перестраивает существующий маршрут с учётом weather advisory и ручных override-параметров.",
+        "operationId": "rebuildRoute",
+        "parameters": [
+          {
+            "description": "UUID маршрута.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "weather_override": {
+                    "description": "Ручной override условий для rebuild.",
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/RoutePreview"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Маршрут перестроен."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "403": {
+            "description": "Нет доступа к маршруту."
+          },
+          "404": {
+            "description": "Маршрут не найден."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Перестроить маршрут по live-условиям",
+        "tags": [
+          "Маршруты",
+          "Погода"
+        ]
+      }
+    },
+    "/api/v1/route/{id}/stories": {
+      "get": {
+        "description": "Возвращает все storytelling assets для точек указанного маршрута.",
+        "operationId": "getRouteStories",
+        "parameters": [
+          {
+            "description": "UUID маршрута.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/RouteStory"
+                      },
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список историй маршрута."
+          },
+          "401": {
+            "description": "Требуется JWT."
+          },
+          "403": {
+            "description": "Нет доступа к маршруту."
+          },
+          "404": {
+            "description": "Маршрут не найден."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Истории маршрута",
         "tags": [
           "Маршруты"
         ]
       }
     },
     "/api/v1/trips": {
+      "get": {
+        "description": "Возвращает все поездки, в которых текущий пользователь является участником (creator или member). Для каждой поездки включается полный список участников.",
+        "operationId": "listUserTrips",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "example": 2,
+                      "type": "integer"
+                    },
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/TripWithMembers"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Список поездок пользователя."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Список поездок текущего пользователя",
+        "tags": [
+          "Поездки"
+        ]
+      },
       "post": {
         "description": "Создаёт новую поездку с датами, бюджетом, транспортом и составом группы. Создатель автоматически добавляется как первый участник с ролью creator. Генерируется invite_token для приглашения участников.",
         "operationId": "createTrip",
@@ -2597,7 +3969,7 @@
     },
     "/api/v1/trips/{id}": {
       "get": {
-        "description": "Возвращает полную информацию о поездке со списком всех участников.",
+        "description": "Возвращает полную информацию о поездке со списком всех участников. Доступно только участникам поездки или её создателю.",
         "operationId": "getTripByID",
         "parameters": [
           {
@@ -2618,6 +3990,9 @@
           "401": {
             "description": "Отсутствует или невалидный токен."
           },
+          "403": {
+            "description": "Нет прав (не участник и не создатель поездки)."
+          },
           "404": {
             "description": "Поездка не найдена."
           }
@@ -2629,6 +4004,122 @@
         ],
         "summary": "Детали поездки",
         "tags": [
+          "Поездки"
+        ]
+      },
+      "put": {
+        "description": "Частичное обновление поездки. Обновляются только переданные (non-null) поля. Доступно только создателю поездки.",
+        "operationId": "updateTrip",
+        "parameters": [
+          {
+            "description": "UUID поездки.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTripRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Поездка обновлена. Возвращает объект поездки с участниками."
+          },
+          "400": {
+            "description": "Ошибка валидации (некорректные даты, бюджет, транспорт, формат)."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          },
+          "403": {
+            "description": "Нет прав (не создатель поездки)."
+          },
+          "404": {
+            "description": "Поездка не найдена."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Обновление поездки",
+        "tags": [
+          "Поездки"
+        ]
+      }
+    },
+    "/api/v1/trips/{id}/build-route": {
+      "post": {
+        "description": "Строит маршрут с учётом параметров поездки: бюджет, даты, транспорт, состав группы, формат, vibe-профили участников.\n\nЕсли location_ids не указаны — локации подбираются автоматически на основе vibe-скоринга и фильтров поездки.\n\nМаршрут сохраняется в таблице routes и route_points.",
+        "operationId": "buildTripRoute",
+        "parameters": [
+          {
+            "description": "UUID поездки.",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuildTripRouteRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/RoutePreview"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Trip-aware маршрут построен и сохранён."
+          },
+          "400": {
+            "description": "Невалидный запрос или недостаточно локаций."
+          },
+          "401": {
+            "description": "Отсутствует или невалидный токен."
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Построение trip-aware маршрута",
+        "tags": [
+          "Маршруты",
           "Поездки"
         ]
       }
@@ -2676,7 +4167,7 @@
     },
     "/api/v1/trips/{id}/join": {
       "post": {
-        "description": "Присоединяет участника к поездке по invite-токену. Эндпоинт доступен БЕЗ авторизации — неавторизованные пользователи передают display_name и теги напрямую. Проверяет валидность токена и ограничение group_size.",
+        "description": "Присоединяет участника к поездке по invite-токену.\n\nAuth-flex: если передан JWT — display_name и vibe_vector_id подтягиваются из профиля пользователя автоматически. Если JWT отсутствует — используются данные из запроса (анонимный join).\n\nПроверки: валидность токена, ограничение group_size, дубликаты (по user_id для авторизованных, по display_name для анонимных).\n\nПосле присоединения автоматически пересчитывается merged vibe vector группы.",
         "operationId": "joinTrip",
         "parameters": [
           {
@@ -2702,7 +4193,7 @@
         },
         "responses": {
           "200": {
-            "description": "Участник присоединился. Возвращает объект TripMember."
+            "description": "Участник присоединился. Возвращает объект TripMember с vibe_vector_id и tags."
           },
           "400": {
             "description": "Ошибка валидации или неверный invite-токен."
@@ -2722,7 +4213,7 @@
     },
     "/api/v1/trips/{id}/members": {
       "get": {
-        "description": "Возвращает всех участников поездки, отсортированных по дате присоединения.",
+        "description": "Возвращает всех участников поездки, отсортированных по дате присоединения. Доступно только участникам поездки или её создателю.",
         "operationId": "listTripMembers",
         "parameters": [
           {
@@ -2743,6 +4234,9 @@
           "401": {
             "description": "Отсутствует или невалидный токен."
           },
+          "403": {
+            "description": "Нет прав (не участник и не создатель поездки)."
+          },
           "404": {
             "description": "Поездка не найдена."
           }
@@ -2757,12 +4251,48 @@
           "Поездки"
         ]
       }
+    },
+    "/api/v1/weather/region": {
+      "get": {
+        "description": "Возвращает погодную сводку по нескольким ключевым точкам Краснодарского края для карты и live-routing подсказок.",
+        "operationId": "getRegionWeather",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "items": {
+                        "$ref": "#/components/schemas/WeatherPoint"
+                      },
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Погодная сводка."
+          }
+        },
+        "summary": "Погода по ключевым точкам региона",
+        "tags": [
+          "Погода"
+        ]
+      }
     }
   },
   "servers": [
     {
       "description": "Текущий сервер",
-      "url": "http://141.98.7.225:8180"
+      "url": "http://141.98.7.225:8380"
     }
   ],
   "tags": [
@@ -2805,6 +4335,14 @@
     {
       "description": "Построение маршрутов между локациями с расчётом расстояния (Haversine) и времени в пути. Demo-режим без внешних API.",
       "name": "Маршруты"
+    },
+    {
+      "description": "Региональная погодная сводка для travel-aware UI и перестройки маршрутов.",
+      "name": "Погода"
+    },
+    {
+      "description": "Booking MVP: дневные слоты доступности, создание брони, подтверждение/отклонение хостом, отмена туристом и списки броней.",
+      "name": "Бронирования"
     }
   ]
 }

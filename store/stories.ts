@@ -31,6 +31,10 @@ export const useStoriesStore = defineStore("stories", {
   },
 
   actions: {
+    /**
+     * Generate stories for a route.
+     * POST /api/v1/route/{id}/generate-stories
+     */
     async generateStories(routeId: string) {
       this.generating = true;
       this.error = null;
@@ -49,6 +53,10 @@ export const useStoriesStore = defineStore("stories", {
       }
     },
 
+    /**
+     * Fetch stories for a route.
+     * GET /api/v1/route/{id}/stories
+     */
     async fetchStories(routeId: string) {
       this.loading = true;
       this.error = null;

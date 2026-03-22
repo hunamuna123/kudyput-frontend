@@ -6,9 +6,11 @@
     </main>
     <ModulesAppFooter class="hidden md:block" />
     <ModulesMobileBottomNav />
-    <ModulesSyncIndicator />
-    <ModulesLiveNotifications />
-    <ModulesReroutePrompt />
-    <ModulesPwaInstallPrompt />
+    <ClientOnly>
+      <ModulesSyncIndicator />
+      <ModulesLiveNotifications />
+      <ModulesReroutePrompt />
+      <ModulesPwaInstallPrompt />
+    </ClientOnly>
   </div>
 </template>

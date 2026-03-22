@@ -17,7 +17,6 @@ type WSHandler = (event: WSEvent) => void;
 
 export function useWebSocket() {
   const config = useRuntimeConfig();
-  const baseUrl = (config.public.apiBase as string).replace(/^http/, "ws");
   const isConnected = ref(false);
   const reconnectAttempts = ref(0);
 
@@ -26,9 +25,21 @@ export function useWebSocket() {
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   const handlers = new Map<WSEventType | "*", Set<WSHandler>>();
 
-  const MAX_RECONNECT = 5;
-  const RECONNECT_DELAY = 3000;
+  const MAX_RECONNECT = 3;
+  const RECONNECT_DELAY = 5000;
   const HEARTBEAT_INTERVAL = 30_000;
+
+  function getWsBaseUrl(): string {
+    const apiBase = config.public.apiBase as string;
+    try {
+      const url = new URL(apiBase);
+      const protocol = url.protocol === "https:" ? "wss:" : "ws:";
+      return `${protocol}//${url.host}`;
+    } catch {
+      // Fallback: simple replace
+      return apiBase.replace(/^https/, "wss").replace(/^http/, "ws");
+    }
+  }
 
   function on(event: WSEventType | "*", handler: WSHandler) {
     if (!handlers.has(event)) handlers.set(event, new Set());
@@ -46,9 +57,11 @@ export function useWebSocket() {
 
   function connect(channel: string = "notifications") {
     if (import.meta.server) return;
+    if (socket && socket.readyState <= WebSocket.OPEN) return; // already connected/connecting
 
     const token = localStorage.getItem("access_token");
-    const wsUrl = `${baseUrl}/ws/v1/${channel}${token ? `?token=${token}` : ""}`;
+    const wsBase = getWsBaseUrl();
+    const wsUrl = `${wsBase}/ws/v1/${channel}${token ? `?token=${token}` : ""}`;
 
     try {
       socket = new WebSocket(wsUrl);

@@ -22,6 +22,15 @@ const weatherStore = useWeatherStore();
 
 const route = useRoute();
 const routeId = computed(() => route.params.id as string);
+const effectiveRouteId = computed(() => {
+  // Prefer the backend route ID from store (real UUID)
+  const storeId = routesStore.currentRoute?.id;
+  if (storeId) return storeId;
+  // Use URL param only if it looks like a UUID
+  const urlId = routeId.value;
+  if (urlId && /^[0-9a-f]{8}-/.test(urlId)) return urlId;
+  return null;
+});
 
 const transport = ref("car");
 const selectedLocationIds = ref<string[]>([]);
@@ -58,7 +67,11 @@ function getLocationName(id: string): string {
 
 async function handleBuild() {
   if (selectedLocationIds.value.length < 2) return;
-  await routesStore.buildRoute(selectedLocationIds.value, transport.value);
+  const result = await routesStore.buildRoute(selectedLocationIds.value, transport.value);
+  // If backend returned a route with ID, navigate to the real route page
+  if (result?.id && result.id !== routeId.value) {
+    navigateTo(`/route/${result.id}`, { replace: true });
+  }
 }
 
 function formatDistance(km: number): string {
@@ -283,7 +296,7 @@ onMounted(async () => {
           </div>
 
           <!-- Story Player -->
-          <StoryPlayer v-if="routeId" :route-id="routeId" />
+          <StoryPlayer v-if="effectiveRouteId" :route-id="effectiveRouteId" />
 
           <!-- Offline Download -->
           <div class="bg-gradient-to-b from-white/70 to-white/30 backdrop-blur-md border border-accent/30 shadow-sm rounded-[2rem] p-5">
