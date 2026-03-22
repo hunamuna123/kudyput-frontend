@@ -4,6 +4,7 @@ import { useRoutesStore } from "~~/store/routes";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 import { useWeatherStore } from "~~/store/weather";
+import { useTripsStore } from "~~/store/trips";
 import StoryPlayer from "~~/app/components/modules/StoryPlayer.vue";
 
 definePageMeta({
@@ -67,10 +68,24 @@ function getLocationName(id: string): string {
 
 async function handleBuild() {
   if (selectedLocationIds.value.length < 2) return;
-  const result = await routesStore.buildRoute(selectedLocationIds.value, transport.value);
-  // If backend returned a route with ID, navigate to the real route page
-  if (result?.id && result.id !== routeId.value) {
-    navigateTo(`/route/${result.id}`, { replace: true });
+
+  // Use trip-aware build to get a saved route with real UUID (for audio guide)
+  const tripsStore = useTripsStore();
+  const tripId = tripsStore.trips[0]?.id;
+
+  if (tripId) {
+    const result = await routesStore.buildFinalRoute(tripId, {
+      location_ids: selectedLocationIds.value,
+    });
+    if (result?.id && result.id !== routeId.value) {
+      navigateTo(`/route/${result.id}`, { replace: true });
+    }
+  } else {
+    // Fallback: preview-only build (no saved ID)
+    const result = await routesStore.buildRoute(selectedLocationIds.value, transport.value);
+    if (result?.id && result.id !== routeId.value) {
+      navigateTo(`/route/${result.id}`, { replace: true });
+    }
   }
 }
 
@@ -114,7 +129,7 @@ onMounted(async () => {
 <template>
   <div class="w-full max-w-5xl mx-auto">
     <div class="flex items-center gap-4 mb-8">
-      <NuxtLink to="/map" class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-white/50 hover:bg-white/80 border border-accent/30 rounded-full text-primary transition-all shadow-sm">
+      <NuxtLink to="/map" class="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-white/50 hover:bg-white/80 border border-accent/30 rounded-full text-primary transition-all shadow-sm no-underline">
         <ArrowLeft class="w-5 h-5" />
       </NuxtLink>
       <h1 class="font-heading text-3xl sm:text-4xl font-black uppercase text-primary tracking-tighter leading-none">
@@ -125,7 +140,7 @@ onMounted(async () => {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <div class="flex flex-col gap-4">
         <div class="bg-gradient-to-b from-white/70 to-white/30 backdrop-blur-md border border-accent/30 shadow-sm rounded-[2rem] p-5">
-          <h3 class="font-heading text-lg font-bold text-primary mb-3">Добавьте точки маршрута</h3>
+          <h3 class="font-body font-bold text-lg text-primary mb-3">Добавьте точки маршрута</h3>
           <UiInput
             v-model="searchQuery"
             placeholder="Поиск локаций…"
@@ -233,13 +248,13 @@ onMounted(async () => {
             <div class="flex flex-col justify-center items-center gap-1 p-4 bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-md border border-accent/30 shadow-sm rounded-3xl relative overflow-hidden group">
               <div class="absolute -right-4 -top-4 w-16 h-16 bg-accent/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
               <Ruler class="w-5 h-5 text-accent-dark mb-1 relative z-10" />
-              <span class="font-heading font-black text-2xl text-primary relative z-10">{{ formatDistance(routesStore.currentRoute.total_distance_km) }}</span>
+              <span class="font-body font-black text-2xl text-primary relative z-10">{{ formatDistance(routesStore.currentRoute.total_distance_km) }}</span>
               <span class="font-body text-xs font-bold uppercase tracking-widest text-primary-light relative z-10">Расстояние</span>
             </div>
             <div class="flex flex-col justify-center items-center gap-1 p-4 bg-gradient-to-br from-primary/5 to-white/40 backdrop-blur-md border border-primary/10 shadow-sm rounded-3xl relative overflow-hidden group">
               <div class="absolute -left-4 -bottom-4 w-16 h-16 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
               <Clock class="w-5 h-5 text-primary mb-1 relative z-10" />
-              <span class="font-heading font-black text-2xl text-primary relative z-10">{{ formatTime(routesStore.currentRoute.total_time_min) }}</span>
+              <span class="font-body font-black text-2xl text-primary relative z-10">{{ formatTime(routesStore.currentRoute.total_time_min) }}</span>
               <span class="font-body text-xs font-bold uppercase tracking-widest text-primary-light relative z-10">В пути</span>
             </div>
           </div>
@@ -266,7 +281,7 @@ onMounted(async () => {
           </div>
 
           <div class="bg-gradient-to-b from-white/80 to-white/40 backdrop-blur-md border border-accent/30 shadow-sm rounded-[2rem] p-6">
-            <h3 class="font-heading text-xl font-bold text-primary mb-6">План поездки</h3>
+            <h3 class="font-body font-bold text-xl text-primary mb-6">План поездки</h3>
             <div class="flex flex-col gap-0 relative">
               <div class="absolute left-[11px] top-4 bottom-8 w-[2px] bg-gradient-to-b from-accent to-accent/20 hidden sm:block"></div>
               <div
@@ -281,7 +296,7 @@ onMounted(async () => {
                   <div v-if="idx < routesStore.currentRoute.points.length - 1" class="w-[2px] h-full sm:hidden bg-accent/30 mt-2 rounded-full"></div>
                 </div>
                 <div class="flex-1 bg-white/60 border border-white group-hover:bg-white group-hover:shadow-md transition-all rounded-2xl p-3 pb-4 mb-4">
-                  <p class="font-heading font-bold text-base text-primary leading-tight">{{ point.name }}</p>
+                  <p class="font-body font-bold text-lg text-primary leading-tight">{{ point.name }}</p>
                   <div v-if="point.distance_km > 0" class="flex items-center gap-3 mt-2">
                     <span class="inline-flex items-center gap-1 font-body text-xs font-bold text-primary-light bg-primary/5 px-2 py-1 rounded-lg">
                       <Ruler class="w-3 h-3"/> {{ formatDistance(point.distance_km) }}

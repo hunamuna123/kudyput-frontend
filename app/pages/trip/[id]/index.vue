@@ -170,6 +170,23 @@ onMounted(async () => {
       <span class="font-body text-base text-primary-light">Загрузка поездки...</span>
     </div>
 
+    <!-- Access Denied (403) -->
+    <div v-else-if="tripsStore.accessDenied" class="flex flex-col items-center gap-4 py-20">
+      <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center">
+        <AlertCircle class="w-8 h-8 text-red-500" />
+      </div>
+      <h2 class="font-heading text-2xl text-primary m-0">Нет доступа</h2>
+      <p class="font-body text-base text-primary-light text-center max-w-sm">
+        У вас нет доступа к этой поездке. Попросите организатора отправить вам ссылку-приглашение.
+      </p>
+      <NuxtLink
+        to="/profile/trips"
+        class="font-body font-bold text-base text-accent-dark hover:text-accent bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-2xl px-6 py-3 no-underline transition-all mt-2"
+      >
+        ← Мои поездки
+      </NuxtLink>
+    </div>
+
     <div v-else-if="tripsStore.error && !tripsStore.currentTrip" class="flex flex-col items-center gap-3 py-20">
       <UiAlert variant="destructive" class="rounded-2xl max-w-md">
         <AlertCircle class="h-4 w-4" />

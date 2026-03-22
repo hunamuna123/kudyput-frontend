@@ -11,50 +11,91 @@ interface NavItem {
   to: string;
 }
 
+interface NavSection {
+  title?: string;
+  items: NavItem[];
+}
+
 const isHost = computed(() => authStore.user?.role === "host" || authStore.user?.role === "b2g_admin");
 
-const navItems = computed<NavItem[]>(() => {
-  const items: NavItem[] = [
-    { label: "Обзор", icon: Home, to: "/admin" },
-    { label: "Локации", icon: MapPin, to: "/admin/locations" },
-    { label: "Карта", icon: Globe, to: "/map" },
-    { label: "Маршрут", icon: Route, to: "/route" },
-    { label: "Тепл. карта", icon: Flame, to: "/admin/heatmap" },
-    { label: "Прогнозы", icon: TrendingUp, to: "/admin/predictions" },
-    { label: "Отчёты", icon: FileText, to: "/admin/reports" },
-    { label: "Поездки", icon: Car, to: "/profile/trips" },
-    { label: "Избранное", icon: Heart, to: "/profile/favorites" },
-    { label: "Профиль", icon: User, to: "/profile" },
+const navSections = computed<NavSection[]>(() => {
+  const sections: NavSection[] = [
+    {
+      items: [
+        { label: "Обзор", icon: Home, to: "/admin" },
+      ],
+    },
+    {
+      title: "Навигация",
+      items: [
+        { label: "Карта", icon: Globe, to: "/map" },
+        { label: "Маршрут", icon: Route, to: "/route" },
+        { label: "Локации", icon: MapPin, to: "/admin/locations" },
+      ],
+    },
+    {
+      title: "Личное",
+      items: [
+        { label: "Поездки", icon: Car, to: "/profile/trips" },
+        { label: "Избранное", icon: Heart, to: "/profile/favorites" },
+        { label: "Профиль", icon: User, to: "/profile" },
+      ],
+    },
+    {
+      title: "Аналитика",
+      items: [
+        { label: "Тепл. карта", icon: Flame, to: "/admin/heatmap" },
+        { label: "Прогнозы", icon: TrendingUp, to: "/admin/predictions" },
+        { label: "Отчёты", icon: FileText, to: "/admin/reports" },
+      ],
+    },
   ];
+
   if (isHost.value) {
-    items.splice(1, 0, { label: "Мои локации", icon: LayoutDashboard, to: "/host/dashboard" });
-    items.splice(2, 0, { label: "Бронирования", icon: CalendarCheck, to: "/host/bookings" });
-    items.push({ label: "Настройки", icon: Settings, to: "/host/settings" });
+    sections.splice(1, 0, {
+      title: "Хостинг",
+      items: [
+        { label: "Мои локации", icon: LayoutDashboard, to: "/host/dashboard" },
+        { label: "Бронирования", icon: CalendarCheck, to: "/host/bookings" },
+        { label: "Настройки", icon: Settings, to: "/host/settings" },
+      ],
+    });
   }
-  return items;
+
+  return sections;
 });
 </script>
 
 <template>
-  <aside class="w-52 min-h-screen bg-white border border-accent/40 border-r flex flex-col py-4 px-3 shrink-0">
+  <aside class="w-52 min-h-screen bg-white border-r border-accent/20 flex flex-col py-4 px-3 shrink-0">
     <div class="flex items-center gap-2 mb-6 px-1.5">
       <NuxtLink to="/" class="font-body font-bold text-xl text-primary no-underline transition-colors duration-200 hover:text-accent">
         КудыТуды
       </NuxtLink>
-      <span class="font-body text-2xs font-bold uppercase tracking-widest text-accent-dark bg-accent/15 px-1.5 py-0.5 rounded-md">Panel</span>
+      <span class="font-body text-2xs font-bold uppercase tracking-widest text-accent-dark bg-accent/15 px-1.5 py-0.5 rounded-md">MVP</span>
     </div>
 
-    <nav class="flex flex-col gap-0.5 flex-1">
-      <NuxtLink
-        v-for="item in navItems"
-        :key="item.to"
-        :to="item.to"
-        class="flex items-center gap-2.5 px-3 py-2 rounded-xl no-underline text-primary-light font-body text-base font-light transition-all duration-200 hover:bg-primary/6 hover:text-primary"
-        :class="{ 'bg-accent/15 text-accent-dark !font-bold': isActive(item.to) }"
-      >
-        <component :is="item.icon" class="w-[18px] h-[18px]" />
-        <span class="whitespace-nowrap">{{ item.label }}</span>
-      </NuxtLink>
+    <nav class="flex flex-col gap-1 flex-1">
+      <template v-for="(section, sIdx) in navSections" :key="sIdx">
+        <!-- Section separator -->
+        <div v-if="sIdx > 0" class="h-px bg-accent/10 mx-2 my-2" />
+
+        <!-- Section title -->
+        <span v-if="section.title" class="font-body text-2xs font-bold uppercase tracking-[0.12em] text-primary-light/60 px-3 mb-0.5 mt-1">
+          {{ section.title }}
+        </span>
+
+        <NuxtLink
+          v-for="item in section.items"
+          :key="item.to"
+          :to="item.to"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-xl no-underline text-primary-light font-body text-sm font-light transition-all duration-200 hover:bg-primary/6 hover:text-primary"
+          :class="{ 'bg-accent/12 text-accent-dark !font-bold': isActive(item.to) }"
+        >
+          <component :is="item.icon" class="w-[18px] h-[18px]" />
+          <span class="whitespace-nowrap">{{ item.label }}</span>
+        </NuxtLink>
+      </template>
     </nav>
 
     <div class="px-1.5">

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { Server, Code, CheckCircle, Heart, RefreshCw, AlertCircle } from "lucide-vue-next";
+import { Globe, Car, Sparkles, Route, MapPin, Heart, CalendarCheck, TrendingUp } from "lucide-vue-next";
+import { useAuthStore } from "~~/store/auth";
+import { useTripsStore } from "~~/store/trips";
 
 definePageMeta({
   layout: "dashboard",
@@ -10,170 +12,90 @@ useHead({
   title: "Обзор - КудыТуды",
 });
 
-interface ServiceHealth {
-  status: "up" | "down";
-  latency_ms: number;
-  error?: string;
-}
+const authStore = useAuthStore();
+const tripsStore = useTripsStore();
 
-interface HealthResponse {
-  status: "healthy" | "degraded";
-  timestamp: string;
-  services: Record<string, ServiceHealth>;
-}
-
-interface ServerInfo {
-  service: string;
-  version: string;
-  status: string;
-}
-
-const healthData = ref<HealthResponse | null>(null);
-const serverInfo = ref<ServerInfo | null>(null);
-const loading = ref(true);
-const error = ref<string | null>(null);
-
-const serviceNames: Record<string, string> = {
-  postgres: "PostgreSQL",
-  redis: "Redis",
-  qdrant: "Qdrant",
-  neo4j: "Neo4j",
-  clickhouse: "ClickHouse",
-  minio: "MinIO",
-};
-
-const healthyCount = computed(() => {
-  if (!healthData.value?.services) return 0;
-  return Object.values(healthData.value.services).filter((s) => s.status === "up").length;
+const greeting = computed(() => {
+  const h = new Date().getHours();
+  if (h < 6) return "Доброй ночи";
+  if (h < 12) return "Доброе утро";
+  if (h < 18) return "Добрый день";
+  return "Добрый вечер";
 });
 
-const totalServices = computed(() => {
-  if (!healthData.value?.services) return 0;
-  return Object.keys(healthData.value.services).length;
+const quickLinks = [
+  { label: "Карта", icon: Globe, to: "/map", desc: "Все локации на карте", color: "bg-accent/15 text-accent-dark" },
+  { label: "Маршрут", icon: Route, to: "/route", desc: "Построить маршрут", color: "bg-primary/8 text-primary" },
+  { label: "Начать", icon: Sparkles, to: "/start", desc: "Подбор по настроению", color: "bg-yellow-500/12 text-yellow-700" },
+  { label: "Поездки", icon: Car, to: "/profile/trips", desc: "Мои поездки", color: "bg-blue-500/10 text-blue-600" },
+  { label: "Избранное", icon: Heart, to: "/profile/favorites", desc: "Сохранённые места", color: "bg-red-500/10 text-red-500" },
+  { label: "Бронирования", icon: CalendarCheck, to: "/profile/bookings", desc: "Мои брони", color: "bg-green-500/10 text-green-600" },
+];
+
+onMounted(async () => {
+  authStore.restoreSession();
+  tripsStore.fetchTrips();
 });
-
-async function fetchData() {
-  loading.value = true;
-  error.value = null;
-  try {
-    const { request } = useApiClient();
-    const [health, info] = await Promise.all([
-      request<HealthResponse>("/api/v1/health", { skipAuth: true }),
-      request<ServerInfo>("/", { skipAuth: true }),
-    ]);
-    healthData.value = health;
-    serverInfo.value = info;
-  } catch (err: unknown) {
-    const apiErr = err as { message?: string };
-    error.value = apiErr.message || "Ошибка загрузки данных";
-  } finally {
-    loading.value = false;
-  }
-}
-
-onMounted(fetchData);
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full max-w-4xl">
+    <!-- Welcome -->
+    <div class="mb-8">
+      <h1 class="font-heading text-3xl text-primary mb-1">
+        {{ greeting }}<span v-if="authStore.userName">, {{ authStore.userName }}</span> 👋
+      </h1>
+      <p class="font-body text-base text-primary-light">
+        Чем займёмся сегодня?
+      </p>
+    </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3 mb-6">
-      <div class="flex items-center gap-3 p-4 bg-white/35 border border-accent/40 rounded-3xl">
-        <div class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0 bg-accent/15 text-accent-dark">
-          <Server class="w-5 h-5" />
+    <!-- Quick Links -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
+      <NuxtLink
+        v-for="link in quickLinks"
+        :key="link.to"
+        :to="link.to"
+        class="group flex flex-col gap-3 p-5 bg-white/35 border border-accent/40 rounded-3xl no-underline transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-accent/30"
+      >
+        <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0" :class="link.color">
+          <component :is="link.icon" class="w-5 h-5" />
         </div>
-        <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
-          <span class="font-body text-xs text-primary-light">Сервер</span>
+        <div class="flex flex-col gap-0.5">
+          <span class="font-body font-bold text-base text-primary">{{ link.label }}</span>
+          <span class="font-body text-xs text-primary-light">{{ link.desc }}</span>
         </div>
-      </div>
+      </NuxtLink>
+    </div>
 
-      <div class="flex items-center gap-3 p-4 bg-white/35 border border-accent/40 rounded-3xl">
-        <div class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0 bg-primary/8 text-primary">
-          <Code class="w-5 h-5" />
-        </div>
-        <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
-          <span class="font-body text-xs text-primary-light">Версия API</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3.5 p-5 bg-white/35 border border-accent/40 rounded-3xl">
-        <div class="w-11 h-11 flex items-center justify-center rounded-[14px] shrink-0 bg-accent/15 text-accent-dark">
-          <CheckCircle class="w-5 h-5" />
-        </div>
-        <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
-          <span class="font-body text-xs text-primary-light">Сервисы</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3.5 p-5 bg-white/35 border border-accent/40 rounded-3xl">
-        <div
-          class="w-10 h-10 flex items-center justify-center rounded-[12px] shrink-0"
-          :class="healthData?.status === 'healthy' ? 'bg-accent/15 text-accent-dark' : 'bg-yellow-500/12 text-yellow-700'"
+    <!-- Active Trips -->
+    <div v-if="tripsStore.trips.length > 0" class="mb-6">
+      <h2 class="font-body font-bold text-lg text-primary mb-3">Активные поездки</h2>
+      <div class="flex flex-col gap-2">
+        <NuxtLink
+          v-for="trip in tripsStore.trips.slice(0, 3)"
+          :key="trip.id"
+          :to="`/trip/${trip.id}`"
+          class="flex items-center gap-3 p-4 bg-white/35 border border-accent/40 rounded-2xl no-underline transition-all hover:border-accent/60 hover:bg-white/50"
         >
-          <Heart class="w-5 h-5" />
-        </div>
-        <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
-          <span class="font-body text-xs text-primary-light">Статус</span>
-        </div>
-      </div>
-    </div>
-
-
-    <div v-if="loading" class="flex justify-center py-15">
-      <div class="flex flex-col items-center gap-3">
-        <UiSkeleton class="h-8 w-40 rounded-xl" />
-        <div class="grid grid-cols-3 gap-3 w-full max-w-md">
-          <UiSkeleton class="h-24 rounded-3xl" />
-          <UiSkeleton class="h-24 rounded-3xl" />
-          <UiSkeleton class="h-24 rounded-3xl" />
-        </div>
-      </div>
-    </div>
-
-
-    <div v-else-if="error" class="flex flex-col gap-3 max-w-[400px]">
-      <UiAlert variant="destructive" class="rounded-2xl">
-        <AlertCircle class="h-4 w-4" />
-        <UiAlertDescription>{{ error }}</UiAlertDescription>
-      </UiAlert>
-      <UiButton variant="secondary" class="self-start rounded-2xl font-body" @click="fetchData">
-        <RefreshCw class="w-4 h-4 mr-2" />
-        Повторить
-      </UiButton>
-    </div>
-
-
-    <div v-else>
-      <h2 class="font-body font-bold text-xl text-primary mb-3">Сервисы</h2>
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
-        <div
-          v-for="(service, key) in healthData?.services"
-          :key="key"
-          class="flex flex-col gap-1.5 p-4 bg-white/35 border border-accent/40 border rounded-3xl transition-colors duration-200 hover:border-accent/30"
-          :class="service.status !== 'up' ? 'border-red-500/20' : 'border-white/50'"
-        >
-          <div class="flex items-center justify-between gap-2">
-            <span class="font-body font-bold text-base text-primary">{{ serviceNames[key as string] || key }}</span>
-            <UiBadge
-              :variant="service.status === 'up' ? 'default' : 'destructive'"
-              class="rounded-lg text-xs"
-              :class="service.status === 'up' ? 'bg-green-500/15 text-green-700 border-green-500/20' : ''"
-            >
-              {{ service.status === 'up' ? 'Online' : 'Down' }}
-            </UiBadge>
+          <div class="w-9 h-9 flex items-center justify-center rounded-full bg-accent/15 shrink-0">
+            <Car class="w-4 h-4 text-accent-dark" />
           </div>
-          <span v-if="service.status === 'up'" class="font-body text-sm text-primary-light">{{ service.latency_ms }}ms</span>
-          <span v-if="service.error" class="font-body text-sm text-red-600 break-all">{{ service.error }}</span>
-        </div>
+          <div class="flex-1 min-w-0">
+            <span class="font-body font-bold text-sm text-primary block truncate">
+              {{ new Date(trip.date_from).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) }}
+              — {{ new Date(trip.date_to).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) }}
+            </span>
+            <span class="font-body text-xs text-primary-light">{{ trip.group_size }} чел.</span>
+          </div>
+          <span
+            class="font-body text-xs font-bold px-2 py-0.5 rounded-lg shrink-0"
+            :class="trip.status === 'active' ? 'bg-green-500/15 text-green-700' : 'bg-yellow-500/15 text-yellow-700'"
+          >
+            {{ trip.status === 'active' ? 'Активна' : trip.status === 'planning' ? 'Планирование' : trip.status }}
+          </span>
+        </NuxtLink>
       </div>
     </div>
-
-    <p v-if="healthData" class="mt-5 font-body text-xs text-primary-light opacity-50">
-      Обновлено: {{ new Date(healthData.timestamp).toLocaleString("ru-RU") }}
-    </p>
   </div>
 </template>

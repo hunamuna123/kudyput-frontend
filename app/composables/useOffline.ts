@@ -72,15 +72,41 @@ export function useOffline() {
 
   async function downloadRouteBundle(routeId: string): Promise<boolean> {
     try {
-      const { request } = useApiClient();
-      const response = await request<{ success: boolean; data: Record<string, unknown> }>(
-        `/api/v1/route/${routeId}/offline-bundle`,
-      );
-      if (response.data) {
-        await saveRoute(routeId, response.data);
-        return true;
+      const config = useRuntimeConfig();
+      const baseUrl = config.public.apiBase as string;
+      const token = import.meta.client ? localStorage.getItem("access_token") : null;
+
+      // Backend returns a ZIP archive (application/zip), not JSON
+      const blob = await $fetch<Blob>(`${baseUrl}/api/v1/route/${routeId}/offline-bundle`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        responseType: "blob",
+      });
+
+      // Unzip the bundle using JSZip
+      const { default: JSZip } = await import("jszip");
+      const zip = await JSZip.loadAsync(blob);
+
+      // Extract route.json
+      const routeFile = zip.file("route.json");
+      if (routeFile) {
+        const routeJson = JSON.parse(await routeFile.async("text"));
+        await saveRoute(routeId, routeJson);
       }
-      return false;
+
+      // Extract locations.json and save each location
+      const locationsFile = zip.file("locations.json");
+      if (locationsFile) {
+        const locationsJson = JSON.parse(await locationsFile.async("text"));
+        if (Array.isArray(locationsJson)) {
+          for (const loc of locationsJson) {
+            if (loc.id) {
+              await saveLocation(loc.id, loc);
+            }
+          }
+        }
+      }
+
+      return true;
     } catch {
       return false;
     }

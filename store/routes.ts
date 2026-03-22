@@ -240,6 +240,86 @@ export const useRoutesStore = defineStore("routes", {
       }
     },
 
+    /**
+     * Build a finalized route via the trip-aware endpoint.
+     * This saves the route in DB and returns a real UUID needed for
+     * generate-stories, rebuild, offline-bundle, etc.
+     *
+     * After a successful build, automatically triggers POST generate-stories
+     * to start TTS generation in the background (backend returns 202 Accepted).
+     */
+    async buildFinalRoute(
+      tripId: string,
+      params: { location_ids?: string[]; max_points?: number; optimize?: boolean } = {},
+    ) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const { request } = useApiClient();
+        const response = await request<{
+          success: boolean;
+          data: {
+            id: string;
+            trip_id: string;
+            name: string;
+            summary: string;
+            status: string;
+            transport: string;
+            points: RoutePoint[];
+            points_count: number;
+            days_count: number;
+            total_distance_km: number;
+            total_duration_min: number;
+            estimated_cost_rub: number;
+          };
+        }>(`/api/v1/trips/${tripId}/build-route`, {
+          method: "POST",
+          body: params as Record<string, unknown>,
+        });
+
+        const data = response.data;
+        // Update currentRoute with the backend-saved route (has real ID)
+        this.currentRoute = {
+          id: data.id,
+          name: data.name,
+          summary: data.summary,
+          points: data.points || [],
+          total_distance_km: data.total_distance_km,
+          total_time_min: data.total_duration_min,
+          transport: data.transport,
+          days_count: data.days_count,
+          estimated_cost_rub: data.estimated_cost_rub,
+          status: data.status,
+          trip_id: data.trip_id,
+          points_count: data.points_count,
+        };
+
+        if (data.points?.length) {
+          this.routeGeometry = data.points.map(
+            (p) => [p.latitude, p.longitude] as [number, number],
+          );
+        }
+
+        // Automatically trigger story generation (fire-and-forget).
+        // Backend returns 202 Accepted and processes TTS in background.
+        if (data.id) {
+          request<{ success: boolean }>(`/api/v1/route/${data.id}/generate-stories`, {
+            method: "POST",
+          }).catch(() => {
+            // Story generation failure is non-blocking — user can retry via StoryPlayer
+          });
+        }
+
+        return data;
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string };
+        this.error = apiErr.message || "Ошибка финализации маршрута";
+        return null;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     clearRoute() {
       this.currentRoute = null;
       this.routeGeometry = [];

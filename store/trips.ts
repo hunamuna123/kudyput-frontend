@@ -93,6 +93,7 @@ interface TripsState {
   loading: boolean;
   routeLoading: boolean;
   error: string | null;
+  accessDenied: boolean;
 }
 
 export const useTripsStore = defineStore("trips", {
@@ -105,6 +106,7 @@ export const useTripsStore = defineStore("trips", {
     loading: false,
     routeLoading: false,
     error: null,
+    accessDenied: false,
   }),
 
   actions: {
@@ -150,14 +152,20 @@ export const useTripsStore = defineStore("trips", {
     async fetchTrip(id: string) {
       this.loading = true;
       this.error = null;
+      this.accessDenied = false;
       try {
         const { request } = useApiClient();
         const response = await request<{ success: boolean; data: Trip }>(`/api/v1/trips/${id}`);
         this.currentTrip = response.data;
         return response.data;
       } catch (err: unknown) {
-        const apiErr = err as { message?: string };
-        this.error = apiErr.message || "Поездка не найдена";
+        const apiErr = err as { status?: number; message?: string };
+        if (apiErr.status === 403) {
+          this.accessDenied = true;
+          this.error = "У вас нет доступа к этой поездке";
+        } else {
+          this.error = apiErr.message || "Поездка не найдена";
+        }
         return null;
       } finally {
         this.loading = false;

@@ -5,6 +5,7 @@ import { useVibeStore } from "~~/store/vibe";
 import { useAuthStore } from "~~/store/auth";
 import { useRoutesStore } from "~~/store/routes";
 import { useWeatherStore } from "~~/store/weather";
+import { useTripsStore } from "~~/store/trips";
 import Map3D from "~~/app/components/map/Map3D.vue";
 import WeatherBanner from "~~/app/components/modules/WeatherBanner.vue";
 
@@ -20,6 +21,7 @@ const vibeStore = useVibeStore();
 const authStore = useAuthStore();
 const routesStore = useRoutesStore();
 const weatherStore = useWeatherStore();
+const tripsStore = useTripsStore();
 const categoryFilter = ref("");
 const showFilters = ref(false);
 const showRouteBuilder = ref(false);
@@ -35,6 +37,9 @@ const routeTransportOptions = [
   { label: "🚶", value: "walk" },
   { label: "🚴", value: "bike" },
 ];
+
+// Use the latest trip as context for trip-aware route building
+const activeTripId = computed(() => tripsStore.trips[0]?.id || null);
 
 function addToRoute(id: string) {
   if (!routeLocationIds.value.includes(id)) {
@@ -64,20 +69,29 @@ async function handleBuildRoute() {
 
   if (locations.length < 2) return;
 
-  // Build via backend API first to get a saved route with ID (for audio guide)
-  let backendResult: { id?: string } | null = null;
-  try {
-    backendResult = await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
-  } catch {
-    // Backend unavailable — continue with OSRM only
-  }
-
-  // Then fetch OSRM geometry for actual road lines on map
-  await routesStore.fetchRoadRoute(locations, routeTransport.value);
-
-  // Keep backend route ID if available
-  if (backendResult?.id && routesStore.currentRoute) {
-    routesStore.currentRoute.id = backendResult.id;
+  // Build finalized route via trip endpoint (saves to DB, returns real ID for audio guide)
+  if (activeTripId.value) {
+    const finalResult = await routesStore.buildFinalRoute(activeTripId.value, {
+      location_ids: routeLocationIds.value,
+    });
+    // Also fetch OSRM geometry for proper road lines on the map
+    await routesStore.fetchRoadRoute(locations, routeTransport.value);
+    // Preserve the backend route ID after OSRM overwrites currentRoute
+    if (finalResult?.id && routesStore.currentRoute) {
+      routesStore.currentRoute.id = finalResult.id;
+    }
+  } else {
+    // No trip context — build preview via /route/build + OSRM
+    let backendResult: { id?: string } | null = null;
+    try {
+      backendResult = await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+    } catch {
+      // Backend unavailable — continue with OSRM only
+    }
+    await routesStore.fetchRoadRoute(locations, routeTransport.value);
+    if (backendResult?.id && routesStore.currentRoute) {
+      routesStore.currentRoute.id = backendResult.id;
+    }
   }
 }
 
@@ -182,8 +196,18 @@ watch([categoryFilter, demoMode, demoProfile], () => {
 onMounted(async () => {
   authStore.restoreSession();
   await loadLocations();
+  // Load trips for trip-aware route building
+  tripsStore.fetchTrips();
+
+  // Connect weather WebSocket for real-time weather updates
+  const ws = useWebSocket();
+  ws.connect("weather");
+  ws.on("weather_alert", (event) => {
+    weatherStore.handleWeatherEvent(event.data);
+  });
 });
 </script>
+
 
 <template>
   <div class="min-h-screen bg-white relative overflow-hidden">

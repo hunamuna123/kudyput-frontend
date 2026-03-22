@@ -52,5 +52,21 @@ export const useWeatherStore = defineStore("weather", {
         this.loading = false;
       }
     },
+
+    /**
+     * Handle real-time weather event from WebSocket (/ws/v1/weather).
+     * Updates or adds weather data for the received point.
+     */
+    handleWeatherEvent(data: Record<string, unknown>) {
+      const point = data as unknown as WeatherPoint;
+      if (!point.point) return;
+
+      const idx = this.weatherPoints.findIndex((p) => p.point === point.point);
+      if (idx >= 0) {
+        this.weatherPoints[idx] = point;
+      } else {
+        this.weatherPoints.push(point);
+      }
+    },
   },
 });

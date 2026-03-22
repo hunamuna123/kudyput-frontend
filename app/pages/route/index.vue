@@ -7,6 +7,7 @@ import { useRoutesStore } from "~~/store/routes";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 import { useTripsStore, type TripRoute } from "~~/store/trips";
+import { useStoriesStore } from "~~/store/stories";
 import StoryPlayer from "~~/app/components/modules/StoryPlayer.vue";
 
 definePageMeta({
@@ -22,6 +23,7 @@ const routesStore = useRoutesStore();
 const locationsStore = useLocationsStore();
 const authStore = useAuthStore();
 const tripsStore = useTripsStore();
+const storiesStore = useStoriesStore();
 
 const effectiveRouteId = computed(() => {
   const storeId = routesStore.currentRoute?.id;
@@ -73,7 +75,44 @@ function getLocationName(id: string): string {
 
 async function handleBuild() {
   if (selectedLocationIds.value.length < 2) return;
-  await routesStore.buildRoute(selectedLocationIds.value, transport.value);
+
+  let tripId = selectedTripId.value;
+
+  // Auto-create a trip if none selected (needed for buildFinalRoute to work)
+  if (!tripId) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dayAfter = new Date();
+    dayAfter.setDate(dayAfter.getDate() + 2);
+    const trip = await tripsStore.createTrip({
+      date_from: tomorrow.toISOString().split('T')[0]!,
+      date_to: dayAfter.toISOString().split('T')[0]!,
+      group_size: 2,
+      budget_rub: 10000,
+    });
+    if (trip?.id) {
+      tripId = trip.id;
+    }
+  }
+
+  if (!tripId) {
+    // Fallback if trip creation failed — use preview-only build
+    await routesStore.buildRoute(selectedLocationIds.value, transport.value);
+    return;
+  }
+
+  // Build finalized route (saves to DB, auto-triggers generate-stories)
+  const result = await routesStore.buildFinalRoute(tripId, {
+    location_ids: selectedLocationIds.value,
+  });
+
+  // Stay on this page — StoryPlayer will show up once effectiveRouteId is set
+  if (result?.id) {
+    // Also explicitly call fetchStories after a delay to pick up generated stories
+    setTimeout(() => {
+      storiesStore.fetchStories(result.id);
+    }, 6000);
+  }
 }
 
 // Trip-aware route
@@ -92,6 +131,15 @@ async function buildTripRoute() {
   });
   if (!result) {
     tripRouteError.value = tripsStore.error || "Не удалось построить маршрут";
+    return;
+  }
+
+  // Trigger story generation for the trip route
+  if (result.id) {
+    const { request } = useApiClient();
+    request<{ success: boolean }>(`/api/v1/route/${result.id}/generate-stories`, {
+      method: "POST",
+    }).catch(() => { /* non-blocking */ });
   }
 }
 

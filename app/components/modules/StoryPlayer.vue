@@ -55,6 +55,17 @@ onMounted(async () => {
   await storiesStore.fetchStories(props.routeId);
   if (storiesStore.stories.length > 0) {
     generated.value = true;
+  } else {
+    // Stories may have been auto-triggered by buildFinalRoute (202 Accepted).
+    // Try again after a delay — TTS generation takes a few seconds.
+    setTimeout(async () => {
+      if (!generated.value && !storiesStore.generating) {
+        await storiesStore.fetchStories(props.routeId);
+        if (storiesStore.stories.length > 0) {
+          generated.value = true;
+        }
+      }
+    }, 8000);
   }
 });
 
