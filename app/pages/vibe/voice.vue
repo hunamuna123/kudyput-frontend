@@ -124,11 +124,11 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-4 pt-4 pb-16">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-4 pt-6 pb-16">
     <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/8 top-[-100px] right-[10%] blur-[100px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-lg w-full text-center flex flex-col items-center">
-      <NuxtLink to="/start" class="font-body text-[0.75rem] text-primary-light no-underline mb-4 hover:text-primary transition-colors inline-flex items-center gap-1">
+      <NuxtLink to="/start" class="font-body text-sm text-primary-light no-underline mb-4 hover:text-primary transition-colors inline-flex items-center gap-1">
         <ArrowLeft class="w-3.5 h-3.5" />
         Назад
       </NuxtLink>
@@ -151,8 +151,8 @@ onUnmounted(() => {
             <Loader2 class="w-8 h-8 text-accent-dark animate-spin" />
           </div>
         </div>
-        <h2 class="font-heading text-primary text-[1.05rem]">ИИ создаёт ваш профиль…</h2>
-        <p class="font-body font-light text-primary-light text-[0.8rem]">Анализируем настроение и предпочтения</p>
+        <h2 class="font-body font-bold text-primary text-xl">ИИ создаёт ваш профиль…</h2>
+        <p class="font-body font-light text-primary-light text-base">Анализируем настроение и предпочтения</p>
         <div class="flex gap-2 mt-2">
           <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay: 0ms;"></div>
           <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay: 200ms;"></div>
@@ -165,9 +165,9 @@ onUnmounted(() => {
         <div class="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center">
           <span class="text-3xl">😔</span>
         </div>
-        <p class="font-body text-red-600 text-[0.88rem] max-w-xs">{{ vibeStore.error }}</p>
+        <p class="font-body text-red-600 text-md max-w-xs">{{ vibeStore.error }}</p>
         <button
-          class="font-body font-bold text-[0.85rem] text-accent-dark bg-accent/10 rounded-2xl px-6 py-3 border-none cursor-pointer hover:bg-accent/20 transition-colors"
+          class="font-body font-bold text-base text-accent-dark bg-accent/10 rounded-2xl px-6 py-3 border-none cursor-pointer hover:bg-accent/20 transition-colors"
           @click="vibeStore.error = null"
         >
           Попробовать снова
@@ -176,14 +176,14 @@ onUnmounted(() => {
 
 
       <div v-else class="flex flex-col items-center gap-3">
-        <span class="inline-block font-body font-bold text-[0.6rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full">
+        <span class="inline-block font-body font-bold text-xs tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full">
           Голосовой ввод
         </span>
 
-        <h1 class="font-heading text-primary leading-[1.25]" style="font-size: clamp(1.1rem, 3vw, 1.6rem);">
+        <h1 class="font-heading text-primary leading-[1.25] text-heading-voice">
           Расскажи, <span class="text-accent">чего хочешь</span>
         </h1>
-        <p class="font-body font-light text-primary-light text-[0.8rem] leading-relaxed max-w-sm">
+        <p class="font-body font-light text-primary-light text-base leading-relaxed max-w-sm">
           Нажми и расскажи о своих мечтах — тишина, горы, вино, адреналин... Без фильтров.
         </p>
 
@@ -214,7 +214,7 @@ onUnmounted(() => {
           ></div>
         </div>
 
-        <p class="font-body font-light text-primary-light text-[0.72rem] mt-2">
+        <p class="font-body font-light text-primary-light text-sm mt-2">
           {{ isRecording ? `🔴 Запись ${formatTime(recordingTime)}… Отпустите для отправки` : 'Нажмите и удерживайте' }}
         </p>
       </div>

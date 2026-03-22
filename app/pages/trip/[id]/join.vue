@@ -73,7 +73,7 @@ onMounted(() => {
     <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/10 top-[-80px] right-[10%] blur-[120px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-md w-full text-center flex flex-col items-center">
-      <NuxtLink to="/" class="font-body font-bold text-[1.2rem] text-primary no-underline mb-10 transition-colors hover:text-accent">
+      <NuxtLink to="/" class="font-body font-bold text-2xl text-primary no-underline mb-10 transition-colors hover:text-accent">
         КудыТуды
       </NuxtLink>
 
@@ -82,11 +82,11 @@ onMounted(() => {
         <div class="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center">
           <Check class="w-8 h-8 text-accent-dark" />
         </div>
-        <h2 class="font-heading text-primary text-[1.3rem]">Вы в команде!</h2>
-        <p class="font-body font-light text-primary-light text-[0.85rem] max-w-xs">Теперь ваши предпочтения будут учтены при построении маршрута.</p>
+        <h2 class="font-body font-bold text-primary text-2xl">Вы в команде!</h2>
+        <p class="font-body font-light text-primary-light text-base max-w-xs">Теперь ваши предпочтения будут учтены при построении маршрута.</p>
         <NuxtLink
           to="/profile/trips"
-          class="mt-2 font-body font-bold text-[0.85rem] text-white bg-accent rounded-2xl px-6 py-3 no-underline hover:bg-accent-dark transition-colors"
+          class="mt-2 font-body font-bold text-base text-white bg-accent rounded-2xl px-6 py-3 no-underline hover:bg-accent-dark transition-colors"
         >
           В панель управления
         </NuxtLink>
@@ -97,8 +97,8 @@ onMounted(() => {
         <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
           <Users class="w-7 h-7 text-primary" />
         </div>
-        <h2 class="font-heading text-primary text-[1.3rem]">Присоединиться</h2>
-        <p class="font-body font-light text-primary-light text-[0.85rem] max-w-xs">
+        <h2 class="font-body font-bold text-primary text-2xl">Присоединиться</h2>
+        <p class="font-body font-light text-primary-light text-base max-w-xs">
           Вас пригласили в поездку. Укажите имя и выберите ваши интересы.
         </p>
 
@@ -115,7 +115,7 @@ onMounted(() => {
               v-for="tag in tagOptions"
               :key="tag"
               type="button"
-              class="font-body text-[0.72rem] px-3 py-1.5 rounded-full border transition-all duration-200 cursor-pointer"
+              class="font-body text-sm px-3 py-1.5 rounded-full border transition-all duration-200 cursor-pointer"
               :class="tags.includes(tag)
                 ? 'bg-accent/20 border-accent/40 text-accent-dark font-bold'
                 : 'bg-transparent text-primary-light hover:border-accent/30'"
@@ -133,7 +133,7 @@ onMounted(() => {
           <UiButton
             type="submit"
             :disabled="!displayName.trim() || loading"
-            class="w-full bg-accent hover:bg-accent-dark border-accent text-primary-dark font-body font-bold rounded-2xl py-3.5 text-[0.88rem]"
+            class="w-full bg-accent hover:bg-accent-dark border-accent text-white font-body font-bold rounded-2xl py-3.5 text-md"
           >
             <Loader2 v-if="loading" class="w-4 h-4 mr-2 animate-spin" />
             <Check v-else class="w-4 h-4 mr-2" />
@@ -141,7 +141,7 @@ onMounted(() => {
           </UiButton>
         </form>
 
-        <p class="font-body text-[0.7rem] text-primary-light opacity-50 mt-2">
+        <p class="font-body text-sm text-primary-light opacity-50 mt-2">
           ID поездки: {{ tripId }}
         </p>
       </div>

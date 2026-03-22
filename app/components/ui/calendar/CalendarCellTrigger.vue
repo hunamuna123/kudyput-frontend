@@ -20,7 +20,7 @@ const forwardedProps = useForwardProps(delegatedProps)
       'h-9 w-9 p-0 font-normal rounded-xl',
       '[&[data-today]:not([data-selected])]:bg-accent/15 [&[data-today]:not([data-selected])]:text-accent-dark',
       // Selected
-      'data-[selected]:bg-accent data-[selected]:text-primary-dark data-[selected]:opacity-100 data-[selected]:hover:bg-accent-dark data-[selected]:hover:text-primary-dark data-[selected]:focus:bg-accent data-[selected]:focus:text-primary-dark data-[selected]:shadow-[0_2px_8px_rgba(164,190,79,0.25)]',
+      'data-[selected]:bg-accent data-[selected]:text-white data-[selected]:opacity-100 data-[selected]:hover:bg-accent-dark data-[selected]:hover:text-white data-[selected]:focus:bg-accent data-[selected]:focus:text-white data-[selected]:shadow-[0_2px_8px_rgba(164,190,79,0.25)]',
       // Disabled
       'data-[disabled]:text-primary-light data-[disabled]:opacity-50',
       // Unavailable

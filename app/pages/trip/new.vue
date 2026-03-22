@@ -99,8 +99,8 @@ async function handleCreate() {
   <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-8 pb-16">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] left-[15%] blur-[120px] pointer-events-none"></div>
 
-    <div class="relative z-10 max-w-lg w-full">
-      <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-8 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
+    <div class="relative z-10 max-w-[1080px] w-full">
+      <NuxtLink to="/start" class="font-body text-base text-primary-light no-underline mb-8 inline-flex items-center gap-1.5 hover:text-primary transition-colors">
         <ArrowLeft class="w-3.5 h-3.5" />
         Назад
       </NuxtLink>
@@ -112,10 +112,10 @@ async function handleCreate() {
         </div>
 
         <div>
-          <h1 class="font-heading text-primary mb-2" style="font-size: clamp(1.2rem, 3vw, 1.8rem);">
+          <h1 class="font-heading text-primary mb-2 text-heading-page">
             Поездка <span class="text-accent">создана!</span>
           </h1>
-          <p class="font-body font-light text-primary-light text-[0.85rem] leading-relaxed">
+          <p class="font-body font-light text-primary-light text-base leading-relaxed">
             Поделитесь ссылкой с участниками, чтобы они присоединились.
           </p>
         </div>
@@ -124,16 +124,16 @@ async function handleCreate() {
         <div class="w-full bg-white/50 border border-accent/40 rounded-[24px] p-5">
           <div class="flex items-center gap-2 mb-3">
             <Link2 class="w-4 h-4 text-accent-dark" />
-            <span class="font-body font-bold text-[0.82rem] text-primary">Ссылка-приглашение</span>
+            <span class="font-body font-bold text-base text-primary">Ссылка-приглашение</span>
           </div>
           <div class="flex gap-2">
             <input
               :value="inviteUrl()"
               readonly
-              class="flex-1 font-mono text-[0.72rem] text-primary bg-white/60 border border-accent/40 rounded-xl px-3 py-2.5 truncate"
+              class="flex-1 font-mono text-sm text-primary bg-white/60 border border-accent/40 rounded-xl px-3 py-2.5 truncate"
             />
             <button
-              class="flex items-center gap-1.5 font-body font-bold text-[0.78rem] bg-accent hover:bg-accent-dark text-primary-dark border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all duration-200 shrink-0"
+              class="flex items-center gap-1.5 font-body font-bold text-base bg-accent hover:bg-accent-dark text-white border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all duration-200 shrink-0"
               @click="copyInvite"
             >
               <Copy class="w-3.5 h-3.5" />
@@ -145,13 +145,13 @@ async function handleCreate() {
         <div class="flex flex-col sm:flex-row gap-3 w-full">
           <NuxtLink
             to="/profile/trips"
-            class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-[0.85rem] text-white bg-accent rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg"
+            class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-base text-white bg-accent rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:bg-accent-dark hover:-translate-y-0.5 hover:shadow-lg"
           >
             Мои поездки
           </NuxtLink>
           <NuxtLink
             to="/map"
-            class="flex-1 flex items-center justify-center font-body font-bold text-[0.85rem] text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-primary hover:bg-primary hover:text-white"
+            class="flex-1 flex items-center justify-center font-body font-bold text-base text-primary bg-transparent border-2 border-primary/20 rounded-2xl px-6 py-3.5 no-underline transition-all duration-200 hover:border-accent hover:bg-accent hover:text-white"
           >
             Открыть карту
           </NuxtLink>
@@ -160,21 +160,21 @@ async function handleCreate() {
 
 
       <template v-else>
-        <span class="inline-block font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-4">
+        <span class="inline-block font-body font-bold text-xs tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-4 py-1.5 rounded-full mb-4">
           Детали поездки
         </span>
 
-        <h1 class="font-heading text-primary mb-2 leading-[1.25]" style="font-size: clamp(1.2rem, 3vw, 1.8rem);">
+        <h1 class="font-heading text-primary mb-2 leading-[1.25] text-heading-page">
           Расскажите о <span class="text-accent">путешествии</span>
         </h1>
-        <p class="font-body font-light text-primary-light text-[0.85rem] leading-relaxed mb-8">
+        <p class="font-body font-light text-primary-light text-base leading-relaxed mb-8">
           Когда, как и на какой бюджет — мы подберём идеальные места.
         </p>
 
         <form class="flex flex-col gap-5" @submit.prevent="handleCreate">
           <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3.5">
             <div class="flex flex-col gap-1.5">
-              <label class="font-body text-[0.78rem] font-bold text-primary">Дата начала</label>
+              <label class="font-body text-base font-bold text-primary">Дата начала</label>
               <UiInput
                 v-model="dateFrom"
                 type="date"
@@ -182,7 +182,7 @@ async function handleCreate() {
               />
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="font-body text-[0.78rem] font-bold text-primary">Дата окончания</label>
+              <label class="font-body text-base font-bold text-primary">Дата окончания</label>
               <UiInput
                 v-model="dateTo"
                 type="date"
@@ -193,25 +193,25 @@ async function handleCreate() {
 
 
           <div class="flex flex-col gap-1.5">
-            <label class="font-body text-[0.78rem] font-bold text-primary">Бюджет</label>
+            <label class="font-body text-base font-bold text-primary">Бюджет</label>
             <UiToggleGroup type="single" :model-value="budgetTier" @update:model-value="(v: unknown) => { if (v) budgetTier = String(v) }" class="justify-start flex-wrap">
               <UiToggleGroupItem
                 v-for="opt in budgetOptions"
                 :key="opt.value"
                 :value="opt.value"
-                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-accent/40 transition-all duration-200"
+                class="rounded-2xl px-5 py-2.5 font-body text-base data-[state=on]:bg-accent data-[state=on]:text-white data-[state=on]:border-accent border border-accent/40 transition-all duration-200"
               >
                 {{ opt.label }}
               </UiToggleGroupItem>
             </UiToggleGroup>
-            <span class="font-body text-[0.68rem] text-primary-light">
+            <span class="font-body text-sm text-primary-light">
               {{ budgetOptions.find(o => o.value === budgetTier)?.range }}
             </span>
           </div>
 
 
           <div class="flex flex-col gap-1.5">
-            <label class="font-body text-[0.78rem] font-bold text-primary">Бюджет (₽)</label>
+            <label class="font-body text-base font-bold text-primary">Бюджет (₽)</label>
             <UiInput
               v-model.number="budgetRub"
               type="number"
@@ -223,13 +223,13 @@ async function handleCreate() {
 
 
           <div class="flex flex-col gap-1.5">
-            <label class="font-body text-[0.78rem] font-bold text-primary">Транспорт</label>
+            <label class="font-body text-base font-bold text-primary">Транспорт</label>
             <UiToggleGroup type="single" :model-value="transport" @update:model-value="(v: unknown) => { if (v) transport = String(v) }" class="justify-start flex-wrap">
               <UiToggleGroupItem
                 v-for="opt in transportOptions"
                 :key="opt.value"
                 :value="opt.value"
-                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-accent/40 transition-all duration-200 inline-flex items-center gap-1.5"
+                class="rounded-2xl px-5 py-2.5 font-body text-base data-[state=on]:bg-accent data-[state=on]:text-white data-[state=on]:border-accent border border-accent/40 transition-all duration-200 inline-flex items-center gap-1.5"
               >
                 <component :is="opt.icon" class="w-4 h-4" />
                 {{ opt.label }}
@@ -239,13 +239,13 @@ async function handleCreate() {
 
 
           <div class="flex flex-col gap-1.5">
-            <label class="font-body text-[0.78rem] font-bold text-primary">Формат поездки</label>
+            <label class="font-body text-base font-bold text-primary">Формат поездки</label>
             <UiToggleGroup type="single" :model-value="format" @update:model-value="(v: unknown) => { if (v) format = String(v) }" class="justify-start flex-wrap">
               <UiToggleGroupItem
                 v-for="opt in formatOptions"
                 :key="opt.value"
                 :value="opt.value"
-                class="rounded-2xl px-5 py-2.5 font-body text-[0.82rem] data-[state=on]:bg-accent data-[state=on]:text-primary-dark data-[state=on]:border-accent border border-accent/40 transition-all duration-200"
+                class="rounded-2xl px-5 py-2.5 font-body text-base data-[state=on]:bg-accent data-[state=on]:text-white data-[state=on]:border-accent border border-accent/40 transition-all duration-200"
               >
                 {{ opt.label }}
               </UiToggleGroupItem>
@@ -254,7 +254,7 @@ async function handleCreate() {
 
 
           <div class="flex flex-col gap-3">
-            <label class="font-body text-[0.78rem] font-bold text-primary flex items-center gap-1.5">
+            <label class="font-body text-base font-bold text-primary flex items-center gap-1.5">
               <Users class="w-4 h-4" />
               Состав группы
             </label>
@@ -262,7 +262,7 @@ async function handleCreate() {
             <div class="bg-white/30 border border-accent/40 rounded-2xl p-5 flex flex-col gap-4">
 
               <div class="flex items-center justify-between">
-                <span class="font-body text-[0.82rem] text-primary">Взрослые</span>
+                <span class="font-body text-base text-primary">Взрослые</span>
                 <div class="flex items-center gap-2.5">
                   <button
                     type="button"
@@ -272,7 +272,7 @@ async function handleCreate() {
                   >
                     <Minus class="w-3.5 h-3.5 text-primary" />
                   </button>
-                  <span class="font-body font-bold text-[1rem] text-primary w-6 text-center">{{ adults }}</span>
+                  <span class="font-body font-bold text-xl text-primary w-6 text-center">{{ adults }}</span>
                   <button
                     type="button"
                     class="w-8 h-8 rounded-full bg-primary/8 hover:bg-primary/15 border-none cursor-pointer flex items-center justify-center transition-colors"
@@ -287,13 +287,13 @@ async function handleCreate() {
               <div class="h-px bg-primary/8"></div>
               <div class="flex flex-col gap-3">
                 <div class="flex items-center justify-between">
-                  <span class="font-body text-[0.82rem] text-primary flex items-center gap-1.5">
+                  <span class="font-body text-base text-primary flex items-center gap-1.5">
                     <Baby class="w-4 h-4 text-accent-dark" />
                     Дети
                   </span>
                   <button
                     type="button"
-                    class="flex items-center gap-1 font-body font-bold text-[0.75rem] text-accent-dark bg-accent/10 hover:bg-accent/20 border-none rounded-full px-3 py-1.5 cursor-pointer transition-colors"
+                    class="flex items-center gap-1 font-body font-bold text-sm text-accent-dark bg-accent/10 hover:bg-accent/20 border-none rounded-full px-3 py-1.5 cursor-pointer transition-colors"
                     @click="addChild"
                   >
                     <Plus class="w-3 h-3" />
@@ -301,15 +301,15 @@ async function handleCreate() {
                   </button>
                 </div>
                 <div v-for="(child, idx) in children" :key="idx" class="flex items-center gap-3">
-                  <span class="font-body text-[0.78rem] text-primary-light shrink-0">Возраст:</span>
+                  <span class="font-body text-base text-primary-light shrink-0">Возраст:</span>
                   <UiInput
                     v-model.number="child.age"
                     type="number"
                     min="0"
                     max="17"
-                    class="rounded-xl px-3 py-2 font-body text-[0.82rem] bg-white/25 border border-accent/40 focus-visible:ring-accent w-20"
+                    class="rounded-xl px-3 py-2 font-body text-base bg-white/25 border border-accent/40 focus-visible:ring-accent w-20"
                   />
-                  <span class="font-body text-[0.68rem] text-primary-light">лет</span>
+                  <span class="font-body text-sm text-primary-light">лет</span>
                   <button
                     type="button"
                     class="ml-auto w-7 h-7 rounded-lg bg-red-500/10 hover:bg-red-500/20 border-none cursor-pointer flex items-center justify-center transition-colors"
@@ -318,15 +318,15 @@ async function handleCreate() {
                     <Minus class="w-3 h-3 text-red-600" />
                   </button>
                 </div>
-                <p v-if="children.length === 0" class="font-body text-[0.72rem] text-primary-light italic">
+                <p v-if="children.length === 0" class="font-body text-sm text-primary-light italic">
                   Без детей
                 </p>
               </div>
 
               <div class="h-px bg-primary/8"></div>
               <div class="flex items-center justify-between">
-                <span class="font-body text-[0.78rem] text-primary-light">Всего участников</span>
-                <span class="font-body font-bold text-[0.88rem] text-accent-dark">{{ groupSize }}</span>
+                <span class="font-body text-base text-primary-light">Всего участников</span>
+                <span class="font-body font-bold text-md text-accent-dark">{{ groupSize }}</span>
               </div>
             </div>
           </div>
@@ -339,7 +339,7 @@ async function handleCreate() {
           <UiButton
             type="submit"
             :disabled="!dateFrom || !dateTo || isSubmitting"
-            class="w-full mt-2 bg-accent hover:bg-accent-dark border-accent text-primary-dark font-body font-bold rounded-2xl py-3.5 text-[0.88rem] transition-all duration-200"
+            class="w-full mt-2 bg-accent hover:bg-accent-dark border-accent text-white font-body font-bold rounded-2xl py-3.5 text-md transition-all duration-200"
           >
             <Loader2 v-if="isSubmitting" class="w-4 h-4 mr-2 animate-spin" />
             <Check v-else class="w-4 h-4 mr-2" />

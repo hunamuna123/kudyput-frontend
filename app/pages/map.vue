@@ -50,7 +50,24 @@ function getPointName(id: string): string {
 
 async function handleBuildRoute() {
   if (routeLocationIds.value.length < 2) return;
-  await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+
+  // Build locations array with coordinates for OSRM
+  const locations = routeLocationIds.value
+    .map((id) => {
+      const point = mapStore.points.find((p) => p.id === id);
+      if (!point) return null;
+      return { id: point.id, name: point.name, latitude: point.latitude, longitude: point.longitude };
+    })
+    .filter(Boolean) as { id: string; name: string; latitude: number; longitude: number }[];
+
+  if (locations.length < 2) return;
+
+  // Try OSRM first for real road geometry
+  const result = await routesStore.fetchRoadRoute(locations, routeTransport.value);
+  if (!result) {
+    // Fallback to backend API
+    await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+  }
 }
 
 function formatDist(km: number): string {
@@ -89,13 +106,13 @@ const categoryOptions = [
 const densityColors: Record<string, string> = {
   green: "#22c55e",
   yellow: "#eab308",
-  red: "#ef4444",
+  red: "#f97316",
 };
 
 const densityLabels: Record<string, string> = {
   green: "Спокойно",
   yellow: "Средне",
-  red: "Популярно",
+  red: "🔥 Популярно",
 };
 
 const hasVibeProfile = computed(() => vibeStore.hasProfile || !!authStore.user?.vibe_vector_id);
@@ -138,21 +155,21 @@ onMounted(async () => {
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] left-[10%] blur-[120px] pointer-events-none"></div>
     <div class="absolute w-[400px] h-[400px] rounded-full bg-primary/5 bottom-[-80px] right-[5%] blur-[100px] pointer-events-none"></div>
 
-    <div class="relative z-10 mx-auto px-5 pt-4 pb-12" style="max-width: 1140px;">
+    <div class="relative z-10 mx-auto px-5 pt-6 pb-12 max-w-wide">
 
       <div class="flex items-center justify-between gap-3 mb-6 flex-wrap">
         <div>
-          <h1 class="font-heading text-primary mb-1" style="font-size: clamp(1.2rem, 3vw, 1.8rem);">
+          <h1 class="font-heading text-primary mb-1 text-heading-page">
             Интерактивная <span class="text-accent">карта</span>
           </h1>
-          <p class="font-body font-light text-primary-light text-[0.85rem]">
+          <p class="font-body font-light text-primary-light text-base">
             Исследуйте скрытые места Краснодарского края
           </p>
         </div>
         <div class="flex gap-2">
           <button
             v-if="hasVibeProfile"
-            class="flex items-center gap-1.5 font-body text-[0.82rem] px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
+            class="flex items-center gap-1.5 font-body text-base px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
             :class="mapMode === 'ai' ? 'bg-accent/15 border-accent/30 text-accent-dark font-bold' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
             @click="mapMode = mapMode === 'ai' ? 'all' : 'ai'"
           >
@@ -160,7 +177,7 @@ onMounted(async () => {
             ИИ подобрал
           </button>
           <button
-            class="flex items-center gap-1.5 font-body text-[0.82rem] px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
+            class="flex items-center gap-1.5 font-body text-base px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
             :class="demoMode ? 'bg-accent/15 border-accent/30 text-accent-dark font-bold' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
             @click="demoMode = !demoMode"
           >
@@ -168,7 +185,7 @@ onMounted(async () => {
             Демо режим
           </button>
           <button
-            class="flex items-center gap-1.5 font-body text-[0.82rem] px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
+            class="flex items-center gap-1.5 font-body text-base px-4 py-2 rounded-2xl border cursor-pointer transition-all duration-200"
             :class="showFilters ? 'bg-accent/15 border-accent/30 text-accent-dark' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
             @click="showFilters = !showFilters"
           >
@@ -183,7 +200,7 @@ onMounted(async () => {
           <button
             v-for="profile in demoProfiles"
             :key="profile.value"
-            class="font-body text-[0.75rem] px-3.5 py-2 rounded-full border cursor-pointer transition-all duration-200"
+            class="font-body text-sm px-3.5 py-2 rounded-full border cursor-pointer transition-all duration-200"
             :class="demoProfile === profile.value
               ? 'bg-accent/20 border-accent/40 text-accent-dark font-bold'
               : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
@@ -199,7 +216,7 @@ onMounted(async () => {
           <button
             v-for="cat in categoryOptions"
             :key="cat.value"
-            class="font-body text-[0.75rem] px-3.5 py-2 rounded-full border cursor-pointer transition-all duration-200"
+            class="font-body text-sm px-3.5 py-2 rounded-full border cursor-pointer transition-all duration-200"
             :class="categoryFilter === cat.value
               ? 'bg-accent/20 border-accent/40 text-accent-dark font-bold'
               : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
@@ -211,11 +228,11 @@ onMounted(async () => {
       </Transition>
 
       <div class="flex items-center gap-4 mb-5">
-        <span class="font-body text-[0.78rem] text-primary-light">
+        <span class="font-body text-base text-primary-light">
           {{ mapStore.total }} {{ mapStore.total === 1 ? 'локация' : 'локаций' }}
         </span>
         <div class="flex gap-3">
-          <span v-for="(color, level) in densityColors" :key="level" class="flex items-center gap-1 font-body text-[0.68rem] text-primary-light">
+          <span v-for="(color, level) in densityColors" :key="level" class="flex items-center gap-1 font-body text-sm text-primary-light">
             <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: color }"></span>
             {{ densityLabels[level] }}
           </span>
@@ -239,6 +256,7 @@ onMounted(async () => {
               :points="mapStore.points" 
               :selected-id="mapStore.selectedPointId" 
               :route-points="routesStore.currentRoute?.points"
+              :route-geometry="routesStore.routeGeometry"
               @select="selectPoint" 
             />
           </div>
@@ -246,7 +264,7 @@ onMounted(async () => {
           <div v-if="mapStore.points.length === 0" class="absolute inset-0 flex items-center justify-center">
             <div class="text-center">
               <MapPin class="w-10 h-10 text-primary-light opacity-30 mx-auto mb-2" />
-              <p class="font-body text-[0.85rem] text-primary-light">Нет локаций по фильтру</p>
+              <p class="font-body text-base text-primary-light">Нет локаций по фильтру</p>
             </div>
           </div>
         </div>
@@ -254,13 +272,13 @@ onMounted(async () => {
         <div class="flex flex-col gap-3 max-h-[520px] max-lg:max-h-[400px] overflow-y-auto pr-1">
 
           <button
-            class="flex items-center justify-center gap-1.5 font-body font-bold text-[0.78rem] px-4 py-2.5 rounded-2xl border cursor-pointer transition-all duration-200 shrink-0"
+            class="flex items-center justify-center gap-1.5 font-body font-bold text-base px-4 py-2.5 rounded-2xl border cursor-pointer transition-all duration-200 shrink-0"
             :class="showRouteBuilder ? 'bg-accent/15 border-accent/30 text-accent-dark' : 'bg-white/35 border-white/50 text-primary-light hover:border-accent/30'"
             @click="showRouteBuilder = !showRouteBuilder"
           >
             <Navigation class="w-4 h-4" />
             Маршрут
-            <span v-if="routeLocationIds.length > 0" class="bg-accent text-primary-dark text-[0.6rem] font-black rounded-full w-5 h-5 flex items-center justify-center">{{ routeLocationIds.length }}</span>
+            <span v-if="routeLocationIds.length > 0" class="bg-accent text-white text-xs font-black rounded-full w-5 h-5 flex items-center justify-center">{{ routeLocationIds.length }}</span>
           </button>
 
           <Transition name="slide">
@@ -271,20 +289,20 @@ onMounted(async () => {
                   :key="id"
                   class="flex items-center gap-2 px-2.5 py-1.5 bg-white/80 border border-accent/20 rounded-xl group"
                 >
-                  <span class="w-5 h-5 rounded-full bg-accent text-primary-dark flex items-center justify-center text-[0.6rem] font-black shrink-0">{{ idx + 1 }}</span>
-                  <span class="font-body text-[0.75rem] font-medium text-primary flex-1 truncate">{{ getPointName(id) }}</span>
+                  <span class="w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-xs font-black shrink-0">{{ idx + 1 }}</span>
+                  <span class="font-body text-sm font-medium text-primary flex-1 truncate">{{ getPointName(id) }}</span>
                   <button class="text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-all cursor-pointer bg-transparent border-none p-0.5" @click="removeFromRoute(id)">
                     <X class="w-3 h-3" />
                   </button>
                 </div>
               </div>
-              <p v-else class="font-body text-[0.72rem] text-primary-light text-center py-1">Нажмите + рядом с локацией</p>
+              <p v-else class="font-body text-sm text-primary-light text-center py-1">Нажмите + рядом с локацией</p>
 
               <div class="flex gap-1">
                 <button
                   v-for="opt in routeTransportOptions"
                   :key="opt.value"
-                  class="flex-1 font-body text-[0.78rem] py-1.5 rounded-lg border cursor-pointer transition-all"
+                  class="flex-1 font-body text-base py-1.5 rounded-lg border cursor-pointer transition-all"
                   :class="routeTransport === opt.value ? 'bg-accent/20 border-accent/40 font-bold' : 'bg-white/50 border-white/50 hover:border-accent/20'"
                   @click="routeTransport = opt.value"
                 >{{ opt.label }}</button>
@@ -292,7 +310,7 @@ onMounted(async () => {
 
               <button
                 :disabled="routeLocationIds.length < 2 || routesStore.loading"
-                class="flex items-center justify-center gap-1.5 font-body font-bold text-[0.78rem] bg-accent hover:bg-accent-dark text-primary-dark border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                class="flex items-center justify-center gap-1.5 font-body font-bold text-base bg-accent hover:bg-accent-dark text-white border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 @click="handleBuildRoute"
               >
                 <Loader2 v-if="routesStore.loading" class="w-4 h-4 animate-spin" />
@@ -304,18 +322,18 @@ onMounted(async () => {
                 <div class="flex gap-2">
                   <div class="flex-1 flex items-center justify-center gap-1 bg-white/70 border border-accent/20 rounded-lg py-1.5">
                     <Ruler class="w-3 h-3 text-accent-dark" />
-                    <span class="font-body font-bold text-[0.72rem] text-primary">{{ formatDist(routesStore.currentRoute.total_distance_km) }}</span>
+                    <span class="font-body font-bold text-sm text-primary">{{ formatDist(routesStore.currentRoute.total_distance_km) }}</span>
                   </div>
                   <div class="flex-1 flex items-center justify-center gap-1 bg-white/70 border border-primary/10 rounded-lg py-1.5">
                     <Clock class="w-3 h-3 text-primary" />
-                    <span class="font-body font-bold text-[0.72rem] text-primary">{{ formatDur(routesStore.currentRoute.total_time_min) }}</span>
+                    <span class="font-body font-bold text-sm text-primary">{{ formatDur(routesStore.currentRoute.total_time_min) }}</span>
                   </div>
                 </div>
                 <div class="flex flex-col gap-0.5">
                   <div v-for="(point, idx) in routesStore.currentRoute.points" :key="point.location_id" class="flex items-center gap-2 px-2 py-1">
-                    <span class="w-4 h-4 rounded-full bg-accent text-primary-dark flex items-center justify-center text-[0.55rem] font-black shrink-0">{{ idx + 1 }}</span>
-                    <span class="font-body text-[0.72rem] text-primary truncate flex-1">{{ point.name }}</span>
-                    <span v-if="point.distance_km > 0" class="font-body text-[0.62rem] text-primary-light">{{ formatDist(point.distance_km) }}</span>
+                    <span class="w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center text-2xs font-black shrink-0">{{ idx + 1 }}</span>
+                    <span class="font-body text-sm text-primary truncate flex-1">{{ point.name }}</span>
+                    <span v-if="point.distance_km > 0" class="font-body text-xs text-primary-light">{{ formatDist(point.distance_km) }}</span>
                   </div>
                 </div>
               </div>
@@ -336,18 +354,18 @@ onMounted(async () => {
               :style="{ backgroundColor: densityColors[point.density_level] || '#A4BE4F' }"
             ></span>
             <div class="flex-1 min-w-0">
-              <p class="font-body font-bold text-[0.82rem] text-primary truncate">{{ point.name }}</p>
-              <p class="font-body text-[0.68rem] text-primary-light capitalize">{{ point.category }}</p>
+              <p class="font-body font-bold text-base text-primary truncate">{{ point.name }}</p>
+              <p class="font-body text-sm text-primary-light capitalize">{{ point.category }}</p>
             </div>
             <button
               class="w-7 h-7 flex items-center justify-center rounded-full border cursor-pointer transition-all shrink-0"
               :class="routeLocationIds.includes(point.id)
-                ? 'bg-accent border-accent text-primary-dark'
+                ? 'bg-accent border-accent text-white'
                 : 'bg-white/50 border-primary/10 text-primary-light hover:border-accent/40 hover:text-accent-dark'"
               @click.stop="routeLocationIds.includes(point.id) ? removeFromRoute(point.id) : addToRoute(point.id)"
             >
               <Navigation v-if="routeLocationIds.includes(point.id)" class="w-3 h-3" />
-              <span v-else class="text-[0.7rem] font-bold leading-none">+</span>
+              <span v-else class="text-sm font-bold leading-none">+</span>
             </button>
             <NuxtLink
               :to="`/location/${point.id}`"
@@ -359,7 +377,7 @@ onMounted(async () => {
           </div>
 
           <div v-if="mapStore.points.length === 0 && !mapStore.loading" class="py-8 text-center">
-            <p class="font-body text-[0.82rem] text-primary-light">Нет точек</p>
+            <p class="font-body text-base text-primary-light">Нет точек</p>
           </div>
         </div>
       </div>

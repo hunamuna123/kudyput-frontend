@@ -25,15 +25,51 @@
 }
 
 @theme {
-  --color-primary: #285A71;
-  --color-primary-light: #3a7a96;
-  --color-primary-dark: #1d4356;
+  --color-primary: #111111;
+  --color-primary-light: #777777;
+  --color-primary-dark: #000000;
   --color-accent: #A4BE4F;
   --color-accent-light: #b8cf72;
-  --color-accent-dark: #8aa33d;
+  --color-accent-dark: #5a7a28;
 
   --font-heading: "onder", sans-serif;
   --font-body: "kiyosuna", sans-serif;
+
+  /* Font-size scale */
+  --font-size-2xs: 0.5rem;
+  --font-size-xs: 0.58rem;
+  --font-size-sm: 0.68rem;
+  --font-size-base: 0.76rem;
+  --font-size-md: 0.82rem;
+  --font-size-lg: 0.88rem;
+  --font-size-xl: 0.95rem;
+  --font-size-2xl: 1rem;
+  --font-size-3xl: 1.15rem;
+
+  /* Max-width tokens */
+  --max-w-content: 1080px;
+  --max-w-wide: 1140px;
+  --max-w-narrow: 440px;
+}
+
+/* Responsive heading utilities */
+@utility text-heading-hero {
+  font-size: clamp(1.4rem, 3.5vw, 3rem);
+}
+@utility text-heading-page {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+}
+@utility text-heading-page-lg {
+  font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+}
+@utility text-heading-section {
+  font-size: clamp(1.15rem, 2.5vw, 1.8rem);
+}
+@utility text-heading-bg {
+  font-size: clamp(2.2rem, 10vw, 10rem);
+}
+@utility text-heading-voice {
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
 }
 
 @layer base {
@@ -60,6 +96,12 @@
     overflow-x: hidden;
   }
 
+  .font-body.font-bold,
+  .font-body.font-black,
+  .font-body.font-medium {
+    line-height: 1.5;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 400;
@@ -74,7 +116,7 @@
   h3 { font-size: 0.9rem; }
 
   .container {
-    max-width: 1080px;
+    max-width: var(--max-w-content);
     margin-inline: auto;
     padding-inline: 24px;
   }
@@ -109,4 +151,13 @@
 }
 @utility animate-spin-reverse {
   animation: spin-reverse 6s linear infinite;
+}
+
+@keyframes pulse-record {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.2; }
+}
+
+@utility animate-pulse-record {
+  animation: pulse-record 1.5s ease-in-out infinite;
 }

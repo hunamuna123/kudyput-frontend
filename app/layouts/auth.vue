@@ -4,7 +4,7 @@
     <div class="absolute w-[400px] h-[400px] rounded-full pointer-events-none blur-[120px] -bottom-25 left-[10%] bg-primary/8"></div>
 
     <div class="relative z-10 w-full max-w-[400px] flex flex-col items-center">
-      <NuxtLink to="/" class="font-body font-bold text-[1.2rem] text-primary no-underline mb-6 tracking-wide transition-colors duration-200 hover:text-accent">
+      <NuxtLink to="/" class="font-body font-bold text-2xl text-primary no-underline mb-6 tracking-wide transition-colors duration-200 hover:text-accent">
         КудыТуды
       </NuxtLink>
       <slot />

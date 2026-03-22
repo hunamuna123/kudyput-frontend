@@ -29,6 +29,39 @@ export interface TripMember {
   joined_at: string;
 }
 
+export interface TripRoutePoint {
+  id: string;
+  location_id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  position: number;
+  day_number: number;
+  time_slot: string;
+  target_audience: string;
+  stay_duration_min: number;
+  travel_time_min: number;
+  travel_km: number;
+  category: string;
+  vibe_score: number;
+}
+
+export interface TripRoute {
+  id: string;
+  trip_id: string;
+  name: string;
+  summary: string;
+  status: string;
+  transport: string;
+  points: TripRoutePoint[];
+  points_count: number;
+  days_count: number;
+  total_distance_km: number;
+  total_duration_min: number;
+  estimated_cost_rub: number;
+  created_at: string;
+}
+
 interface GroupComposition {
   adults: number;
   children: { age: number }[];
@@ -44,12 +77,20 @@ interface CreateTripRequest {
   group_composition?: GroupComposition;
 }
 
+interface BuildTripRouteRequest {
+  location_ids?: string[];
+  max_points?: number;
+  optimize?: boolean;
+}
+
 interface TripsState {
   trips: Trip[];
   currentTrip: Trip | null;
   currentMembers: TripMember[];
+  tripRoute: TripRoute | null;
   inviteLink: string | null;
   loading: boolean;
+  routeLoading: boolean;
   error: string | null;
 }
 
@@ -58,8 +99,10 @@ export const useTripsStore = defineStore("trips", {
     trips: [],
     currentTrip: null,
     currentMembers: [],
+    tripRoute: null,
     inviteLink: null,
     loading: false,
+    routeLoading: false,
     error: null,
   }),
 
@@ -153,6 +196,30 @@ export const useTripsStore = defineStore("trips", {
         const apiErr = err as { message?: string };
         this.error = apiErr.message || "Ошибка генерации приглашения";
         return null;
+      }
+    },
+
+    async buildTripRoute(tripId: string, params: BuildTripRouteRequest = {}) {
+      this.routeLoading = true;
+      this.error = null;
+      this.tripRoute = null;
+      try {
+        const { request } = useApiClient();
+        const response = await request<{ success: boolean; data: TripRoute }>(
+          `/api/v1/trips/${tripId}/build-route`,
+          {
+            method: "POST",
+            body: params as Record<string, unknown>,
+          },
+        );
+        this.tripRoute = response.data;
+        return response.data;
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string };
+        this.error = apiErr.message || "Ошибка построения маршрута";
+        return null;
+      } finally {
+        this.routeLoading = false;
       }
     },
   },

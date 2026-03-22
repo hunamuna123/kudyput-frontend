@@ -31,13 +31,13 @@ const categoryOptions = [
 const densityOptions = [
   { label: "Hidden Gem", value: "green" },
   { label: "Сезонная", value: "yellow" },
-  { label: "Популярная", value: "red" },
+  { label: "🔥 Популярная", value: "red" },
 ];
 
 const densityBadgeClass: Record<string, string> = {
   green: "bg-green-500/15 text-green-700 border-green-500/20",
   yellow: "bg-yellow-500/15 text-yellow-700 border-yellow-500/20",
-  red: "bg-red-500/15 text-red-700 border-red-500/20",
+  red: "bg-orange-500/15 text-orange-700 border-orange-500/20",
 };
 
 function formatPrice(price: number): string {
@@ -77,7 +77,7 @@ onMounted(() => {
 
     <div class="flex gap-3 mb-6 flex-wrap items-end">
       <div class="flex flex-col gap-1 min-w-[180px] flex-1 max-w-[260px]">
-        <label class="font-body text-[0.72rem] font-bold text-primary-light">Категория</label>
+        <label class="font-body text-sm font-bold text-primary-light">Категория</label>
         <UiSelect v-model="categoryFilter">
           <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
             <UiSelectValue placeholder="Все категории" />
@@ -90,7 +90,7 @@ onMounted(() => {
         </UiSelect>
       </div>
       <div class="flex flex-col gap-1 min-w-[180px] flex-1 max-w-[260px]">
-        <label class="font-body text-[0.72rem] font-bold text-primary-light">Плотность</label>
+        <label class="font-body text-sm font-bold text-primary-light">Плотность</label>
         <UiSelect v-model="densityFilter">
           <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
             <UiSelectValue placeholder="Любая" />
@@ -105,7 +105,7 @@ onMounted(() => {
       <UiButton
         v-if="categoryFilter || densityFilter"
         variant="ghost"
-        class="self-end font-body text-[0.82rem] rounded-xl"
+        class="self-end font-body text-base rounded-xl"
         @click="clearFilters"
       >
         <X class="w-4 h-4 mr-1" />
@@ -130,7 +130,7 @@ onMounted(() => {
     <div v-else-if="locationsStore.locations.length === 0" class="py-15">
       <div class="flex flex-col items-center gap-3">
         <MapPin class="w-10 h-10 text-primary-light opacity-30" />
-        <p class="font-body text-[0.88rem] text-primary-light">Локации не найдены</p>
+        <p class="font-body text-md text-primary-light">Локации не найдены</p>
       </div>
     </div>
 
@@ -140,30 +140,30 @@ onMounted(() => {
         v-for="loc in locationsStore.locations"
         :key="loc.id"
         :to="`/location/${loc.id}`"
-        class="flex flex-col gap-3 p-6 bg-white/35 border border-accent/40 rounded-3xl transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(40,90,113,0.06)] no-underline"
+        class="flex flex-col gap-3 p-6 bg-white/35 border border-accent/40 rounded-3xl transition-all duration-200 hover:border-accent/30 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] no-underline"
       >
         <div class="flex items-start justify-between gap-2">
-          <h3 class="font-heading text-[1rem] text-primary leading-snug">{{ loc.name }}</h3>
+          <h3 class="font-body font-bold text-xl text-primary leading-snug">{{ loc.name }}</h3>
           <UiBadge
             v-if="loc.density_level"
             variant="outline"
-            class="rounded-lg text-[0.65rem] shrink-0"
+            class="rounded-lg text-xs shrink-0"
             :class="densityBadgeClass[loc.density_level] || ''"
           >
-            {{ loc.density_level === 'green' ? 'Hidden Gem' : loc.density_level === 'yellow' ? 'Сезонная' : 'Популярная' }}
+            {{ loc.density_level === 'green' ? 'Hidden Gem' : loc.density_level === 'yellow' ? 'Сезонная' : '🔥 Популярная' }}
           </UiBadge>
         </div>
 
-        <p v-if="loc.description_short" class="font-body text-[0.78rem] text-primary-light leading-relaxed line-clamp-2">{{ loc.description_short }}</p>
+        <p v-if="loc.description_short" class="font-body text-base text-primary-light leading-relaxed line-clamp-2">{{ loc.description_short }}</p>
 
         <div class="flex flex-wrap gap-2.5">
-          <span v-if="loc.category" class="inline-flex items-center gap-1 font-body text-[0.72rem] text-primary-light">
+          <span v-if="loc.category" class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
             <Tag class="w-3 h-3" />{{ loc.category }}
           </span>
-          <span v-if="loc.address" class="inline-flex items-center gap-1 font-body text-[0.72rem] text-primary-light">
+          <span v-if="loc.address" class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
             <Map class="w-3 h-3" />{{ loc.address }}
           </span>
-          <span class="inline-flex items-center gap-1 font-body text-[0.72rem] text-primary-light">
+          <span class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
             <Wallet class="w-3 h-3" />{{ formatPrice(loc.price_per_night) }}
           </span>
         </div>
@@ -173,7 +173,7 @@ onMounted(() => {
             v-for="tag in loc.tags.slice(0, 4)"
             :key="tag"
             variant="secondary"
-            class="rounded-lg bg-primary/6 text-primary-light font-body text-[0.65rem]"
+            class="rounded-lg bg-primary/6 text-primary-light font-body text-xs"
           >
             {{ tag }}
           </UiBadge>
@@ -182,12 +182,12 @@ onMounted(() => {
         <div class="flex items-center justify-between pt-2 border-t border-primary/4">
           <UiBadge
             :variant="loc.is_published ? 'default' : 'secondary'"
-            class="rounded-lg text-[0.65rem]"
+            class="rounded-lg text-xs"
             :class="loc.is_published ? 'bg-green-500/15 text-green-700' : 'bg-primary/6 text-primary-light'"
           >
             {{ loc.is_published ? 'Опубликована' : 'Черновик' }}
           </UiBadge>
-          <span v-if="loc.capacity" class="inline-flex items-center gap-1 font-body text-[0.72rem] text-primary-light">
+          <span v-if="loc.capacity" class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
             <Users class="w-3 h-3" />{{ loc.capacity }}
           </span>
         </div>
@@ -208,7 +208,7 @@ onMounted(() => {
       >
         ‹
       </UiButton>
-      <span class="font-body text-[0.82rem] text-primary-light">
+      <span class="font-body text-base text-primary-light">
         {{ locationsStore.page }} / {{ Math.ceil(locationsStore.total / locationsStore.perPage) }}
       </span>
       <UiButton

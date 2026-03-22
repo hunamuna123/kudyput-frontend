@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Home, Globe, Navigation, Car, Route, User } from "lucide-vue-next";
+import { Home, Globe, Route, Car, User } from "lucide-vue-next";
 
 const { isActive } = useNavActive();
 
@@ -20,7 +20,7 @@ const tabs: NavTab[] = [
 
 <template>
   <nav class="fixed bottom-0 left-0 right-0 z-[1000] px-2.5 pb-1.5 md:hidden">
-    <div class="flex items-center justify-around bg-white/92 border border-accent/40 rounded-[24px] px-1 py-1.5 shadow-[0_-4px_20px_rgba(40,90,113,0.07)] backdrop-blur-2xl">
+    <div class="flex items-center justify-around bg-white/92 border border-accent/40 rounded-[24px] px-1 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-2xl">
       <NuxtLink
         v-for="tab in tabs"
         :key="tab.to"
@@ -29,7 +29,7 @@ const tabs: NavTab[] = [
       >
         <div
           class="w-9 h-9 flex items-center justify-center rounded-full transition-all duration-250"
-          :class="isActive(tab.to) ? 'bg-primary shadow-[0_3px_12px_rgba(40,90,113,0.2)]' : ''"
+          :class="isActive(tab.to) ? 'bg-accent shadow-[0_3px_12px_rgba(164,190,79,0.35)]' : ''"
         >
           <component
             :is="tab.icon"
@@ -38,7 +38,7 @@ const tabs: NavTab[] = [
           />
         </div>
         <span
-          class="font-body text-[0.58rem] font-bold whitespace-nowrap transition-colors duration-200"
+          class="font-body text-2xs font-bold whitespace-nowrap transition-colors duration-200"
           :class="isActive(tab.to) ? 'text-primary' : 'text-primary-light'"
         >
           {{ tab.label }}

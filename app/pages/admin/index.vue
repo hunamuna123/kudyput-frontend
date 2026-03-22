@@ -83,8 +83,8 @@ onMounted(fetchData);
           <Server class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
-          <span class="font-body text-[0.65rem] text-primary-light">Сервер</span>
+          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.status === "running" ? "Активен" : "—" }}</span>
+          <span class="font-body text-xs text-primary-light">Сервер</span>
         </div>
       </div>
 
@@ -93,8 +93,8 @@ onMounted(fetchData);
           <Code class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
-          <span class="font-body text-[0.65rem] text-primary-light">Версия API</span>
+          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ serverInfo?.version || "—" }}</span>
+          <span class="font-body text-xs text-primary-light">Версия API</span>
         </div>
       </div>
 
@@ -103,8 +103,8 @@ onMounted(fetchData);
           <CheckCircle class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
-          <span class="font-body text-[0.65rem] text-primary-light">Сервисы</span>
+          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthyCount }}/{{ totalServices }}</span>
+          <span class="font-body text-xs text-primary-light">Сервисы</span>
         </div>
       </div>
 
@@ -116,8 +116,8 @@ onMounted(fetchData);
           <Heart class="w-5 h-5" />
         </div>
         <div class="flex flex-col gap-0.5 min-w-0">
-          <span class="font-body font-bold text-[0.95rem] text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
-          <span class="font-body text-[0.65rem] text-primary-light">Статус</span>
+          <span class="font-body font-bold text-lg text-primary whitespace-nowrap overflow-hidden text-ellipsis">{{ healthData?.status === "healthy" ? "Норма" : healthData?.status || "—" }}</span>
+          <span class="font-body text-xs text-primary-light">Статус</span>
         </div>
       </div>
     </div>
@@ -148,7 +148,7 @@ onMounted(fetchData);
 
 
     <div v-else>
-      <h2 class="font-heading text-[1rem] text-primary mb-3">Сервисы</h2>
+      <h2 class="font-body font-bold text-xl text-primary mb-3">Сервисы</h2>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5">
         <div
           v-for="(service, key) in healthData?.services"
@@ -157,22 +157,22 @@ onMounted(fetchData);
           :class="service.status !== 'up' ? 'border-red-500/20' : 'border-white/50'"
         >
           <div class="flex items-center justify-between gap-2">
-            <span class="font-body font-bold text-[0.82rem] text-primary">{{ serviceNames[key as string] || key }}</span>
+            <span class="font-body font-bold text-base text-primary">{{ serviceNames[key as string] || key }}</span>
             <UiBadge
               :variant="service.status === 'up' ? 'default' : 'destructive'"
-              class="rounded-lg text-[0.65rem]"
+              class="rounded-lg text-xs"
               :class="service.status === 'up' ? 'bg-green-500/15 text-green-700 border-green-500/20' : ''"
             >
               {{ service.status === 'up' ? 'Online' : 'Down' }}
             </UiBadge>
           </div>
-          <span v-if="service.status === 'up'" class="font-body text-[0.75rem] text-primary-light">{{ service.latency_ms }}ms</span>
-          <span v-if="service.error" class="font-body text-[0.72rem] text-red-600 break-all">{{ service.error }}</span>
+          <span v-if="service.status === 'up'" class="font-body text-sm text-primary-light">{{ service.latency_ms }}ms</span>
+          <span v-if="service.error" class="font-body text-sm text-red-600 break-all">{{ service.error }}</span>
         </div>
       </div>
     </div>
 
-    <p v-if="healthData" class="mt-5 font-body text-[0.65rem] text-primary-light opacity-50">
+    <p v-if="healthData" class="mt-5 font-body text-xs text-primary-light opacity-50">
       Обновлено: {{ new Date(healthData.timestamp).toLocaleString("ru-RU") }}
     </p>
   </div>

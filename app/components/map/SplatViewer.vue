@@ -21,6 +21,8 @@ const moveState = {
   backward: false,
   left: false,
   right: false,
+  up: false,
+  down: false,
 };
 
 let yaw = 0;
@@ -53,6 +55,8 @@ function onKeyDown(e: KeyboardEvent) {
     case 'KeyS': case 'ArrowDown': moveState.backward = true; break;
     case 'KeyA': case 'ArrowLeft': moveState.left = true; break;
     case 'KeyD': case 'ArrowRight': moveState.right = true; break;
+    case 'Space': case 'KeyQ': e.preventDefault(); moveState.up = true; break;
+    case 'ShiftLeft': case 'ShiftRight': case 'KeyE': moveState.down = true; break;
   }
 }
 
@@ -62,6 +66,8 @@ function onKeyUp(e: KeyboardEvent) {
     case 'KeyS': case 'ArrowDown': moveState.backward = false; break;
     case 'KeyA': case 'ArrowLeft': moveState.left = false; break;
     case 'KeyD': case 'ArrowRight': moveState.right = false; break;
+    case 'Space': case 'KeyQ': moveState.up = false; break;
+    case 'ShiftLeft': case 'ShiftRight': case 'KeyE': moveState.down = false; break;
   }
 }
 
@@ -183,11 +189,8 @@ function updateCamera(camera: THREE.PerspectiveCamera, dt: number) {
   camera.quaternion.setFromEuler(euler);
 
   const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-  forward.y = 0;
-  forward.normalize();
   const right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
-  right.y = 0;
-  right.normalize();
+  const up = new THREE.Vector3(0, -1, 0);
 
   const speed = MOVE_SPEED * dt;
 
@@ -195,6 +198,8 @@ function updateCamera(camera: THREE.PerspectiveCamera, dt: number) {
   if (moveState.backward) camera.position.addScaledVector(forward, -speed);
   if (moveState.left) camera.position.addScaledVector(right, -speed);
   if (moveState.right) camera.position.addScaledVector(right, speed);
+  if (moveState.up) camera.position.addScaledVector(up, speed);
+  if (moveState.down) camera.position.addScaledVector(up, -speed);
 
   if (joystickActive) {
     const jx = joystickDX / JOYSTICK_RADIUS;
@@ -214,9 +219,9 @@ onMounted(async () => {
   const mobile = isMobile.value;
 
   viewer = new GaussianSplats3D.Viewer({
-    cameraUp: [0, 1, 0],
-    initialCameraPosition: [0, 1.6, 5],
-    initialCameraLookAt: [0, 1.6, 0],
+    cameraUp: [0, -1, 0],
+    initialCameraPosition: [0, 5, 10],
+    initialCameraLookAt: [0, 0, 0],
     rootElement: container.value,
     sharedMemoryForWorkers: false,
     useBuiltInControls: false,
@@ -231,6 +236,7 @@ onMounted(async () => {
       splatAlphaRemovalThreshold: mobile ? 10 : 5,
       showLoadingUI: true,
       progressiveLoad: true,
+      rotation: [1, 0, 0, 0],
     });
     viewer.start();
   } catch (err) {
@@ -240,7 +246,7 @@ onMounted(async () => {
 
   const camera = viewer.camera as THREE.PerspectiveCamera;
   if (camera) {
-    const lookAt = new THREE.Vector3(0, 1.6, 0);
+    const lookAt = new THREE.Vector3(0, 0, 0);
     const dir = lookAt.sub(camera.position).normalize();
     yaw = Math.atan2(-dir.x, -dir.z);
     pitch = Math.asin(Math.max(-1, Math.min(1, dir.y)));
@@ -322,6 +328,7 @@ onBeforeUnmount(() => {
     <div class="controls-hint">
       <template v-if="!isMobile">
         <span class="hint-key">W A S D</span> или <span class="hint-key">↑ ↓ ← →</span> — движение
+        <br><span class="hint-key">Q</span> / <span class="hint-key">Пробел</span> — вверх &nbsp; <span class="hint-key">E</span> / <span class="hint-key">Shift</span> — вниз
         <br>Зажмите мышь — обзор
       </template>
       <template v-else>

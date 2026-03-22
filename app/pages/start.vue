@@ -9,22 +9,22 @@ useHead({
 });
 </script>
 <template>
-  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-4 pb-16">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-6 pb-16">
     <div class="absolute w-[400px] h-[400px] rounded-full bg-accent/10 -top-20 right-[5%] blur-[100px] pointer-events-none animate-pulse"></div>
 
-    <div class="relative z-10 w-full text-center" style="max-width: 1080px;">
-      <NuxtLink to="/" class="font-body font-bold text-[1.1rem] text-primary no-underline mb-6 block transition-colors hover:text-accent">
+    <div class="relative z-10 w-full text-center max-w-content">
+      <NuxtLink to="/" class="font-body font-bold text-2xl text-primary no-underline mb-6 block transition-colors hover:text-accent">
         КудыТуды
       </NuxtLink>
 
-      <span class="inline-block font-body font-bold text-[0.62rem] tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-4">
+      <span class="inline-block font-body font-bold text-xs tracking-[0.14em] uppercase text-accent-dark bg-accent/10 px-3.5 py-1 rounded-full mb-4">
         Выбери свой путь
       </span>
 
-      <h1 class="font-heading text-primary mb-2 leading-[1.25]" style="font-size: clamp(1.3rem, 3.5vw, 2.2rem);">
+      <h1 class="font-heading text-primary mb-2 leading-[1.25] text-heading-page-lg">
         Как хочешь <span class="text-accent">начать</span>?
       </h1>
-      <p class="font-body font-light text-primary-light text-[0.85rem] leading-relaxed max-w-md mx-auto mb-8">
+      <p class="font-body font-light text-primary-light text-base leading-relaxed max-w-md mx-auto mb-8">
         ИИ создаст персональный маршрут по твоему настроению, или ты можешь выбрать места на карте сам.
       </p>
 
@@ -41,8 +41,8 @@ useHead({
               <Sparkles class="w-4 h-4 text-accent-dark" />
             </div>
           </div>
-          <h2 class="font-heading text-primary text-[0.92rem]">✨ Свайп</h2>
-          <p class="font-body font-light text-primary-light text-[0.75rem] leading-relaxed">
+          <h2 class="font-body font-bold text-primary text-lg">✨ Свайп</h2>
+          <p class="font-body font-light text-primary-light text-sm leading-relaxed">
             Свайпай карточки как в Тиндере — быстро и весело.
           </p>
         </NuxtLink>
@@ -55,8 +55,8 @@ useHead({
           <div class="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center group-hover:bg-accent/25 transition-colors">
             <Mic class="w-7 h-7 text-accent-dark" />
           </div>
-          <h2 class="font-heading text-primary text-[0.92rem]">🎤 Голос</h2>
-          <p class="font-body font-light text-primary-light text-[0.75rem] leading-relaxed">
+          <h2 class="font-body font-bold text-primary text-lg">🎤 Голос</h2>
+          <p class="font-body font-light text-primary-light text-sm leading-relaxed">
             Расскажи, чего хочешь — ИИ подберёт идеальные места.
           </p>
         </NuxtLink>
@@ -69,8 +69,8 @@ useHead({
           <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
             <Map class="w-7 h-7 text-primary" />
           </div>
-          <h2 class="font-heading text-primary text-[0.92rem]">🗺 Карта</h2>
-          <p class="font-body font-light text-primary-light text-[0.75rem] leading-relaxed">
+          <h2 class="font-body font-bold text-primary text-lg">🗺 Карта</h2>
+          <p class="font-body font-light text-primary-light text-sm leading-relaxed">
             Открой карту и выбери места по собственному вкусу.
           </p>
         </NuxtLink>

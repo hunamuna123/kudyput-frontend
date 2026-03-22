@@ -203,11 +203,11 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-4 pb-16">
+  <div class="min-h-screen bg-white border border-accent/40 flex flex-col items-center justify-start relative overflow-hidden px-5 pt-6 pb-16">
     <div class="absolute w-[500px] h-[500px] rounded-full bg-accent/8 top-[-100px] left-[10%] blur-[120px] pointer-events-none"></div>
 
     <div class="relative z-10 max-w-md w-full text-center flex flex-col items-center">
-      <NuxtLink to="/start" class="font-body text-[0.78rem] text-primary-light no-underline mb-6 hover:text-primary transition-colors inline-flex items-center gap-1.5 self-start">
+      <NuxtLink to="/start" class="font-body text-base text-primary-light no-underline mb-6 hover:text-primary transition-colors inline-flex items-center gap-1.5 self-start">
         <ArrowLeft class="w-3.5 h-3.5" />
         Назад
       </NuxtLink>
@@ -215,10 +215,10 @@ onMounted(async () => {
 
       <div class="w-full max-w-xs mb-6">
         <div class="flex justify-between mb-1.5">
-          <span class="font-body font-bold text-[0.65rem] tracking-[0.14em] uppercase text-accent-dark">
+          <span class="font-body font-bold text-xs tracking-[0.14em] uppercase text-accent-dark">
             {{ Math.min(swipedCount + 1, totalRequired) }} / {{ totalRequired }}
           </span>
-          <span v-if="swipedCount > 0" class="font-body text-[0.65rem] text-primary-light">
+          <span v-if="swipedCount > 0" class="font-body text-xs text-primary-light">
             {{ swipedCount }} свайпов
           </span>
         </div>
@@ -241,8 +241,8 @@ onMounted(async () => {
             <Sparkles class="w-7 h-7 text-accent-dark animate-pulse" />
           </div>
         </div>
-        <h2 class="font-heading text-primary text-[1.2rem]">Анализируем предпочтения…</h2>
-        <p class="font-body font-light text-primary-light text-[0.85rem]">Формируем вайб-паспорт</p>
+        <h2 class="font-body font-bold text-primary text-2xl">Анализируем предпочтения…</h2>
+        <p class="font-body font-light text-primary-light text-base">Формируем вайб-паспорт</p>
         <div class="flex gap-2 mt-1">
           <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay: 0ms;"></div>
           <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay: 200ms;"></div>
@@ -272,7 +272,7 @@ onMounted(async () => {
             class="absolute inset-0 rounded-3xl border-4 border-accent bg-accent/5 flex items-center justify-center pointer-events-none transition-opacity duration-100"
             :style="{ opacity: likeOpacity }"
           >
-            <span class="font-heading text-accent-dark text-[2rem] transform -rotate-12 border-4 border-accent-dark px-5 py-2 rounded-2xl">
+            <span class="font-heading text-accent-dark text-3xl transform -rotate-12 border-4 border-accent-dark px-5 py-2 rounded-2xl">
               НРАВИТСЯ
             </span>
           </div>
@@ -283,7 +283,7 @@ onMounted(async () => {
             class="absolute inset-0 rounded-3xl border-4 border-red-500 bg-red-500/5 flex items-center justify-center pointer-events-none transition-opacity duration-100"
             :style="{ opacity: nopeOpacity }"
           >
-            <span class="font-heading text-red-500 text-[2rem] transform rotate-12 border-4 border-red-500 px-5 py-2 rounded-2xl">
+            <span class="font-heading text-red-500 text-3xl transform rotate-12 border-4 border-red-500 px-5 py-2 rounded-2xl">
               НЕТ
             </span>
           </div>
@@ -295,8 +295,8 @@ onMounted(async () => {
             </div>
             <span v-else class="text-6xl block drop-shadow-lg">{{ getEmoji(card.scene) }}</span>
 
-            <h2 class="font-heading text-primary text-[1.25rem] leading-snug">{{ card.scene.title }}</h2>
-            <p class="font-body font-light text-primary-light text-[0.88rem] leading-relaxed max-w-[260px]">{{ card.scene.description }}</p>
+            <h2 class="font-body font-bold text-primary text-2xl leading-snug">{{ card.scene.title }}</h2>
+            <p class="font-body font-light text-primary-light text-md leading-relaxed max-w-[260px]">{{ card.scene.description }}</p>
           </div>
         </div>
       </div>
@@ -304,14 +304,14 @@ onMounted(async () => {
 
       <div v-else-if="isFinished && !isFinishing" class="flex flex-col items-center gap-5 py-16">
         <div class="text-5xl animate-bounce">✨</div>
-        <h2 class="font-heading text-primary text-[1.3rem]">Профиль готов!</h2>
-        <p class="font-body font-light text-primary-light text-[0.85rem]">Переходим к результатам…</p>
+        <h2 class="font-body font-bold text-primary text-2xl">Профиль готов!</h2>
+        <p class="font-body font-light text-primary-light text-base">Переходим к результатам…</p>
       </div>
 
 
       <div v-else-if="vibeStore.loading" class="flex flex-col items-center gap-4 py-16">
         <Loader2 class="w-8 h-8 text-accent-dark animate-spin" />
-        <p class="font-body text-primary-light text-[0.85rem]">Загружаем сцены…</p>
+        <p class="font-body text-primary-light text-base">Загружаем сцены…</p>
       </div>
 
 
@@ -334,7 +334,7 @@ onMounted(async () => {
       </div>
 
 
-      <p v-if="visibleCards.length > 0 && !isFinished && !isFinishing" class="font-body font-light text-primary-light text-[0.72rem] mt-5">
+      <p v-if="visibleCards.length > 0 && !isFinished && !isFinishing" class="font-body font-light text-primary-light text-sm mt-5">
         Перетаскивай карточку или нажимай кнопки
       </p>
     </div>

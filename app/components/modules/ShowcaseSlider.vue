@@ -71,7 +71,7 @@ onUnmounted(() => {
         </TransitionGroup>
 
         <div class="absolute inset-0 bg-gradient-to-t from-primary-dark/60 via-transparent to-transparent flex flex-col justify-end p-6 md:p-10 pointer-events-none">
-          <span class="font-body font-bold text-[0.6rem] tracking-[0.12em] uppercase text-accent-light bg-accent/20 backdrop-blur-sm px-3 py-1 rounded-full self-start mb-2">
+          <span class="font-body font-bold text-xs tracking-[0.12em] uppercase text-accent-light bg-accent/20 backdrop-blur-sm px-3 py-1 rounded-full self-start mb-2">
             {{ activeSlide.location }}
           </span>
           <span class="font-body font-bold text-white text-xl md:text-2xl leading-snug">
@@ -80,7 +80,7 @@ onUnmounted(() => {
         </div>
 
         <div class="absolute top-4 right-4 md:top-6 md:right-6 bg-primary-dark/50 backdrop-blur-md rounded-full px-3 py-1">
-          <span class="font-body font-bold text-white text-[0.72rem]">
+          <span class="font-body font-bold text-white text-sm">
             {{ String(currentSlide + 1).padStart(2, '0') }} / {{ String(slides.length).padStart(2, '0') }}
           </span>
         </div>

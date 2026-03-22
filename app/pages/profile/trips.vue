@@ -108,7 +108,7 @@ async function handleCreate() {
   <div class="w-full">
     <div class="flex justify-end mb-5">
       <UiButton
-        class="bg-accent hover:bg-accent-dark border-accent text-primary-dark font-body font-bold rounded-2xl"
+        class="bg-accent hover:bg-accent-dark border-accent text-white font-body font-bold rounded-2xl"
         @click="showForm = !showForm"
       >
         <component :is="showForm ? X : Plus" class="w-4 h-4 mr-2" />
@@ -119,22 +119,22 @@ async function handleCreate() {
 
     <Transition name="slide">
       <div v-if="showForm" class="bg-white/35 border border-accent/40 rounded-3xl p-8 mb-6">
-        <h3 class="font-heading text-[1.1rem] text-primary mb-6">Новая поездка</h3>
+        <h3 class="font-body font-bold text-2xl text-primary mb-6">Новая поездка</h3>
         <form class="flex flex-col gap-[18px]" @submit.prevent="handleCreate">
           <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3.5">
             <div class="flex flex-col gap-1.5">
-              <label class="font-body text-[0.78rem] font-bold text-primary">Дата начала</label>
+              <label class="font-body text-base font-bold text-primary">Дата начала</label>
               <UiInput v-model="dateFrom" type="date" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent w-full" />
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="font-body text-[0.78rem] font-bold text-primary">Дата окончания</label>
+              <label class="font-body text-base font-bold text-primary">Дата окончания</label>
               <UiInput v-model="dateTo" type="date" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent w-full" />
             </div>
           </div>
 
           <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3.5">
             <div class="flex flex-col gap-1.5">
-              <label class="font-body text-[0.78rem] font-bold text-primary">Бюджет</label>
+              <label class="font-body text-base font-bold text-primary">Бюджет</label>
               <UiSelect v-model="budgetTier">
                 <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
                   <UiSelectValue placeholder="Комфорт" />
@@ -147,7 +147,7 @@ async function handleCreate() {
               </UiSelect>
             </div>
             <div class="flex flex-col gap-1.5">
-              <label class="font-body text-[0.78rem] font-bold text-primary">Транспорт</label>
+              <label class="font-body text-base font-bold text-primary">Транспорт</label>
               <UiSelect v-model="transport">
                 <UiSelectTrigger class="rounded-2xl font-body bg-white/25 border border-accent/40">
                   <UiSelectValue placeholder="Авто" />
@@ -162,7 +162,7 @@ async function handleCreate() {
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="font-body text-[0.78rem] font-bold text-primary">Размер группы</label>
+            <label class="font-body text-base font-bold text-primary">Размер группы</label>
             <UiInput v-model.number="groupSize" type="number" min="1" max="50" class="rounded-2xl px-4 py-3.5 font-body bg-white/25 border border-accent/40 focus-visible:ring-accent max-w-[140px]" />
           </div>
 
@@ -174,7 +174,7 @@ async function handleCreate() {
           <UiButton
             type="submit"
             :disabled="!dateFrom || !dateTo || tripsStore.loading"
-            class="bg-accent hover:bg-accent-dark border-accent text-primary-dark font-body font-bold rounded-2xl py-3.5 mt-1"
+            class="bg-accent hover:bg-accent-dark border-accent text-white font-body font-bold rounded-2xl py-3.5 mt-1"
           >
             <span v-if="tripsStore.loading" class="inline-block w-4 h-4 border-2 border-primary-dark/30 border-t-primary-dark rounded-full animate-spin mr-2"></span>
             <Check v-else class="w-4 h-4 mr-2" />
@@ -187,12 +187,12 @@ async function handleCreate() {
 
     <div v-if="tripsStore.trips.length === 0 && !showForm" class="flex flex-col items-center gap-2 py-15">
       <Car class="w-10 h-10 text-primary-light opacity-30" />
-      <p class="font-body text-[0.92rem] text-primary">Поездок пока нет</p>
-      <p class="font-body text-[0.78rem] text-primary-light">Создайте первую поездку, чтобы начать</p>
+      <p class="font-body text-lg text-primary">Поездок пока нет</p>
+      <p class="font-body text-base text-primary-light">Создайте первую поездку, чтобы начать</p>
     </div>
 
 
-    <div v-if="tripsStore.trips.length > 0" class="grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-3.5">
+    <div v-if="tripsStore.trips.length > 0" class="flex flex-col gap-3.5">
       <div
         v-for="trip in tripsStore.trips"
         :key="trip.id"
@@ -201,26 +201,26 @@ async function handleCreate() {
   
         <div class="flex flex-col gap-3 p-6">
           <div class="flex items-center justify-between gap-2">
-            <span class="font-body font-bold text-[0.92rem] text-primary">
+            <span class="font-body font-bold text-lg text-primary">
               {{ formatDate(trip.date_from) }} — {{ formatDate(trip.date_to) }}
             </span>
             <UiBadge
               variant="secondary"
-              class="rounded-lg text-[0.65rem] font-bold"
+              class="rounded-lg text-xs font-bold"
               :class="statusBadgeClass[trip.status] || 'bg-primary/6 text-primary-light'"
             >
               {{ statusLabels[trip.status] || trip.status }}
             </UiBadge>
           </div>
           <div class="flex flex-wrap gap-3.5">
-            <span class="inline-flex items-center gap-1 font-body text-[0.75rem] text-primary-light">
+            <span class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
               <component :is="transportIcons[trip.transport] || Car" class="w-3.5 h-3.5" />
               {{ transportOptions.find(o => o.value === trip.transport)?.label || trip.transport }}
             </span>
-            <span class="inline-flex items-center gap-1 font-body text-[0.75rem] text-primary-light">
+            <span class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
               <Users class="w-3.5 h-3.5" />{{ trip.group_size }}
             </span>
-            <span v-if="trip.budget_rub" class="inline-flex items-center gap-1 font-body text-[0.75rem] text-primary-light">
+            <span v-if="trip.budget_rub" class="inline-flex items-center gap-1 font-body text-sm text-primary-light">
               <Wallet class="w-3.5 h-3.5" />{{ trip.budget_rub.toLocaleString("ru-RU") }} ₽
             </span>
           </div>
@@ -231,10 +231,10 @@ async function handleCreate() {
             <input
               :value="getInviteUrl(trip)"
               readonly
-              class="font-mono text-[0.65rem] text-primary bg-white/60 border border-accent/40 rounded-lg px-2.5 py-1.5 flex-1 min-w-0 truncate"
+              class="font-mono text-xs text-primary bg-white/60 border border-accent/40 rounded-lg px-2.5 py-1.5 flex-1 min-w-0 truncate"
             />
             <button
-              class="font-body font-bold text-[0.68rem] text-accent-dark bg-accent/10 hover:bg-accent/20 border-none rounded-lg px-2.5 py-1.5 cursor-pointer transition-colors shrink-0"
+              class="font-body font-bold text-sm text-accent-dark bg-accent/10 hover:bg-accent/20 border-none rounded-lg px-2.5 py-1.5 cursor-pointer transition-colors shrink-0"
               @click="copyInvite(trip)"
             >
               <Copy class="w-3 h-3 inline" />
@@ -244,7 +244,7 @@ async function handleCreate() {
 
 
           <button
-            class="flex items-center gap-1.5 font-body text-[0.72rem] font-bold text-primary-light bg-transparent border-none cursor-pointer p-0 hover:text-accent-dark transition-colors self-start"
+            class="flex items-center gap-1.5 font-body text-sm font-bold text-primary-light bg-transparent border-none cursor-pointer p-0 hover:text-accent-dark transition-colors self-start"
             @click="toggleExpand(trip.id)"
           >
             <component :is="expandedTripId === trip.id ? ChevronUp : ChevronDown" class="w-3.5 h-3.5" />
@@ -257,10 +257,10 @@ async function handleCreate() {
           <div v-if="expandedTripId === trip.id" class="border-t px-6 py-4 bg-white/30 border border-accent/40">
             <div v-if="tripsStore.loading" class="flex items-center gap-2 py-3">
               <span class="inline-block w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></span>
-              <span class="font-body text-[0.78rem] text-primary-light">Загрузка...</span>
+              <span class="font-body text-base text-primary-light">Загрузка...</span>
             </div>
             <div v-else-if="tripsStore.currentMembers.length === 0" class="py-3">
-              <span class="font-body text-[0.78rem] text-primary-light italic">Участников пока нет</span>
+              <span class="font-body text-base text-primary-light italic">Участников пока нет</span>
             </div>
             <div v-else class="flex flex-col gap-2.5">
               <div
@@ -272,14 +272,14 @@ async function handleCreate() {
                   <User class="w-4 h-4" :class="member.role === 'creator' ? 'text-accent-dark' : 'text-primary-light'" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <span class="font-body text-[0.82rem] text-primary block truncate">{{ member.display_name || 'Без имени' }}</span>
+                  <span class="font-body text-base text-primary block truncate">{{ member.display_name || 'Без имени' }}</span>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span v-if="member.role === 'creator'" class="font-body text-[0.62rem] font-bold text-accent-dark bg-accent/10 rounded px-1.5 py-0.5">Создатель</span>
-                    <span v-if="member.is_child" class="font-body text-[0.62rem] font-bold text-blue-600 bg-blue-500/10 rounded px-1.5 py-0.5">Ребёнок</span>
+                    <span v-if="member.role === 'creator'" class="font-body text-xs font-bold text-accent-dark bg-accent/10 rounded px-1.5 py-0.5">Создатель</span>
+                    <span v-if="member.is_child" class="font-body text-xs font-bold text-blue-600 bg-blue-500/10 rounded px-1.5 py-0.5">Ребёнок</span>
                   </div>
                 </div>
                 <div v-if="member.tags?.length" class="flex flex-wrap gap-1 justify-end max-w-[120px]">
-                  <span v-for="tag in member.tags.slice(0, 3)" :key="tag" class="font-body text-[0.58rem] text-primary-light bg-primary/6 rounded-full px-1.5 py-0.5">
+                  <span v-for="tag in member.tags.slice(0, 3)" :key="tag" class="font-body text-2xs text-primary-light bg-primary/6 rounded-full px-1.5 py-0.5">
                     {{ tag }}
                   </span>
                 </div>

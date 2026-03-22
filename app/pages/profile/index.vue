@@ -91,10 +91,10 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
       </div>
       <div class="flex-1 min-w-0">
         <div v-if="!editing">
-          <h2 class="font-heading text-[1.3rem] text-primary mb-0.5">{{ authStore.user?.display_name || "Без имени" }}</h2>
-          <p class="font-body text-[0.82rem] text-primary-light mb-2">{{ authStore.user?.email }}</p>
+          <h2 class="font-body font-bold text-2xl text-primary mb-0.5">{{ authStore.user?.display_name || "Без имени" }}</h2>
+          <p class="font-body text-base text-primary-light mb-2">{{ authStore.user?.email }}</p>
           <button
-            class="font-body text-[0.78rem] font-bold text-accent-dark bg-transparent border-none cursor-pointer p-0 flex items-center gap-1.5 hover:text-accent transition-colors max-sm:mx-auto"
+            class="font-body text-base font-bold text-accent-dark bg-transparent border-none cursor-pointer p-0 flex items-center gap-1.5 hover:text-accent transition-colors max-sm:mx-auto"
             @click="startEdit"
           >
             <Pencil class="w-3.5 h-3.5" />
@@ -110,7 +110,7 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
             />
             <UiButton
               size="icon"
-              class="bg-accent hover:bg-accent-dark border-accent text-primary-dark rounded-xl shrink-0"
+              class="bg-accent hover:bg-accent-dark border-accent text-white rounded-xl shrink-0"
               :disabled="authStore.loading"
               @click="saveProfile"
             >
@@ -136,14 +136,14 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
 
     <div class="bg-white/35 border border-accent/40 rounded-3xl p-6">
       <div class="flex items-center justify-between mb-3">
-        <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Карма</span>
-        <span class="font-body text-[0.72rem] font-bold rounded-full px-2.5 py-1" :class="karmaLevel.color">
+        <span class="font-body text-sm font-bold text-primary-light uppercase tracking-wider">Карма</span>
+        <span class="font-body text-sm font-bold rounded-full px-2.5 py-1" :class="karmaLevel.color">
           {{ karmaLevel.emoji }} {{ karmaLevel.label }}
         </span>
       </div>
       <div class="flex items-center gap-3 mb-2">
-        <span class="font-heading text-[1.6rem] text-primary">{{ authStore.user?.karma ?? 0 }}</span>
-        <span class="font-body text-[0.72rem] text-primary-light">очков</span>
+        <span class="font-body font-bold text-3xl text-primary">{{ authStore.user?.karma ?? 0 }}</span>
+        <span class="font-body text-sm text-primary-light">очков</span>
       </div>
       <div class="w-full h-2 bg-primary/6 rounded-full overflow-hidden">
         <div
@@ -152,10 +152,10 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
         ></div>
       </div>
       <div class="flex justify-between mt-1.5">
-        <span class="font-body text-[0.6rem] text-primary-light">🌱 0</span>
-        <span class="font-body text-[0.6rem] text-primary-light">🌿 20</span>
-        <span class="font-body text-[0.6rem] text-primary-light">🌳 50</span>
-        <span class="font-body text-[0.6rem] text-primary-light">💎 100</span>
+        <span class="font-body text-xs text-primary-light">🌱 0</span>
+        <span class="font-body text-xs text-primary-light">🌿 20</span>
+        <span class="font-body text-xs text-primary-light">🌳 50</span>
+        <span class="font-body text-xs text-primary-light">💎 100</span>
       </div>
     </div>
 
@@ -163,12 +163,12 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
     <div v-if="hasVibe && vibeAxes.length > 0" class="bg-white/35 border border-accent/40 rounded-3xl p-6">
       <div class="flex items-center gap-2 mb-5">
         <Sparkles class="w-4 h-4 text-accent-dark" />
-        <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Вайб-паспорт</span>
+        <span class="font-body text-sm font-bold text-primary-light uppercase tracking-wider">Вайб-паспорт</span>
       </div>
 
       <div class="flex flex-col gap-4 mb-5">
         <div v-for="axis in vibeAxes" :key="axis.label" class="flex flex-col gap-1">
-          <div class="flex items-center justify-between text-[0.68rem] font-body">
+          <div class="flex items-center justify-between text-sm font-body">
             <span class="text-primary-light">{{ axis.label }}</span>
             <span class="text-primary-light">{{ axis.opposite }}</span>
           </div>
@@ -185,7 +185,7 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
         <span
           v-for="tag in vibeStore.profile.extracted_tags"
           :key="tag"
-          class="font-body font-bold text-[0.65rem] text-accent-dark bg-accent/10 px-2.5 py-1 rounded-full"
+          class="font-body font-bold text-xs text-accent-dark bg-accent/10 px-2.5 py-1 rounded-full"
         >
           #{{ tag }}
         </span>
@@ -202,8 +202,8 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
         <Sparkles class="w-5 h-5 text-accent-dark" />
       </div>
       <div class="flex-1">
-        <span class="font-body font-bold text-[0.88rem] text-primary block">Пройти профилирование</span>
-        <span class="font-body text-[0.75rem] text-primary-light">ИИ подберёт места по вашему настроению</span>
+        <span class="font-body font-bold text-md text-primary block">Пройти профилирование</span>
+        <span class="font-body text-sm text-primary-light">ИИ подберёт места по вашему настроению</span>
       </div>
       <ArrowRight class="w-5 h-5 text-accent-dark group-hover:translate-x-1 transition-transform" />
     </NuxtLink>
@@ -211,15 +211,15 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
 
     <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3">
       <div class="flex flex-col gap-2 py-5 px-6 bg-white/35 border border-accent/40 rounded-3xl">
-        <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Роль</span>
-        <UiBadge variant="secondary" class="self-start rounded-lg bg-primary/10 text-primary font-body text-[0.78rem]">
+        <span class="font-body text-sm font-bold text-primary-light uppercase tracking-wider">Роль</span>
+        <UiBadge variant="secondary" class="self-start rounded-lg bg-primary/10 text-primary font-body text-base">
           {{ roleLabels[authStore.user?.role || 'tourist'] || 'Турист' }}
         </UiBadge>
       </div>
 
       <div class="flex flex-col gap-2 py-5 px-6 bg-white/35 border border-accent/40 rounded-3xl">
-        <span class="font-body text-[0.7rem] font-bold text-primary-light uppercase tracking-wider">Дата регистрации</span>
-        <span class="font-body text-[0.92rem] text-primary">{{ formatDateTime(authStore.user?.created_at) }}</span>
+        <span class="font-body text-sm font-bold text-primary-light uppercase tracking-wider">Дата регистрации</span>
+        <span class="font-body text-lg text-primary">{{ formatDateTime(authStore.user?.created_at) }}</span>
       </div>
     </div>
 
