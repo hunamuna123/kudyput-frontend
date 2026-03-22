@@ -1,2 +1,4 @@
 User-Agent: *
 Disallow:
+
+Sitemap: https://kudytudy.raitokyokai.tech/sitemap.xml
