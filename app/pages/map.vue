@@ -4,7 +4,9 @@ import { useMapStore } from "~~/store/map";
 import { useVibeStore } from "~~/store/vibe";
 import { useAuthStore } from "~~/store/auth";
 import { useRoutesStore } from "~~/store/routes";
+import { useWeatherStore } from "~~/store/weather";
 import Map3D from "~~/app/components/map/Map3D.vue";
+import WeatherBanner from "~~/app/components/modules/WeatherBanner.vue";
 
 useHead({
   title: "Карта — КудыТуды",
@@ -17,6 +19,7 @@ const mapStore = useMapStore();
 const vibeStore = useVibeStore();
 const authStore = useAuthStore();
 const routesStore = useRoutesStore();
+const weatherStore = useWeatherStore();
 const categoryFilter = ref("");
 const showFilters = ref(false);
 const showRouteBuilder = ref(false);
@@ -67,6 +70,18 @@ async function handleBuildRoute() {
   if (!result) {
     // Fallback to backend API
     await routesStore.buildRoute(routeLocationIds.value, routeTransport.value);
+  }
+}
+
+async function handleWeatherRebuild() {
+  if (!routesStore.currentRoute) return;
+  // Use a placeholder route ID; in production this comes from the backend
+  const routeId = (routesStore.currentRoute as unknown as { id?: string }).id;
+  if (routeId) {
+    await routesStore.rebuildRoute(routeId);
+  } else {
+    // Fallback: rebuild with OSRM using existing locations
+    await handleBuildRoute();
   }
 }
 
@@ -226,6 +241,8 @@ onMounted(async () => {
           </button>
         </div>
       </Transition>
+
+      <WeatherBanner @rebuild="handleWeatherRebuild" />
 
       <div class="flex items-center gap-4 mb-5">
         <span class="font-body text-base text-primary-light">

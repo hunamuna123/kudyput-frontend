@@ -17,10 +17,17 @@ export interface RoutePreview {
   transport: string;
 }
 
+interface RebuildOverridePoint {
+  latitude: number;
+  longitude: number;
+  name?: string;
+}
+
 interface RoutesState {
   currentRoute: RoutePreview | null;
   routeGeometry: [number, number][];
   loading: boolean;
+  rebuilding: boolean;
   error: string | null;
 }
 
@@ -90,6 +97,7 @@ export const useRoutesStore = defineStore("routes", {
     currentRoute: null,
     routeGeometry: [],
     loading: false,
+    rebuilding: false,
     error: null,
   }),
 
@@ -182,6 +190,35 @@ export const useRoutesStore = defineStore("routes", {
         return null;
       } finally {
         this.loading = false;
+      }
+    },
+
+    async rebuildRoute(routeId: string, overridePoints?: RebuildOverridePoint[]) {
+      this.rebuilding = true;
+      this.error = null;
+      try {
+        const { request } = useApiClient();
+        const body: Record<string, unknown> = {};
+        if (overridePoints?.length) {
+          body.override_points = overridePoints;
+        }
+        const response = await request<{ success: boolean; data: RoutePreview }>(
+          `/api/v1/route/${routeId}/rebuild`,
+          { method: "POST", body },
+        );
+        this.currentRoute = response.data;
+        if (response.data?.points) {
+          this.routeGeometry = response.data.points.map(
+            (p) => [p.latitude, p.longitude] as [number, number],
+          );
+        }
+        return response.data;
+      } catch (err: unknown) {
+        const apiErr = err as { message?: string };
+        this.error = apiErr.message || "Ошибка перестройки маршрута";
+        return null;
+      } finally {
+        this.rebuilding = false;
       }
     },
 
