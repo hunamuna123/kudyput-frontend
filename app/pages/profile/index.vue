@@ -154,8 +154,25 @@ const hasVibe = computed(() => !!authStore.user?.vibe_vector_id);
       <div class="flex justify-between mt-1.5">
         <span class="font-body text-xs text-primary-light">🌱 0</span>
         <span class="font-body text-xs text-primary-light">🌿 20</span>
-        <span class="font-body text-xs text-primary-light">🌳 50</span>
+        <span class="font-body text-xs text-primary-light">🗝 50</span>
         <span class="font-body text-xs text-primary-light">💎 100</span>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-primary/8">
+        <div v-if="(authStore.user?.karma ?? 0) >= 50" class="flex items-center gap-2 p-3 bg-green-500/8 rounded-xl border border-green-500/15">
+          <span class="text-lg">🗝</span>
+          <div>
+            <p class="font-body font-bold text-sm text-green-700">Hidden Gems открыты!</p>
+            <p class="font-body text-xs text-green-600">Вам доступны секретные локации на карте</p>
+          </div>
+        </div>
+        <div v-else class="flex items-center gap-2 p-3 bg-accent/5 rounded-xl border border-accent/15">
+          <span class="text-lg">🔒</span>
+          <div>
+            <p class="font-body font-bold text-sm text-primary">Hidden Gems</p>
+            <p class="font-body text-xs text-primary-light">Ещё {{ 50 - (authStore.user?.karma ?? 0) }} очков кармы до доступа к секретным местам</p>
+          </div>
+        </div>
       </div>
     </div>
 

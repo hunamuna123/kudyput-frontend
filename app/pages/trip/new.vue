@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarIcon, Car, Bus, Footprints, Bike, Users, Check, ArrowLeft, Loader2, AlertCircle, Plus, Minus, Copy, Link2, Baby } from "lucide-vue-next";
+import { CalendarIcon, Car, Bus, Footprints, Bike, Users, Check, ArrowLeft, Loader2, AlertCircle, Plus, Minus, Copy, Link2, Baby, Lock, Globe } from "lucide-vue-next";
 import { useTripsStore } from "~~/store/trips";
 import { useAuthStore } from "~~/store/auth";
 
@@ -22,6 +22,7 @@ const children = ref<{ age: number }[]>([]);
 const isSubmitting = ref(false);
 const createdTrip = ref<{ id: string; invite_token: string } | null>(null);
 const copied = ref(false);
+const privacy = ref<"public" | "invite_only">("invite_only");
 
 const formatOptions = [
   { label: "☀️ Одним днём", value: "day_trip" },
@@ -85,6 +86,7 @@ async function handleCreate() {
       adults: adults.value,
       children: children.value,
     },
+    privacy: privacy.value,
   });
 
   isSubmitting.value = false;
@@ -335,6 +337,41 @@ async function handleCreate() {
             <AlertCircle class="h-4 w-4" />
             <UiAlertDescription>{{ tripsStore.error }}</UiAlertDescription>
           </UiAlert>
+
+          <!-- Privacy Toggle -->
+          <div class="flex flex-col gap-1.5">
+            <label class="font-body text-base font-bold text-primary flex items-center gap-1.5">
+              <Lock class="w-4 h-4" />
+              Приватность
+            </label>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-base rounded-2xl px-4 py-3 border cursor-pointer transition-all duration-200"
+                :class="privacy === 'invite_only'
+                  ? 'bg-accent text-white border-accent'
+                  : 'bg-white/25 border-accent/40 text-primary-light hover:border-accent'"
+                @click="privacy = 'invite_only'"
+              >
+                <Lock class="w-4 h-4" />
+                По приглашению
+              </button>
+              <button
+                type="button"
+                class="flex-1 flex items-center justify-center gap-2 font-body font-bold text-base rounded-2xl px-4 py-3 border cursor-pointer transition-all duration-200"
+                :class="privacy === 'public'
+                  ? 'bg-accent text-white border-accent'
+                  : 'bg-white/25 border-accent/40 text-primary-light hover:border-accent'"
+                @click="privacy = 'public'"
+              >
+                <Globe class="w-4 h-4" />
+                Публичная
+              </button>
+            </div>
+            <p class="font-body text-sm text-primary-light">
+              {{ privacy === 'invite_only' ? 'Присоединиться можно только по ссылке' : 'Поездка видна всем пользователям' }}
+            </p>
+          </div>
 
           <UiButton
             type="submit"

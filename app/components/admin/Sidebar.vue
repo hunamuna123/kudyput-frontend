@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Home, MapPin, Globe, Car, User, Navigation, Flame, FileText, Heart, LayoutDashboard, Settings, Route, CalendarCheck } from "lucide-vue-next";
+import { Home, MapPin, Globe, Car, User, Navigation, Flame, FileText, Heart, LayoutDashboard, Settings, Route, CalendarCheck, TrendingUp } from "lucide-vue-next";
 import { useAuthStore } from "~~/store/auth";
 
 const { isActive } = useNavActive();
@@ -20,6 +20,7 @@ const navItems = computed<NavItem[]>(() => {
     { label: "Карта", icon: Globe, to: "/map" },
     { label: "Маршрут", icon: Route, to: "/route" },
     { label: "Тепл. карта", icon: Flame, to: "/admin/heatmap" },
+    { label: "Прогнозы", icon: TrendingUp, to: "/admin/predictions" },
     { label: "Отчёты", icon: FileText, to: "/admin/reports" },
     { label: "Поездки", icon: Car, to: "/profile/trips" },
     { label: "Избранное", icon: Heart, to: "/profile/favorites" },

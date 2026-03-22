@@ -75,6 +75,7 @@ interface CreateTripRequest {
   transport?: string;
   group_size?: number;
   group_composition?: GroupComposition;
+  privacy?: "public" | "invite_only";
 }
 
 interface BuildTripRouteRequest {

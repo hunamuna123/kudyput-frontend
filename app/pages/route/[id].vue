@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle, Plus, X, Sparkles, AlertTriangle, RefreshCw } from "lucide-vue-next";
+import { Navigation, MapPin, Clock, Ruler, ArrowLeft, Loader2, AlertCircle, Plus, X, Sparkles, AlertTriangle, RefreshCw, Download, Check } from "lucide-vue-next";
 import { useRoutesStore } from "~~/store/routes";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
@@ -71,6 +71,22 @@ function formatTime(min: number): string {
   const h = Math.floor(min / 60);
   const m = Math.round(min % 60);
   return `${h} ч ${m} мин`;
+}
+
+// Offline download
+const downloading = ref(false);
+const downloaded = ref(false);
+
+async function handleDownloadOffline() {
+  if (!routeId.value) return;
+  downloading.value = true;
+  const { downloadRouteBundle } = useOffline();
+  const ok = await downloadRouteBundle(routeId.value);
+  downloading.value = false;
+  if (ok) {
+    downloaded.value = true;
+    setTimeout(() => downloaded.value = false, 3000);
+  }
 }
 
 onMounted(async () => {
@@ -268,6 +284,30 @@ onMounted(async () => {
 
           <!-- Story Player -->
           <StoryPlayer v-if="routeId" :route-id="routeId" />
+
+          <!-- Offline Download -->
+          <div class="bg-gradient-to-b from-white/70 to-white/30 backdrop-blur-md border border-accent/30 shadow-sm rounded-[2rem] p-5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/8 flex items-center justify-center shrink-0">
+                <Download class="w-5 h-5 text-primary" />
+              </div>
+              <div class="flex-1">
+                <p class="font-body font-bold text-base text-primary">Скачать офлайн</p>
+                <p class="font-body text-xs text-primary-light">Маршрут будет доступен без интернета</p>
+              </div>
+              <button
+                :disabled="downloading || downloaded"
+                class="flex items-center gap-1.5 font-body font-bold text-sm border-none rounded-xl px-4 py-2.5 cursor-pointer transition-all duration-200 disabled:opacity-60 shrink-0"
+                :class="downloaded ? 'bg-green-500/15 text-green-700' : 'bg-accent hover:bg-accent-dark text-white'"
+                @click="handleDownloadOffline"
+              >
+                <Loader2 v-if="downloading" class="w-4 h-4 animate-spin" />
+                <Check v-else-if="downloaded" class="w-4 h-4" />
+                <Download v-else class="w-4 h-4" />
+                {{ downloaded ? 'Сохранено!' : downloading ? 'Скачивание…' : 'Скачать' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

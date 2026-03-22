@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box, Heart, CalendarCheck, Route, X, Check, Clock, Phone, User } from "lucide-vue-next";
+import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box, Heart, CalendarCheck, Route, X, Check, Clock, Phone, User, MessageSquare, Camera, Send, Trash2 } from "lucide-vue-next";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 import { useBookingsStore } from "~~/store/bookings";
 import { useFavoritesStore } from "~~/store/favorites";
+import { useReviewsStore } from "~~/store/reviews";
 
 useHead({
   title: "Локация - КудыТуды",
@@ -14,6 +15,7 @@ const locationsStore = useLocationsStore();
 const authStore = useAuthStore();
 const bookingsStore = useBookingsStore();
 const favoritesStore = useFavoritesStore();
+const reviewsStore = useReviewsStore();
 
 const locationId = route.params.id as string;
 
@@ -146,10 +148,63 @@ function toggleFav() {
   favoritesStore.toggle(locationId);
 }
 
+// Reviews
+const reviewRating = ref(5);
+const reviewText = ref("");
+const reviewPhoto = ref<File | null>(null);
+const reviewPhotoPreview = ref<string | null>(null);
+const reviewSubmitted = ref(false);
+
+function setRating(val: number) {
+  reviewRating.value = val;
+}
+
+function handleReviewPhoto(e: Event) {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file) {
+    reviewPhoto.value = file;
+    reviewPhotoPreview.value = URL.createObjectURL(file);
+  }
+}
+
+function removeReviewPhoto() {
+  reviewPhoto.value = null;
+  if (reviewPhotoPreview.value) {
+    URL.revokeObjectURL(reviewPhotoPreview.value);
+    reviewPhotoPreview.value = null;
+  }
+}
+
+async function submitReview() {
+  if (!reviewText.value.trim()) return;
+  const result = await reviewsStore.createReview(locationId, {
+    rating: reviewRating.value,
+    text: reviewText.value.trim(),
+    photo: reviewPhoto.value,
+  });
+  if (result) {
+    reviewText.value = "";
+    reviewRating.value = 5;
+    removeReviewPhoto();
+    reviewSubmitted.value = true;
+    setTimeout(() => reviewSubmitted.value = false, 3000);
+  }
+}
+
+function formatReviewDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 onMounted(async () => {
   authStore.restoreSession();
   favoritesStore.load();
   await locationsStore.fetchLocationById(locationId);
+  reviewsStore.fetchReviews(locationId);
 });
 </script>
 
@@ -321,6 +376,139 @@ onMounted(async () => {
                 >
                   <img :src="imgUrl" alt="Gallery photo" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                 </div>
+              </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="bg-white rounded-3xl p-6 lg:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-primary/5">
+              <div class="flex items-center justify-between mb-5">
+                <h2 class="font-body font-bold text-xl lg:text-2xl text-primary flex items-center gap-2">
+                  <MessageSquare class="w-5 h-5 text-accent" />
+                  Отзывы
+                </h2>
+                <div v-if="reviewsStore.reviewCount > 0" class="flex items-center gap-2">
+                  <div class="flex items-center gap-0.5">
+                    <Star v-for="i in 5" :key="i" class="w-4 h-4" :class="i <= Math.round(reviewsStore.averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-primary/15'" />
+                  </div>
+                  <span class="font-body font-bold text-lg text-primary">{{ reviewsStore.averageRating }}</span>
+                  <span class="font-body text-sm text-primary-light">({{ reviewsStore.reviewCount }})</span>
+                </div>
+              </div>
+
+              <!-- Review Form -->
+              <div v-if="authStore.isAuthenticated" class="mb-6 p-5 bg-primary/3 rounded-2xl border border-primary/8">
+                <p class="font-body font-bold text-base text-primary mb-3">Оставить отзыв</p>
+                
+                <!-- Star Rating Picker -->
+                <div class="flex items-center gap-1 mb-3">
+                  <button
+                    v-for="i in 5"
+                    :key="i"
+                    type="button"
+                    class="p-0.5 bg-transparent border-none cursor-pointer transition-transform hover:scale-125"
+                    @click="setRating(i)"
+                  >
+                    <Star class="w-7 h-7 transition-colors" :class="i <= reviewRating ? 'text-yellow-400 fill-yellow-400' : 'text-primary/20 hover:text-yellow-300'" />
+                  </button>
+                  <span class="ml-2 font-body text-sm text-primary-light">{{ reviewRating }} / 5</span>
+                </div>
+
+                <!-- Text -->
+                <textarea
+                  v-model="reviewText"
+                  placeholder="Расскажите о вашем опыте…"
+                  rows="3"
+                  class="w-full rounded-xl px-4 py-3 font-body text-base text-primary bg-white/80 border border-primary/10 focus:ring-2 focus:ring-accent/40 focus:border-accent/40 outline-none resize-none transition-all"
+                ></textarea>
+
+                <!-- Photo Upload -->
+                <div class="flex items-center gap-3 mt-3">
+                  <label class="flex items-center gap-1.5 font-body text-sm text-accent-dark font-bold cursor-pointer hover:text-accent transition-colors">
+                    <Camera class="w-4 h-4" />
+                    Фото
+                    <input type="file" accept="image/*" class="hidden" @change="handleReviewPhoto" />
+                  </label>
+                  <div v-if="reviewPhotoPreview" class="relative">
+                    <img :src="reviewPhotoPreview" class="w-12 h-12 rounded-lg object-cover border border-accent/30" />
+                    <button @click="removeReviewPhoto" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center cursor-pointer border-none">
+                      <X class="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div class="flex-1"></div>
+                  <button
+                    :disabled="!reviewText.trim() || reviewsStore.submitting"
+                    class="flex items-center gap-1.5 font-body font-bold text-sm text-white bg-accent hover:bg-accent-dark rounded-xl px-4 py-2.5 cursor-pointer transition-all duration-200 disabled:opacity-40 border-none"
+                    @click="submitReview"
+                  >
+                    <Loader2 v-if="reviewsStore.submitting" class="w-4 h-4 animate-spin" />
+                    <Send v-else class="w-4 h-4" />
+                    Отправить
+                  </button>
+                </div>
+
+                <!-- Success -->
+                <Transition name="slide">
+                  <div v-if="reviewSubmitted" class="mt-3 p-3 bg-green-500/10 rounded-xl border border-green-500/20">
+                    <p class="font-body text-sm text-green-700 font-medium flex items-center gap-1.5">
+                      <Check class="w-4 h-4" />
+                      Отзыв отправлен! Спасибо за ваш вклад 🙏
+                    </p>
+                  </div>
+                </Transition>
+
+                <!-- Error -->
+                <div v-if="reviewsStore.error" class="mt-3 p-3 bg-red-500/8 rounded-xl border border-red-500/15">
+                  <p class="font-body text-sm text-red-600 font-medium">{{ reviewsStore.error }}</p>
+                </div>
+              </div>
+
+              <!-- Not authenticated prompt -->
+              <div v-else class="mb-6 p-5 bg-accent/5 rounded-2xl border border-accent/15 flex items-center gap-3">
+                <MessageSquare class="w-5 h-5 text-accent-dark shrink-0" />
+                <p class="font-body text-sm text-primary">
+                  <NuxtLink to="/auth/login" class="font-bold text-accent-dark underline">Войдите</NuxtLink>,
+                  чтобы оставить отзыв
+                </p>
+              </div>
+
+              <!-- Reviews List -->
+              <div v-if="reviewsStore.loading" class="flex items-center justify-center py-8">
+                <Loader2 class="w-6 h-6 text-accent animate-spin" />
+              </div>
+
+              <div v-else-if="reviewsStore.reviews.length > 0" class="flex flex-col gap-4">
+                <div
+                  v-for="review in reviewsStore.reviews"
+                  :key="review.id"
+                  class="flex gap-4 p-4 bg-primary/2 rounded-2xl border border-primary/5 transition-all hover:border-primary/10"
+                >
+                  <div class="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center shrink-0 font-body font-bold text-accent-dark text-sm uppercase">
+                    {{ review.display_name?.charAt(0) || '?' }}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <span class="font-body font-bold text-base text-primary">{{ review.display_name }}</span>
+                      <div class="flex items-center gap-0.5">
+                        <Star v-for="i in 5" :key="i" class="w-3.5 h-3.5" :class="i <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-primary/15'" />
+                      </div>
+                      <span class="font-body text-xs text-primary-light">{{ formatReviewDate(review.created_at) }}</span>
+                    </div>
+                    <p class="font-body text-base text-primary/80 leading-relaxed">{{ review.text }}</p>
+                    <img v-if="review.photo_url" :src="review.photo_url" class="mt-3 max-w-[200px] rounded-xl border border-primary/10" />
+                    <button
+                      v-if="review.user_id === authStore.user?.id"
+                      class="mt-2 flex items-center gap-1 font-body text-xs text-red-500 hover:text-red-700 bg-transparent border-none cursor-pointer transition-colors"
+                      @click="reviewsStore.deleteReview(review.id)"
+                    >
+                      <Trash2 class="w-3 h-3" />
+                      Удалить
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="text-center py-8">
+                <p class="font-body text-base text-primary-light">Пока нет отзывов. Будьте первым! ✨</p>
               </div>
             </div>
 

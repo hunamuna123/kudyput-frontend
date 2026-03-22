@@ -130,6 +130,20 @@ const densityLabels: Record<string, string> = {
   red: "🔥 Популярно",
 };
 
+const userKarma = computed(() => authStore.user?.karma ?? 0);
+const canSeeHiddenGems = computed(() => userKarma.value >= 50);
+
+const visiblePoints = computed(() => {
+  return mapStore.points.map((p) => {
+    const isHidden = (p as unknown as Record<string, unknown>).access_level === 'hidden';
+    return {
+      ...p,
+      isHiddenGem: isHidden,
+      isLocked: isHidden && !canSeeHiddenGems.value,
+    };
+  });
+});
+
 const hasVibeProfile = computed(() => vibeStore.hasProfile || !!authStore.user?.vibe_vector_id);
 
 async function loadLocations() {
@@ -253,6 +267,10 @@ onMounted(async () => {
             <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: color }"></span>
             {{ densityLabels[level] }}
           </span>
+          <span class="flex items-center gap-1 font-body text-sm text-primary-light">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-emerald-300/50"></span>
+            Hidden Gem
+          </span>
         </div>
       </div>
 
@@ -358,39 +376,53 @@ onMounted(async () => {
           </Transition>
 
           <div
-            v-for="point in mapStore.points"
+            v-for="point in visiblePoints"
             :key="point.id"
-            class="flex items-center gap-3 p-4 rounded-2xl border transition-all duration-200 cursor-pointer"
-            :class="mapStore.selectedPointId === point.id
-              ? 'bg-accent/10 border-accent/30'
-              : 'bg-white/35 border-white/50 hover:border-accent/20'"
-            @click="selectPoint(point.id)"
+            class="flex items-center gap-3 p-4 rounded-2xl border transition-all duration-200 cursor-pointer relative overflow-hidden"
+            :class="[
+              mapStore.selectedPointId === point.id
+                ? 'bg-accent/10 border-accent/30'
+                : point.isHiddenGem && !point.isLocked
+                  ? 'bg-emerald-50/60 border-emerald-300/40 hover:border-emerald-400/60'
+                  : point.isLocked
+                    ? 'bg-primary/3 border-primary/10 opacity-60'
+                    : 'bg-white/35 border-white/50 hover:border-accent/20',
+            ]"
+            @click="point.isLocked ? null : selectPoint(point.id)"
           >
+            <div v-if="point.isHiddenGem && !point.isLocked" class="absolute -right-4 -top-4 w-14 h-14 bg-emerald-400/10 rounded-full blur-xl pointer-events-none"></div>
+            <span v-if="point.isLocked" class="text-lg shrink-0">🔒</span>
+            <span v-else-if="point.isHiddenGem" class="text-lg shrink-0 animate-pulse">🗝</span>
             <span
+              v-else
               class="w-3 h-3 rounded-full shrink-0"
               :style="{ backgroundColor: densityColors[point.density_level] || '#A4BE4F' }"
             ></span>
             <div class="flex-1 min-w-0">
-              <p class="font-body font-bold text-base text-primary truncate">{{ point.name }}</p>
-              <p class="font-body text-sm text-primary-light capitalize">{{ point.category }}</p>
+              <p class="font-body font-bold text-base text-primary truncate">
+                {{ point.isLocked ? 'Секретная локация' : point.name }}
+              </p>
+              <p class="font-body text-sm text-primary-light capitalize">{{ point.isLocked ? 'Наберите 50 кармы' : point.category }}</p>
             </div>
-            <button
-              class="w-7 h-7 flex items-center justify-center rounded-full border cursor-pointer transition-all shrink-0"
-              :class="routeLocationIds.includes(point.id)
-                ? 'bg-accent border-accent text-white'
-                : 'bg-white/50 border-primary/10 text-primary-light hover:border-accent/40 hover:text-accent-dark'"
-              @click.stop="routeLocationIds.includes(point.id) ? removeFromRoute(point.id) : addToRoute(point.id)"
-            >
-              <Navigation v-if="routeLocationIds.includes(point.id)" class="w-3 h-3" />
-              <span v-else class="text-sm font-bold leading-none">+</span>
-            </button>
-            <NuxtLink
-              :to="`/location/${point.id}`"
-              class="text-accent-dark hover:text-accent transition-colors shrink-0"
-              @click.stop
-            >
-              <ExternalLink class="w-4 h-4" />
-            </NuxtLink>
+            <template v-if="!point.isLocked">
+              <button
+                class="w-7 h-7 flex items-center justify-center rounded-full border cursor-pointer transition-all shrink-0"
+                :class="routeLocationIds.includes(point.id)
+                  ? 'bg-accent border-accent text-white'
+                  : 'bg-white/50 border-primary/10 text-primary-light hover:border-accent/40 hover:text-accent-dark'"
+                @click.stop="routeLocationIds.includes(point.id) ? removeFromRoute(point.id) : addToRoute(point.id)"
+              >
+                <Navigation v-if="routeLocationIds.includes(point.id)" class="w-3 h-3" />
+                <span v-else class="text-sm font-bold leading-none">+</span>
+              </button>
+              <NuxtLink
+                :to="`/location/${point.id}`"
+                class="text-accent-dark hover:text-accent transition-colors shrink-0"
+                @click.stop
+              >
+                <ExternalLink class="w-4 h-4" />
+              </NuxtLink>
+            </template>
           </div>
 
           <div v-if="mapStore.points.length === 0 && !mapStore.loading" class="py-8 text-center">
