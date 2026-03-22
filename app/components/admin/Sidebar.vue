@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Home, MapPin, Globe, Car, User, Navigation, Flame, FileText, Heart, LayoutDashboard, Settings, Route } from "lucide-vue-next";
+import { Home, MapPin, Globe, Car, User, Navigation, Flame, FileText, Heart, LayoutDashboard, Settings, Route, CalendarCheck } from "lucide-vue-next";
 import { useAuthStore } from "~~/store/auth";
 
 const { isActive } = useNavActive();
@@ -27,6 +27,7 @@ const navItems = computed<NavItem[]>(() => {
   ];
   if (isHost.value) {
     items.splice(1, 0, { label: "Мои локации", icon: LayoutDashboard, to: "/host/dashboard" });
+    items.splice(2, 0, { label: "Бронирования", icon: CalendarCheck, to: "/host/bookings" });
     items.push({ label: "Настройки", icon: Settings, to: "/host/settings" });
   }
   return items;

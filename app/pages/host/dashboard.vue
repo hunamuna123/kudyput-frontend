@@ -25,8 +25,8 @@ const error = ref<string | null>(null);
 const stats = computed(() => ({
   total: myLocations.value.length,
   published: myLocations.value.filter((l) => l.is_published).length,
-  bookings: bookingsStore.bookings.length,
-  pending: bookingsStore.bookings.filter((b) => b.status === "pending").length,
+  bookings: bookingsStore.hostBookings.length,
+  pending: bookingsStore.hostBookings.filter((b) => b.status === "pending").length,
 }));
 
 async function loadData() {
@@ -35,7 +35,7 @@ async function loadData() {
   try {
     await onboardingStore.fetchHostLocations();
     myLocations.value = onboardingStore.hostLocations;
-    bookingsStore.fetchBookings();
+    await bookingsStore.fetchHostBookings();
   } catch {
     error.value = "Ошибка загрузки данных";
   } finally {
@@ -182,17 +182,25 @@ onMounted(loadData);
         </div>
       </div>
 
-      <div v-if="bookingsStore.bookings.length > 0" class="mt-8">
-        <h2 class="font-body font-bold text-2xl text-primary mb-4">Последние бронирования</h2>
+      <div v-if="bookingsStore.hostBookings.length > 0" class="mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-body font-bold text-2xl text-primary">Последние бронирования</h2>
+          <NuxtLink
+            to="/host/bookings"
+            class="font-body font-bold text-sm text-accent-dark hover:text-accent transition-colors no-underline"
+          >
+            Все →
+          </NuxtLink>
+        </div>
         <div class="flex flex-col gap-2">
           <div
-            v-for="booking in bookingsStore.bookings.slice(0, 5)"
+            v-for="booking in bookingsStore.hostBookings.slice(0, 5)"
             :key="booking.id"
             class="flex items-center justify-between p-4 bg-white/35 border border-accent/40 rounded-2xl"
           >
             <div class="min-w-0 flex-1">
               <span class="font-body font-bold text-base text-primary block truncate">{{ booking.location_name }}</span>
-              <span class="font-body text-sm text-primary-light">{{ booking.date_from }} — {{ booking.date_to }}</span>
+              <span class="font-body text-sm text-primary-light">{{ booking.date_from }} — {{ booking.date_to }} · {{ booking.contact_name }}</span>
             </div>
             <UiBadge
               :variant="booking.status === 'confirmed' ? 'default' : booking.status === 'pending' ? 'secondary' : 'destructive'"

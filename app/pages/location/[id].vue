@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box, Heart, CalendarCheck, Route, X, Check, Clock } from "lucide-vue-next";
+import { MapPin, Tag, Wallet, Users, Star, ArrowLeft, ArrowRight, Navigation, Loader2, Box, Heart, CalendarCheck, Route, X, Check, Clock, Phone, User } from "lucide-vue-next";
 import { useLocationsStore } from "~~/store/locations";
 import { useAuthStore } from "~~/store/auth";
 import { useBookingsStore } from "~~/store/bookings";
@@ -70,8 +70,11 @@ const showBooking = ref(false);
 const bookingDateFrom = ref("");
 const bookingDateTo = ref("");
 const bookingGuests = ref(2);
+const bookingContactName = ref("");
+const bookingContactPhone = ref("");
 const bookingSubmitted = ref(false);
-const lastBooking = ref<ReturnType<typeof bookingsStore.createBooking> | null>(null);
+const bookingSubmitting = ref(false);
+const bookingError = ref<string | null>(null);
 
 function openBookingModal() {
   const today = new Date();
@@ -80,24 +83,50 @@ function openBookingModal() {
   bookingDateFrom.value = today.toISOString().slice(0, 10);
   bookingDateTo.value = tomorrow.toISOString().slice(0, 10);
   bookingGuests.value = 2;
+  bookingContactName.value = authStore.user?.display_name || "";
+  bookingContactPhone.value = "";
   bookingSubmitted.value = false;
+  bookingError.value = null;
   showBooking.value = true;
+
+  // Load slots for current month
+  const month = bookingDateFrom.value.slice(0, 7);
+  bookingsStore.fetchSlots(locationId, month);
 }
 
-function submitBooking() {
-  if (!bookingDateFrom.value || !bookingDateTo.value) return;
+async function submitBooking() {
+  if (!bookingDateFrom.value || !bookingDateTo.value || !bookingContactName.value || !bookingContactPhone.value) return;
   const loc = locationsStore.currentLocation;
   if (!loc) return;
-  lastBooking.value = bookingsStore.createBooking({
+
+  bookingSubmitting.value = true;
+  bookingError.value = null;
+
+  const result = await bookingsStore.createBooking({
     location_id: loc.id,
-    location_name: loc.name,
     date_from: bookingDateFrom.value,
     date_to: bookingDateTo.value,
-    price_per_night: loc.price_per_night || 0,
-    guests: bookingGuests.value,
+    guests_count: bookingGuests.value,
+    contact_name: bookingContactName.value,
+    contact_phone: bookingContactPhone.value,
   });
-  bookingSubmitted.value = true;
+
+  bookingSubmitting.value = false;
+
+  if (result) {
+    bookingSubmitted.value = true;
+  } else {
+    bookingError.value = bookingsStore.error || "Не удалось создать бронирование";
+  }
 }
+
+// Watch date changes to reload slots
+watch(bookingDateFrom, (val) => {
+  if (val && showBooking.value) {
+    const month = val.slice(0, 7);
+    bookingsStore.fetchSlots(locationId, month);
+  }
+});
 
 const bookingNights = computed(() => {
   if (!bookingDateFrom.value || !bookingDateTo.value) return 1;
@@ -120,7 +149,6 @@ function toggleFav() {
 onMounted(async () => {
   authStore.restoreSession();
   favoritesStore.load();
-  bookingsStore.fetchBookings();
   await locationsStore.fetchLocationById(locationId);
 });
 </script>
@@ -373,13 +401,24 @@ onMounted(async () => {
 
     <!-- Booking Modal -->
     <div v-if="showBooking" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" @click.self="showBooking = false">
-      <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl">
+      <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div v-if="!bookingSubmitted">
           <div class="flex items-center justify-between mb-5">
             <h3 class="font-body font-bold text-lg text-primary">Бронирование</h3>
             <button @click="showBooking = false" class="p-1.5 hover:bg-primary/6 rounded-lg transition-colors">
               <X class="w-5 h-5 text-primary-light" />
             </button>
+          </div>
+
+          <!-- Slots info -->
+          <div v-if="bookingsStore.slots.length > 0" class="mb-4 p-3 bg-green-500/8 rounded-2xl border border-green-500/15">
+            <p class="font-body text-sm text-green-700 font-medium">
+              ✅ Доступно дат в этом месяце: {{ bookingsStore.slots.filter(s => s.available_capacity > 0).length }}
+            </p>
+          </div>
+          <div v-if="bookingsStore.slotsLoading" class="mb-4 flex items-center gap-2 text-primary-light">
+            <Loader2 class="w-4 h-4 animate-spin" />
+            <span class="font-body text-sm">Загрузка слотов…</span>
           </div>
 
           <div class="flex flex-col gap-3 mb-5">
@@ -402,6 +441,22 @@ onMounted(async () => {
                 <button @click="bookingGuests = Math.min(20, bookingGuests + 1)" class="w-9 h-9 rounded-xl bg-primary/6 flex items-center justify-center font-body font-bold text-primary hover:bg-primary/12 transition-colors cursor-pointer">+</button>
               </div>
             </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="font-body text-sm font-bold text-primary-light uppercase tracking-wider">Имя</label>
+              <div class="relative">
+                <User class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-light" />
+                <input v-model="bookingContactName" type="text" placeholder="Ваше имя" class="w-full rounded-xl pl-9 pr-3 py-2.5 bg-primary/4 border border-primary/10 font-body text-base text-primary focus:ring-2 focus:ring-accent/40 outline-none" />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="font-body text-sm font-bold text-primary-light uppercase tracking-wider">Телефон</label>
+              <div class="relative">
+                <Phone class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-light" />
+                <input v-model="bookingContactPhone" type="tel" placeholder="+7 (999) 123-45-67" class="w-full rounded-xl pl-9 pr-3 py-2.5 bg-primary/4 border border-primary/10 font-body text-base text-primary focus:ring-2 focus:ring-accent/40 outline-none" />
+              </div>
+            </div>
           </div>
 
           <div class="bg-accent/8 rounded-2xl p-4 mb-5">
@@ -415,13 +470,19 @@ onMounted(async () => {
             </div>
           </div>
 
+          <!-- Error -->
+          <div v-if="bookingError" class="mb-4 p-3 bg-red-500/8 rounded-2xl border border-red-500/15">
+            <p class="font-body text-sm text-red-600 font-medium">{{ bookingError }}</p>
+          </div>
+
           <button
             @click="submitBooking"
-            :disabled="!bookingDateFrom || !bookingDateTo"
+            :disabled="!bookingDateFrom || !bookingDateTo || !bookingContactName || !bookingContactPhone || bookingSubmitting"
             class="w-full flex items-center justify-center gap-2 font-body font-bold text-lg text-white bg-accent rounded-2xl px-6 py-4 transition-all duration-300 hover:bg-accent-dark hover:shadow-lg disabled:opacity-40 cursor-pointer"
           >
-            <CalendarCheck class="w-5 h-5" />
-            Подтвердить бронирование
+            <Loader2 v-if="bookingSubmitting" class="w-5 h-5 animate-spin" />
+            <CalendarCheck v-else class="w-5 h-5" />
+            {{ bookingSubmitting ? 'Отправляем…' : 'Подтвердить бронирование' }}
           </button>
         </div>
 
