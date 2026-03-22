@@ -196,7 +196,7 @@ export const useOnboardingStore = defineStore("onboarding", {
 
     // ——— Splatting ———
 
-    async startSplatting(locationId: string) {
+    async startSplatting(locationId: string, videoBlob: Blob) {
       this.splatStatus = "starting";
       this.splatError = null;
       this.splatProgress = 0;
@@ -204,9 +204,13 @@ export const useOnboardingStore = defineStore("onboarding", {
 
       try {
         const { request } = useApiClient();
+        const fd = new FormData();
+        fd.append("location_id", locationId);
+        fd.append("video", videoBlob, "walkthrough.webm");
+
         const response = await request<SplatResponse>("/api/v1/host/splat", {
           method: "POST",
-          body: { location_id: locationId } as Record<string, unknown>,
+          body: fd,
         });
 
         if (response?.data?.task_id) {

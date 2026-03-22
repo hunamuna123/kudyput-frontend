@@ -44,6 +44,7 @@ const newTag = ref("");
 const isUploadingPreview = ref(false);
 const isUploadingGallery = ref(false);
 const hasSplat = ref(false);
+const splatVideoFile = ref<File | null>(null);
 const currentSplatUrl = ref<string | null>(null);
 
 const categories = [
@@ -107,7 +108,9 @@ async function handleGalleryUpload(event: Event) {
   if (!files?.length) return;
   isUploadingGallery.value = true;
   for (let i = 0; i < files.length; i++) {
-    const url = await uploadFile(files[i]);
+    const file = files[i];
+    if (!file) continue;
+    const url = await uploadFile(file);
     if (url) form.gallery_urls.push(url);
   }
   isUploadingGallery.value = false;
@@ -123,9 +126,17 @@ function removePreview() {
 }
 
 // ——— Splatting ———
+function handleSplatVideoSelect(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files?.[0]) {
+    splatVideoFile.value = input.files[0];
+  }
+}
+
 async function generateSplat() {
+  if (!splatVideoFile.value) return;
   onboarding.resetSplat();
-  await onboarding.startSplatting(locationId);
+  await onboarding.startSplatting(locationId, splatVideoFile.value);
 }
 
 watch(
@@ -444,12 +455,27 @@ onUnmounted(() => {
         </div>
 
         <!-- Generate button (no splat yet) -->
-        <div v-else class="flex flex-col gap-2">
+        <div v-else class="flex flex-col gap-3">
           <p class="font-body text-md text-primary-light">
-            Создайте 3D-модель для иммерсивного просмотра вашей локации.
+            Загрузите видео обхода локации — ИИ создаст 3D-модель.
           </p>
+
+          <label class="flex items-center gap-3 p-4 border border-dashed border-primary/15 rounded-2xl cursor-pointer hover:border-accent/50 hover:bg-accent/3 transition-all">
+            <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+              <Upload class="w-4.5 h-4.5 text-accent-dark" />
+            </div>
+            <div class="flex flex-col flex-1 min-w-0">
+              <span class="font-body text-md text-primary truncate">
+                {{ splatVideoFile ? splatVideoFile.name : 'Выберите видео' }}
+              </span>
+              <span class="font-body text-xs text-primary-light">MP4, WebM · видео обхода</span>
+            </div>
+            <input type="file" accept="video/mp4,video/webm" class="hidden" @change="handleSplatVideoSelect" />
+          </label>
+
           <UiButton
             class="w-full rounded-2xl font-body font-bold bg-accent hover:bg-accent-dark text-white py-3.5"
+            :disabled="!splatVideoFile"
             @click="generateSplat"
           >
             <Box class="w-4 h-4 mr-2" />
